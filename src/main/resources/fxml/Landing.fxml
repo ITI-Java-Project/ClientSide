@@ -1,11 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.clientside.controllers.LandingController">
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.mycompany.clientside.controllers.LandingController" 
+           prefHeight="800.0" prefWidth="1200.0"
+           style="-fx-background-image: url('images/LandingBG.png'); 
+                  -fx-background-size: cover; 
+                  -fx-background-position: center;">
     
+    <VBox alignment="CENTER" spacing="8.0" maxWidth="400.0"
+          AnchorPane.topAnchor="500.0"
+          AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0">
+        
+        <!-- Title Label -->
+        <Label text="Three in a row wins it all" textFill="#000000">
+            <font>
+                <Font name="Comic Sans MS" size="48.0" />
+            </font>
+            <VBox.margin>
+                <Insets bottom="40.0" />
+            </VBox.margin>
+        </Label>
+        
+        <!-- Login Button -->
+        <Button fx:id="loginButton" text="Login" 
+                prefHeight="100.0" prefWidth="350.0"
+                onAction="#handleLogin"
+                style="-fx-background-color: #6FB5E0; 
+                       -fx-text-fill: white; 
+                       -fx-font-family: 'Comic Sans MS';
+                       -fx-font-size: 32px; 
+                       -fx-background-radius: 40; 
+                       -fx-border-color: #2E86C1; 
+                       -fx-border-width: 2; 
+                       -fx-border-style: dashed; 
+                       -fx-border-radius: 40; 
+                       -fx-cursor: hand;" >
+            <font>
+                <Font name="Comic Sans MS" size="32.0" />
+            </font>
+            <VBox.margin>
+                <Insets bottom="15.0" />
+            </VBox.margin>
+        </Button>
+         
+        <!-- Sign Up Button -->
+        <Button fx:id="signupButton" text="Sign up" 
+                prefHeight="100.0" prefWidth="350"
+                onAction="#handleSignup"
+                style="-fx-background-color: white; 
+                       -fx-text-fill: #000000; 
+                       -fx-font-family: 'Comic Sans MS';
+                       -fx-font-size: 32px; 
+                       -fx-background-radius: 40; 
+                       -fx-border-color: #000000; 
+                       -fx-border-width: 2; 
+                       -fx-border-radius: 40; 
+                       -fx-cursor: hand;" >
+            <font>
+                <Font name="Comic Sans MS" size="32.0" />
+            </font>
+        </Button>
+        
+    </VBox>
+
 </AnchorPane>
