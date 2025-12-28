@@ -1,26 +1,30 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package com.mycompany.clientside.controllers;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import javafx.fxml.Initializable;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 
-/**
- * FXML Controller class
- *
- * @author sian
- */
-public class LandingController implements Initializable {
+public class LandingController {
 
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+    @FXML
+    private Button loginButton;
+
+    @FXML
+    private Button signupButton;
+
+    // Login button action
+    @FXML
+    private void handleLogin() {
+        System.out.println("Login clicked");
+        // Add your login logic here
+    }
+
+    // Sign up button action
+    @FXML
+    private void handleSignup() {
+        System.out.println("Sign up clicked");
+        // Add your sign up logic here
+    }
+
+
 }
