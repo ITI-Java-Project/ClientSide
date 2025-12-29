@@ -1,5 +1,6 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -25,20 +26,17 @@ public class SignupController implements Initializable {
     private TextField emailField;
     @FXML
     private Button signupButton;
-    /**
-     * Initializes the controller class.
-     */
+   
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
     
     @FXML
-    private void handleSettings(MouseEvent event) {
-    }
+    private void handleSettings(MouseEvent event) {}
 
     @FXML
     private void handleSignup(ActionEvent event) {
+        SceneNavigator.navigateTo(signupButton, "/fxml/Start.fxml");
     }
-
 }
