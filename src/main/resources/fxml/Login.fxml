@@ -30,9 +30,9 @@
           prefWidth="600.0" 
           spacing="20" 
           alignment="CENTER"
-          styleClass="login-container">
+          styleClass="register-container">
         
-        <Label text="Login" styleClass="login-title"/>
+        <Label text="Login" styleClass="register-title"/>
         <!-- Spacing -->
         <Region prefHeight="15.0"/>
         
