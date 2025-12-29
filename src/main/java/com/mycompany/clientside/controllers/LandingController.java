@@ -21,7 +21,6 @@ public class LandingController {
     // Sign up button action
     @FXML
     private void handleSignup() {
-        System.out.println("Sign up clicked");
-        // Add your sign up logic here
+        SceneNavigator.navigateTo(signupButton, "/fxml/Signup.fxml");
     }
 }
