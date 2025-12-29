@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.StageStyle;
@@ -21,12 +22,7 @@ public class App extends Application {
 
         stage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
-                if (stage.isFullScreen()) {
-                    stage.setFullScreen(false);
-                } else {
-                    stage.setIconified(true); 
-                }
-                event.consume(); 
+               Platform.exit();
             }
         });
 

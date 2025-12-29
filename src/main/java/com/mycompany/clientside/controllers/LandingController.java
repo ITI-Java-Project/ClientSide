@@ -1,8 +1,8 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.SceneNavigator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
 
 public class LandingController {
 
@@ -14,9 +14,8 @@ public class LandingController {
 
     // Login button action
     @FXML
-    private void handleLogin() {
-        System.out.println("Login clicked");
-        // Add your login logic here
+    private void handleLogin() { 
+        SceneNavigator.navigateTo(loginButton, "/fxml/Login.fxml");
     }
 
     // Sign up button action
@@ -25,6 +24,4 @@ public class LandingController {
         System.out.println("Sign up clicked");
         // Add your sign up logic here
     }
-
-
 }
