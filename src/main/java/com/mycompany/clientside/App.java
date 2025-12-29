@@ -17,7 +17,7 @@ public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        scene = new Scene(loadFXML("AvaliablePlayers"));
+        scene = new Scene(loadFXML("Landing"));
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
         stage.setFullScreen(true);
