@@ -16,14 +16,6 @@
                    -fx-background-size: cover; 
                    -fx-background-position: center;">
     
-    <!-- Settings Icon -->
-    <ImageView layoutX="1400.0" layoutY="30.0" 
-               fitHeight="70.0" fitWidth="70.0" 
-               preserveRatio="true"
-               onMouseClicked="#handleSettings"
-               styleClass="settings-icon">
-        <Image url="images/settings.png"/>
-    </ImageView>
     
     <!-- Login Container -->
     <VBox layoutX="500.0" layoutY="150.0" 
