@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="1200.0" 
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.mycompany.clientside.controllers.LoginController"
+            stylesheets="@../style/style.css"
+            style="-fx-background-image: url('file:///D:/ITI/Java/Project/ClientSide/src/main/resources/images/DefaultMenuBG.png'); 
+                   -fx-background-size: cover; 
+                   -fx-background-position: center;">
+    
+    <!-- Settings Icon -->
+    <ImageView layoutX="1400.0" layoutY="30.0" 
+               fitHeight="70.0" fitWidth="70.0" 
+               preserveRatio="true"
+               onMouseClicked="#handleSettings"
+               styleClass="settings-icon">
+        <Image url="images/setting_icon.png"/>
+    </ImageView>
+    
+    <!-- Login Container -->
+    <VBox layoutX="500.0" layoutY="150.0" 
+          prefWidth="600.0" 
+          spacing="20" 
+          alignment="CENTER"
+          styleClass="login-container">
+        
+        <Label text="Login" styleClass="login-title"/>
+        <!-- Spacing -->
+        <Region prefHeight="15.0"/>
+        
+        <!-- Username Section -->
+        <VBox spacing="10" prefWidth="500.0">
+            <Label text="Username" styleClass="input-label"/>
+            <TextField fx:id="usernameField" 
+                       promptText="Enter username"
+                       prefWidth="500.0" prefHeight="50.0"
+                       styleClass="input-field"/>
+        </VBox>
+        
+        <!-- Password Section -->
+        <VBox spacing="10" prefWidth="500.0">
+            <Label text="Password" styleClass="input-label"/>
+            <PasswordField fx:id="passwordField" 
+                          promptText="Enter password"
+                          prefWidth="500.0" prefHeight="50.0"
+                          styleClass="input-field"/>
+        </VBox>
+        <!-- Spacing -->
+        <Region prefHeight="15.0"/>
+        <!-- Login Button -->
+        <Button fx:id="loginButton" 
+                text="Login" 
+                onAction="#handleLogin"
+                prefWidth="250.0" prefHeight="50.0"
+                styleClass="primary-btn"/>
+        
+        <!-- Error Label -->
+        <Label fx:id="errorLabel" 
+               text="" 
+               styleClass="error-label"
+               visible="false"/>
+    </VBox>
+</AnchorPane>
