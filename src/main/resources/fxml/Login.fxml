@@ -12,7 +12,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.mycompany.clientside.controllers.LoginController"
             stylesheets="@../styles/app.css"
-            style="-fx-background-image: url('file:///D:/ITI/Java/Project/ClientSide/src/main/resources/images/DefaultMenuBG.png'); 
+            style="-fx-background-image: url('images/DefaultMenuBG.png'); 
                    -fx-background-size: cover; 
                    -fx-background-position: center;">
     
@@ -22,7 +22,7 @@
                preserveRatio="true"
                onMouseClicked="#handleSettings"
                styleClass="settings-icon">
-        <Image url="images/setting_icon.png"/>
+        <Image url="images/settings.png"/>
     </ImageView>
     
     <!-- Login Container -->
