@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
 import javafx.application.Platform;
-
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.StageStyle;
@@ -16,7 +15,6 @@ public class App extends Application {
     
     @Override
     public void start(Stage stage) throws IOException {
-
         scene = new Scene(loadFXML("Landing"));
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
@@ -36,7 +34,6 @@ public class App extends Application {
     }
     
     private static Parent loadFXML(String fxml) throws IOException {
-
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/" + fxml + ".fxml"));
         return fxmlLoader.load();
     }
@@ -44,8 +41,4 @@ public class App extends Application {
     public static void main(String[] args) {
         launch();
     }
-
-
 }
-
-
