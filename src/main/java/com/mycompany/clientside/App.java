@@ -22,7 +22,7 @@ public class App extends Application {
 
         stage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
-               Platform.exit();
+                Platform.exit();
             }
         });
 
