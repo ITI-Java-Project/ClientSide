@@ -25,15 +25,12 @@ public class SceneNavigator {
 
             if (stage.isFullScreen()) stage.setFullScreenExitHint("");
 
-            stack = createStack(oldRoot);
+            stack = createStack(newRoot);
             scene.setRoot(stack);
-
-            newRoot.setOpacity(0);
-            stack.getChildren().add(newRoot);
-
+          
             fadeOut(oldRoot);
-            fadeIn(newRoot);
-            fadeIn(newRoot).setOnFinished(e -> stack.getChildren().remove(oldRoot));
+            FadeTransition f = fadeIn(newRoot);
+            f.setOnFinished(e -> stack.getChildren().remove(oldRoot));
            
         } catch (Exception e) {
             e.printStackTrace();
@@ -41,7 +38,7 @@ public class SceneNavigator {
     }
    
     private static FadeTransition fadeIn(Parent node){
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(100), node);
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(1000), node);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);  
         fadeIn.play();
@@ -49,7 +46,7 @@ public class SceneNavigator {
     }
    
     private static void fadeOut(Parent node){
-       FadeTransition fadeOut = new FadeTransition(Duration.millis(150), node);
+       FadeTransition fadeOut = new FadeTransition(Duration.millis(1000), node);
        fadeOut.setFromValue(1);
        fadeOut.setToValue(0);
        fadeOut.play();
