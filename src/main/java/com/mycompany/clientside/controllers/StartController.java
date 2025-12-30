@@ -4,14 +4,19 @@
  */
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.DialogUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 
 /**
  * FXML Controller class
@@ -33,7 +38,7 @@ public class StartController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         bgImage.setImage(
-            new Image(getClass().getResource("/images/MainMenuBG.png").toExternalForm())
+                new Image(getClass().getResource("/images/MainMenuBG.png").toExternalForm())
         );
 
         bgImage.sceneProperty().addListener((obs, oldScene, newScene) -> {
@@ -54,5 +59,7 @@ public class StartController implements Initializable {
 
     @FXML
     private void goToSettings(MouseEvent event) {
+        StackPane root = (StackPane) settingsIcon.getScene().getRoot();
+        DialogUtil.openSettingsDialog(root);
     }
 }
