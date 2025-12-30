@@ -5,14 +5,15 @@
 package com.mycompany.clientside.controllers;
 
 import com.mycompany.clientside.utils.DialogUtil;
+import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -28,11 +29,15 @@ public class StartController implements Initializable {
     @FXML
     private ImageView bgImage;
     @FXML
-    private ImageView backIcon;
-    @FXML
     private Label leaderBoardText;
     @FXML
     private ImageView settingsIcon;
+    @FXML
+    private Button startBtn;
+    @FXML
+    private Button recordingBtn;
+    @FXML
+    private Button exitBtn;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -49,9 +54,6 @@ public class StartController implements Initializable {
         });
     }
 
-    @FXML
-    private void handleBack(MouseEvent event) {
-    }
 
     @FXML
     private void goToLeaderBoard(MouseEvent event) {
@@ -61,5 +63,19 @@ public class StartController implements Initializable {
     private void goToSettings(MouseEvent event) {
         StackPane root = (StackPane) settingsIcon.getScene().getRoot();
         DialogUtil.openSettingsDialog(root);
+    }
+
+    @FXML
+    private void handleStart(ActionEvent event) {
+        SceneNavigator.navigateTo(startBtn, "/fxml/GameModes.fxml");
+    }
+
+    @FXML
+    private void handleRecording(ActionEvent event) {
+    }
+
+    @FXML
+    private void handleExit(ActionEvent event) {
+        Platform.exit();
     }
 }

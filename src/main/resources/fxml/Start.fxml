@@ -32,7 +32,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Label>
-                        <ImageView fx:id="settingsIcon" fitHeight="100.0" fitWidth="100.0" onMouseClicked="#goToSettings" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="settingsIcon" fitHeight="80.0" fitWidth="80.0" onMouseClicked="#goToSettings" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../images/settings.png" />
                            </image>
@@ -53,21 +53,30 @@
                <children>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="32.0">
                      <children>
-                        <Button id="start-button" mnemonicParsing="false" prefHeight="130.0" prefWidth="374.0" style="-fx-background-color: #89CFF0; -fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-border-style: dashed;" styleClass="start-button" stylesheets="@../styles/app.css" text="Start" textAlignment="CENTER">
+                        <Button id="start-button" fx:id="startBtn" mnemonicParsing="false" onAction="#handleStart" prefHeight="130.0" prefWidth="374.0" style="-fx-background-color: #89CFF0; -fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-border-style: dashed;" styleClass="start-button" stylesheets="@../styles/app.css" text="Start" textAlignment="CENTER">
                            <font>
                               <Font name="Comic Sans MS" size="48.0" />
                            </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </Button>
-                        <Button id="recordings-button" mnemonicParsing="false" prefHeight="130.0" prefWidth="374.0" style="-fx-background-color: #FFF94B; -fx-border-color: black; -fx-border-width: 2; -fx-background-radius: 50; -fx-border-radius: 50;" styleClass="recordings-button" stylesheets="@../styles/app.css" text="Recordings">
+                        <Button id="recordings-button" fx:id="recordingBtn" mnemonicParsing="false" onAction="#handleRecording" prefHeight="130.0" prefWidth="374.0" style="-fx-background-color: #FFF94B; -fx-border-color: black; -fx-border-width: 2; -fx-background-radius: 50; -fx-border-radius: 50;" styleClass="recordings-button" stylesheets="@../styles/app.css" text="Recordings">
                            <font>
                               <Font name="Comic Sans MS" size="48.0" />
-                           </font></Button>
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor></Button>
                      </children>
                   </HBox>
-                  <Button id="exit-button" mnemonicParsing="false" prefHeight="100.0" prefWidth="374.0" style="-fx-background-color: #F34B4E; -fx-border-color: black; -fx-border-width: 2; -fx-background-radius: 50; -fx-border-radius: 50;" styleClass="exit-button" stylesheets="@../styles/app.css" text="Exit" textAlignment="CENTER">
+                  <Button id="exit-button" fx:id="exitBtn" mnemonicParsing="false" onAction="#handleExit" prefHeight="100.0" prefWidth="374.0" style="-fx-background-color: #F34B4E; -fx-border-color: black; -fx-border-width: 2; -fx-background-radius: 50; -fx-border-radius: 50;" styleClass="exit-button" stylesheets="@../styles/app.css" text="Exit" textAlignment="CENTER">
                      <font>
                         <Font name="Comic Sans MS" size="48.0" />
-                     </font></Button>
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor></Button>
                </children>
             </VBox>
          </center>
