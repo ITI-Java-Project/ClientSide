@@ -4,6 +4,7 @@
  */
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -45,7 +46,7 @@ public class GameModesController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         bgImage.setImage(
-            new Image(getClass().getResource("/images/GameModeMenuBG.png").toExternalForm())
+                new Image(getClass().getResource("/images/GameModeMenuBG.png").toExternalForm())
         );
 
         bgImage.sceneProperty().addListener((obs, oldScene, newScene) -> {
@@ -55,7 +56,7 @@ public class GameModesController implements Initializable {
             }
         });
         // TODO
-    }    
+    }
 
     @FXML
     private void goToLeaderBoard(MouseEvent event) {
@@ -83,6 +84,7 @@ public class GameModesController implements Initializable {
 
     @FXML
     private void handleBack(MouseEvent event) {
+        SceneNavigator.navigateTo(backBtn, "/fxml/Start.fxml");
     }
-    
+
 }
