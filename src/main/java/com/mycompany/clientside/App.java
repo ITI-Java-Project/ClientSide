@@ -1,4 +1,5 @@
 package com.mycompany.clientside;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -34,14 +35,12 @@ public class App extends Application {
     }
     
     private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/" + fxml + ".fxml"));
+        FXMLLoader fxmlLoader =
+                new FXMLLoader(App.class.getResource("/fxml/" + fxml + ".fxml"));
         return fxmlLoader.load();
     }
     
     public static void main(String[] args) {
         launch();
     }
-
 }
-
-
