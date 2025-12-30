@@ -4,6 +4,7 @@
  */
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 
 /**
  * FXML Controller class
@@ -64,6 +66,8 @@ public class GameModesController implements Initializable {
 
     @FXML
     private void goToSettings(MouseEvent event) {
+        StackPane root = (StackPane) settingsIcon.getScene().getRoot();
+        DialogUtil.openSettingsDialog(root);
     }
 
     @FXML
