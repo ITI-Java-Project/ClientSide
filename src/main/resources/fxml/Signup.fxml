@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane id="AnchorPane" prefHeight="800.0" prefWidth="1200.0" 
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.mycompany.clientside.controllers.SignupController"
+            stylesheets="@../styles/app.css"
+            style="-fx-background-image: url('images/DefaultMenuBG.png'); 
+                   -fx-background-size: cover; 
+                   -fx-background-position: center;">
+    
+    <!-- Sign up Container - Centered -->
+    <VBox layoutX="500.0" layoutY="150.0" 
+          prefWidth="600.0" 
+          spacing="10" 
+          alignment="TOP_CENTER"
+         styleClass="register-container">
+        <Label text="Sign up" styleClass="register-title"/>
+
+        <!-- Spacing -->
+        <Region prefHeight="10.0"/>
+        
+        <!-- Username Section -->
+        <VBox spacing="8" prefWidth="300.0" alignment="TOP_LEFT">
+            <Label text="Username" styleClass="input-label"/>
+            <TextField fx:id="usernameField" 
+                       promptText="Enter username"
+                       prefWidth="300.0" prefHeight="40.0"
+                      styleClass="input-field"/>
+        </VBox>
+        
+        <!-- Email Section -->
+        <VBox spacing="8" prefWidth="300.0" alignment="TOP_LEFT">
+            <Label text="Email" styleClass="input-label"/>
+            <TextField fx:id="emailField" 
+                       promptText="Enter email"
+                       prefWidth="300.0" prefHeight="40.0"
+                       styleClass="input-field"/>
+        </VBox>
+        
+        <!-- Password Section -->
+        <VBox spacing="8" prefWidth="300.0" alignment="TOP_LEFT">
+            <Label text="Password" styleClass="input-label"/>
+            <PasswordField fx:id="passwordField" 
+                          promptText="Enter password"
+                          prefWidth="300.0" prefHeight="40.0"
+                          styleClass="input-field"/>
+        </VBox>
+        <!-- Spacing -->
+        <Region prefHeight="10.0"/>
+        <!-- Sign up Button -->
+        <Button fx:id="signupButton" 
+                text="Sign up" 
+                onAction="#handleSignup"
+                prefWidth="250.0" prefHeight="50.0"
+                styleClass="primary-btn"/>
+        
+        <!-- Error Label -->
+        <Label fx:id="errorLabel" 
+               text="" 
+               styleClass="error-label"
+               visible="false"/>
+    </VBox>
+</AnchorPane>

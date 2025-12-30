@@ -1,5 +1,6 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -27,16 +28,16 @@ public class LoginController implements Initializable {
     private Button loginButton;
     @FXML
     private Label errorLabel;
-    /**
-     * Initializes the controller class.
-     */
+   
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
     
     @FXML
-    private void handleLogin(ActionEvent event) {}
+    private void handleLogin(ActionEvent event) {
+      SceneNavigator.navigateTo(loginButton, "/fxml/Start.fxml");
+    }
 
     @FXML
     private void handleSettings(MouseEvent event) {}
