@@ -1,12 +1,17 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.DialogUtil;
+import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 
@@ -30,25 +35,20 @@ public class AvaliablePlayersController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
     }    
 
-    // Back arrow action
     @FXML
     private void handleBack(MouseEvent event) {
-        System.out.println("Back Arrow Clicked.");
-        // TODO : Add back Arrow Action 
+        SceneNavigator.back((Node) event.getSource());
     }
 
-    // Navigate to leaderboard 
     @FXML
     private void goToLeaderBoard(MouseEvent event) {
         System.out.println("go to Leaderboard.");
-        // TODO : Add Navigation Logic to Leaderboard.
     }
 
-    // Open Settings alert
     @FXML
     private void goToSettings(MouseEvent event) {
-        System.out.println("open Settings Alert.");
-        // TODO : Add Open Settings Alert logic.
+        Parent root = settingsIcon.getScene().getRoot(); 
+        DialogUtil.openSettingsDialog(root);
     }
 
     // Challenge action

@@ -12,12 +12,12 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
 
 /**
  * FXML Controller class
@@ -57,11 +57,12 @@ public class StartController implements Initializable {
 
     @FXML
     private void goToLeaderBoard(MouseEvent event) {
+       SceneNavigator.navigateTo(leaderBoardText, "/fxml/LeaderBoard.fxml");
     }
 
     @FXML
     private void goToSettings(MouseEvent event) {
-        StackPane root = (StackPane) settingsIcon.getScene().getRoot();
+        Parent root =  settingsIcon.getScene().getRoot();
         DialogUtil.openSettingsDialog(root);
     }
 

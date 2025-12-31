@@ -4,15 +4,19 @@
  */
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.DialogUtil;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 
 /**
  * FXML Controller class
@@ -35,10 +39,6 @@ public class GameController implements Initializable {
     private ImageView player2Avatar;
     @FXML
     private Button settingsButton;
-    @FXML
-    private Button resetButton;
-    @FXML
-    private Button sendButton;
     @FXML
     private GridPane gameBoard;
     @FXML
@@ -63,8 +63,9 @@ public class GameController implements Initializable {
     private boolean xTurn; 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        xTurn=true; 
-    }    
+        System.out.println("GameController INITIALIZED");
+        xTurn = true;
+    }
 
     @FXML
     private void handleCellClick(ActionEvent event) {
@@ -83,5 +84,12 @@ public class GameController implements Initializable {
         col = (col == null) ? 0 : col;
 
     }
+
+    @FXML
+    private void handleSettingClick(ActionEvent event) {
+        Parent root = ((Node) event.getSource()).getScene().getRoot();
+        DialogUtil.openSettingsDialog(root);
+    }
+
     
 }

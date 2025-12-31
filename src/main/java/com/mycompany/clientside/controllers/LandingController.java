@@ -12,13 +12,12 @@ public class LandingController {
     @FXML
     private Button signupButton;
 
-    // Login button action
+
     @FXML
     private void handleLogin() { 
         SceneNavigator.navigateTo(loginButton, "/fxml/Login.fxml");
     }
 
-    // Sign up button action
     @FXML
     private void handleSignup() {
         SceneNavigator.navigateTo(signupButton, "/fxml/Signup.fxml");

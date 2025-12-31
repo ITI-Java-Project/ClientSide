@@ -1,4 +1,6 @@
 package com.mycompany.clientside.utils;
+
+import java.util.Stack;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -8,14 +10,24 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-/**
- * @author hends
- */
-
 public class SceneNavigator {
-    
-   public static void navigateTo(Node currentNode, String fxmlPath) {
-        StackPane stack;
+
+    private static final Stack<String> pages = new Stack<>();
+    private static final Duration FADE_DURATION = Duration.millis(1000);
+
+    public static void navigateTo(Node currentNode, String fxmlPath) {
+        navigateToInternal(currentNode, fxmlPath, true);
+    }
+
+    public static void back(Node currentNode) {
+        if (!pages.isEmpty()) {
+            pages.pop();
+        }
+        String target = pages.isEmpty() ? "/fxml/Landing.fxml" : pages.peek();
+        navigateToInternal(currentNode, target, false);
+    }
+
+    private static void navigateToInternal(Node currentNode, String fxmlPath, boolean pushToHistory) {
         try {
             Stage stage = (Stage) currentNode.getScene().getWindow();
             Scene scene = stage.getScene();
@@ -23,36 +35,45 @@ public class SceneNavigator {
             Parent oldRoot = scene.getRoot();
             Parent newRoot = FXMLLoader.load(SceneNavigator.class.getResource(fxmlPath));
 
-            if (stage.isFullScreen()) stage.setFullScreenExitHint("");
+            StackPane transitionRoot = new StackPane(oldRoot, newRoot);
+            newRoot.setOpacity(0);
 
-            stack = createStack(newRoot);
-            scene.setRoot(stack);
-          
+            scene.setRoot(transitionRoot);
+
             fadeOut(oldRoot);
-            FadeTransition f = fadeIn(newRoot);
-            f.setOnFinished(e -> stack.getChildren().remove(oldRoot));
-           
+            FadeTransition fadeInTransition = fadeIn(newRoot);
+
+            fadeInTransition.setOnFinished(e -> {
+                transitionRoot.getChildren().remove(oldRoot);
+                scene.setRoot(transitionRoot);
+            });
+
+            if (pushToHistory) {
+                pages.push(fxmlPath);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-   
-    private static FadeTransition fadeIn(Parent node){
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(1000), node);
-        fadeIn.setFromValue(0);
-        fadeIn.setToValue(1);  
-        fadeIn.play();
-        return fadeIn; 
+
+
+    private static FadeTransition fadeIn(Parent node) {
+        FadeTransition ft = new FadeTransition(FADE_DURATION, node);
+        ft.setFromValue(0);
+        ft.setToValue(1);
+        ft.play();
+        return ft;
     }
-   
-    private static void fadeOut(Parent node){
-       FadeTransition fadeOut = new FadeTransition(Duration.millis(1000), node);
-       fadeOut.setFromValue(1);
-       fadeOut.setToValue(0);
-       fadeOut.play();
-    } 
-    
-    private static StackPane createStack(Parent node){
-        return (node instanceof StackPane)?(StackPane) node:new StackPane(node);
+
+    private static void fadeOut(Parent node) {
+        FadeTransition ft = new FadeTransition(FADE_DURATION, node);
+        ft.setFromValue(1);
+        ft.setToValue(0);
+        ft.play();
+    }
+
+    private static StackPane createStack(Parent node) {
+        return (node instanceof StackPane) ? (StackPane) node : new StackPane(node);
     }
 }

@@ -1,38 +1,45 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.clientside.utils;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.StackPane;
 
-/**
- *
- * @author 20000
- */
 public class DialogUtil {
 
-    private DialogUtil() {
+    private DialogUtil() {}
+
+    public static void openSettingsDialog(Parent root) {
+        StackPane overlayRoot = ensureOverlayRoot(root);
+        showSettingsDialog(overlayRoot);
     }
 
-    public static void openSettingsDialog(StackPane rootPane) {
+    private static StackPane ensureOverlayRoot(Parent root) {
+        if (root instanceof StackPane) {
+            return (StackPane) root;
+        }
+
+        Scene scene = root.getScene();
+        StackPane wrapper = new StackPane(root);
+        scene.setRoot(wrapper);
+        return wrapper;
+    }
+
+    private static void showSettingsDialog(StackPane overlayRoot) {
         try {
-            rootPane.getChildren().forEach(node ->
-                    node.setEffect(new GaussianBlur(20))
-            );
+            if (!overlayRoot.getChildren().isEmpty()) {
+                overlayRoot.getChildren().get(0).setEffect(new GaussianBlur(20));
+            }
 
-            FXMLLoader loader = new FXMLLoader(
-                    DialogUtil.class.getResource("/fxml/CustomDialog.fxml")
-            );
-
+            FXMLLoader loader = new FXMLLoader(DialogUtil.class.getResource("/fxml/CustomDialog.fxml"));
             Parent dialog = loader.load();
 
-            var controller = loader.<com.mycompany.clientside.controllers.CustomDialogController>getController();
-            controller.setRootPane(rootPane);
+            com.mycompany.clientside.controllers.CustomDialogController controller =
+                    loader.getController();
+            controller.setRootPane(overlayRoot);
 
-            rootPane.getChildren().add(dialog);
+            overlayRoot.getChildren().add(dialog);
 
         } catch (Exception e) {
             e.printStackTrace();

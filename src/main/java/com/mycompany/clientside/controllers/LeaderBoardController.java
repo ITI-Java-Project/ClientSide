@@ -28,14 +28,12 @@ public class LeaderBoardController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
     }    
 
-    // Back arrow action
     @FXML
     private void handleBack(MouseEvent event) {
-        SceneNavigator.navigateTo(backBtn, "/fxml/Start.fxml");
+        SceneNavigator.back(backBtn);
     }
 
 
-    // Open Settings alert
     @FXML
     private void goToSettings(MouseEvent event) {
         StackPane root = (StackPane) settingsIcon.getScene().getRoot();

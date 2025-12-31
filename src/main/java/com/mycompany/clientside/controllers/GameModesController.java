@@ -11,6 +11,8 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -57,7 +59,6 @@ public class GameModesController implements Initializable {
                 bgImage.fitHeightProperty().bind(newScene.heightProperty());
             }
         });
-        // TODO
     }
 
     @FXML
@@ -66,29 +67,37 @@ public class GameModesController implements Initializable {
 
     @FXML
     private void goToSettings(MouseEvent event) {
-        StackPane root = (StackPane) settingsIcon.getScene().getRoot();
+        Parent root = settingsIcon.getScene().getRoot();
         DialogUtil.openSettingsDialog(root);
     }
 
     @FXML
     private void handleOnline(ActionEvent event) {
+        gotToGame(onlineBtn);
     }
 
     @FXML
     private void handleLocalMultiplayer(ActionEvent event) {
+        gotToGame(localMultiplayerBtn);
     }
 
     @FXML
     private void handleCpu(ActionEvent event) {
+        gotToGame(cpuBtn);
     }
 
     @FXML
     private void handleLocalNetwork(ActionEvent event) {
+        gotToGame(localNetworkBtn);
     }
 
     @FXML
     private void handleBack(MouseEvent event) {
-        SceneNavigator.navigateTo(backBtn, "/fxml/Start.fxml");
+        SceneNavigator.back(backBtn);
+    }
+    //temporary till we implement different game modes
+    private void gotToGame(Node currentNode){
+        SceneNavigator.navigateTo(currentNode,"/fxml/Game.fxml");
     }
 
 }
