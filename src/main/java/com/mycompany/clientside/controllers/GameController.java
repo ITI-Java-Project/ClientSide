@@ -5,6 +5,8 @@
 package com.mycompany.clientside.controllers;
 
 import com.mycompany.clientside.utils.DialogUtil;
+import com.mycompany.clientside.game.GameStartegy;
+import com.mycompany.clientside.game.LocalGame;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -61,10 +63,14 @@ public class GameController implements Initializable {
     private Button cell22;
 
     private boolean xTurn; 
+    private GameStartegy gameStrategy;
+    
+   
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         System.out.println("GameController INITIALIZED");
         xTurn = true;
+        gameStrategy= new LocalGame();
     }
 
     @FXML
@@ -73,8 +79,8 @@ public class GameController implements Initializable {
 
         
         if (!clicked.getText().isEmpty()) return;
-
-        clicked.setText(xTurn ? "X" : "O");
+        char move = xTurn ? 'X' : 'O';
+        clicked.setText(Character.toString(move));
         xTurn = !xTurn;
 
        
@@ -82,7 +88,13 @@ public class GameController implements Initializable {
         Integer col = GridPane.getColumnIndex(clicked);
         row = (row == null) ? 0 : row;
         col = (col == null) ? 0 : col;
-
+        gameStrategy.play(row, col, move);
+        int[][] winningCells = gameStrategy.winner();
+        if (winningCells != null) {
+            highlightWinningCells(winningCells);
+            disableBoard();
+        }
+        
     }
 
     @FXML
@@ -90,6 +102,31 @@ public class GameController implements Initializable {
         Parent root = ((Node) event.getSource()).getScene().getRoot();
         DialogUtil.openSettingsDialog(root);
     }
+    
+    private void disableBoard() {
+        for (Node node : gameBoard.getChildren()) {
+            if (node instanceof Button) {
+                ((Button) node).setDisable(true);
+            }
+        }
+    }
+    
+    private void highlightWinningCells(int[][] cells) {
+        for (int[] pos : cells) {
+            int row = pos[0];
+            int col = pos[1];
 
+            for (Node node : gameBoard.getChildren()) {
+                Integer r = GridPane.getRowIndex(node);
+                Integer c = GridPane.getColumnIndex(node);
+                r = (r == null) ? 0 : r;
+                c = (c == null) ? 0 : c;
+
+                if (node instanceof Button && r == row && c == col) {
+                    ((Button) node).setTextFill(javafx.scene.paint.Color.RED);
+                }
+            }
+        }
+    }
     
 }

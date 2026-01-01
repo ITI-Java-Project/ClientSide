@@ -12,14 +12,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane prefHeight="600.0" prefWidth="900.0" stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.clientside.controllers.AvaliablePlayersController">
+<StackPane stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.clientside.controllers.AvaliablePlayersController" style="-fx-background-image: url('images/DefaultMenuBG.png'); -fx-background-size: cover; -fx-background-position: center;">
    <children>
-      <ImageView fx:id="bgImage" fitHeight="${bgImage.parent.height}" fitWidth="${bgImage.parent.width}" pickOnBounds="true" preserveRatio="false">
-         <image>
-            <Image url="@../images/DefaultMenuBG.png" />
-         </image>
-      </ImageView>
-
       <BorderPane>
 
          <center>
@@ -78,7 +72,7 @@
                                           </HBox>
                                        </children>
                                     </HBox>
-                                              <HBox alignment="CENTER" prefHeight="72.0" spacing="100.0" style="-fx-border-color: black; -fx-border-radius: 30; -fx-padding: 10;">
+                                    <HBox alignment="CENTER" prefHeight="72.0" spacing="100.0" style="-fx-border-color: black; -fx-border-radius: 30; -fx-padding: 10;">
                                        <children>
                                           <HBox alignment="CENTER" spacing="30.0" HBox.hgrow="ALWAYS">
                                              <children>
@@ -110,7 +104,7 @@
                                           </HBox>
                                        </children>
                                     </HBox>
-                                              <HBox alignment="CENTER" prefHeight="72.0" spacing="100.0" style="-fx-border-color: black; -fx-border-radius: 30; -fx-padding: 10;">
+                                    <HBox alignment="CENTER" prefHeight="72.0" spacing="100.0" style="-fx-border-color: black; -fx-border-radius: 30; -fx-padding: 10;">
                                        <children>
                                           <HBox alignment="CENTER" spacing="30.0" HBox.hgrow="ALWAYS">
                                              <children>
@@ -142,7 +136,7 @@
                                           </HBox>
                                        </children>
                                     </HBox>
-                                              <HBox alignment="CENTER" prefHeight="72.0" spacing="100.0" style="-fx-border-color: black; -fx-border-radius: 30; -fx-padding: 10;">
+                                    <HBox alignment="CENTER" prefHeight="72.0" spacing="100.0" style="-fx-border-color: black; -fx-border-radius: 30; -fx-padding: 10;">
                                        <children>
                                           <HBox alignment="CENTER" spacing="30.0" HBox.hgrow="ALWAYS">
                                              <children>
@@ -175,7 +169,7 @@
                                           </HBox>
                                        </children>
                                     </HBox>
-                                       <HBox alignment="CENTER" prefHeight="72.0" spacing="100.0" style="-fx-border-color: black; -fx-border-radius: 30; -fx-padding: 10;">
+                                    <HBox alignment="CENTER" prefHeight="72.0" spacing="100.0" style="-fx-border-color: black; -fx-border-radius: 30; -fx-padding: 10;">
                                        <children>
                                           <HBox alignment="CENTER" spacing="30.0" HBox.hgrow="ALWAYS">
                                              <children>
@@ -208,7 +202,7 @@
                                           
                                        </children>
                                     </HBox>
-                                     <HBox alignment="CENTER" prefHeight="72.0" spacing="100.0" style="-fx-border-color: black; -fx-border-radius: 30; -fx-padding: 10;">
+                                    <HBox alignment="CENTER" prefHeight="72.0" spacing="100.0" style="-fx-border-color: black; -fx-border-radius: 30; -fx-padding: 10;">
                                        <children>
                                           <HBox alignment="CENTER" spacing="30.0" HBox.hgrow="ALWAYS">
                                              <children>
@@ -238,7 +232,7 @@
                                           
                                        </children>
                                     </HBox>
-                                     <HBox alignment="CENTER" prefHeight="72.0" spacing="100.0" style="-fx-border-color: black; -fx-border-radius: 30; -fx-padding: 10;">
+                                    <HBox alignment="CENTER" prefHeight="72.0" spacing="100.0" style="-fx-border-color: black; -fx-border-radius: 30; -fx-padding: 10;">
                                        <children>
                                           <HBox alignment="CENTER" spacing="30.0" HBox.hgrow="ALWAYS">
                                              <children>
@@ -268,7 +262,7 @@
                                           
                                        </children>
                                     </HBox>
-                                    </children>
+                                 </children>
                               </VBox>
                            </content>
                         </ScrollPane>
@@ -312,6 +306,9 @@
                      <cursor>
                         <Cursor fx:constant="HAND" />
                      </cursor>
+                     <BorderPane.margin>
+                        <Insets top="60" left="30" />
+                     </BorderPane.margin>
                   </ImageView>
                </left>
                <padding>

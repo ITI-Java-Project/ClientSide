@@ -1,5 +1,6 @@
 package com.mycompany.clientside.utils;
 
+import com.mycompany.clientside.controllers.CustomDialogController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -32,10 +33,10 @@ public class DialogUtil {
                 overlayRoot.getChildren().get(0).setEffect(new GaussianBlur(20));
             }
 
-            FXMLLoader loader = new FXMLLoader(DialogUtil.class.getResource("/fxml/CustomDialog.fxml"));
+            FXMLLoader loader = new FXMLLoader(DialogUtil.class.getResource("/fxml/CustomDialog.fxml"));//in the future we can pass this path instead to handdle multiple dialogues
             Parent dialog = loader.load();
 
-            com.mycompany.clientside.controllers.CustomDialogController controller =
+            CustomDialogController controller =
                     loader.getController();
             controller.setRootPane(overlayRoot);
 

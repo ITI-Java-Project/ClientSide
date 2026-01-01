@@ -29,9 +29,9 @@ public class SceneNavigator {
 
     private static void navigateToInternal(Node currentNode, String fxmlPath, boolean pushToHistory) {
         try {
-            Stage stage = (Stage) currentNode.getScene().getWindow();
-            Scene scene = stage.getScene();
-
+            
+            Scene scene = currentNode.getScene();
+            
             Parent oldRoot = scene.getRoot();
             Parent newRoot = FXMLLoader.load(SceneNavigator.class.getResource(fxmlPath));
 
