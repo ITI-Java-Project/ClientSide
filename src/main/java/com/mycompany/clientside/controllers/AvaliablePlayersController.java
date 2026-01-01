@@ -54,7 +54,7 @@ public class AvaliablePlayersController implements Initializable {
     // Challenge action
     @FXML
     private void challengeAction(MouseEvent event) {
-        System.out.println("challenge others :)");
-        // TODO : Add Challenge Action
+                       SceneNavigator.navigateTo(leaderBoardText, "/fxml/LeaderBoard.fxml");
+
     }
 }

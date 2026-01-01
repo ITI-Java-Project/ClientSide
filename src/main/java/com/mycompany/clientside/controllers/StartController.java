@@ -26,8 +26,7 @@ import javafx.scene.input.MouseEvent;
  */
 public class StartController implements Initializable {
 
-    @FXML
-    private ImageView bgImage;
+    
     @FXML
     private Label leaderBoardText;
     @FXML
@@ -42,16 +41,7 @@ public class StartController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        bgImage.setImage(
-                new Image(getClass().getResource("/images/MainMenuBG.png").toExternalForm())
-        );
-
-        bgImage.sceneProperty().addListener((obs, oldScene, newScene) -> {
-            if (newScene != null) {
-                bgImage.fitWidthProperty().bind(newScene.widthProperty());
-                bgImage.fitHeightProperty().bind(newScene.heightProperty());
-            }
-        });
+        
     }
 
 
@@ -73,6 +63,8 @@ public class StartController implements Initializable {
 
     @FXML
     private void handleRecording(ActionEvent event) {
+                SceneNavigator.navigateTo(recordingBtn, "/fxml/Recording.fxml");
+
     }
 
     @FXML

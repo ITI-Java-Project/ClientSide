@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox fx:id="cardRoot"
+      xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.mycompany.clientside.controllers.RecordingCardController"
+      spacing="15"
+      alignment="CENTER_LEFT"
+      prefHeight="72"
+      style="
+        -fx-background-radius: 30;
+        -fx-border-radius: 30;
+        -fx-border-color: black;
+        -fx-border-width: 2;
+        -fx-padding: 15;
+      ">
+
+    <ImageView fx:id="playerImage"
+               fitWidth="40"
+               fitHeight="40"
+               preserveRatio="true">
+        <image>
+            <Image url="@../images/player.png"/>
+        </image>
+    </ImageView>
+
+    <Label fx:id="vsLabel">
+        <font>
+            <Font name="Comic Sans MS Bold" size="20"/>
+        </font>
+    </Label>
+
+    <Region HBox.hgrow="ALWAYS"/>
+
+    <VBox alignment="CENTER_RIGHT">
+        <Label fx:id="dateLabel">
+            <font>
+                <Font name="Comic Sans MS" size="14"/>
+            </font>
+        </Label>
+        <Label fx:id="timeLabel">
+            <font>
+                <Font name="Comic Sans MS" size="14"/>
+            </font>
+        </Label>
+    </VBox>
+
+</HBox>
