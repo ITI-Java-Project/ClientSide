@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane
+        styleClass="root-pane"
+        stylesheets="@../styles/recording.css"
+        xmlns="http://javafx.com/javafx/25"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.mycompany.clientside.controllers.RecordingController">
+
+    <top>
+        <BorderPane prefHeight="200.0"
+                    styleClass="header-padding"
+                    BorderPane.alignment="CENTER">
+
+            <left>
+                <ImageView fx:id="backBtn"
+                           fitHeight="80.0"
+                           fitWidth="80.0"
+                           preserveRatio="true"
+                           pickOnBounds="true"
+                           onMouseClicked="#handleBack"
+                           styleClass="clickable"
+                           BorderPane.alignment="CENTER">
+                    <image>
+                        <Image url="@../images/arrow.png"/>
+                    </image>
+                </ImageView>
+            </left>
+
+            <right>
+                <HBox alignment="CENTER_RIGHT"
+                      spacing="24.0"
+                      BorderPane.alignment="CENTER">
+
+                    <children>
+                        <Label fx:id="leaderBoardText"
+                               text="LeaderBoard"
+                               underline="true"
+                               onMouseClicked="#goToLeaderBoard"
+                               styleClass="clickable">
+                            <font>
+                                <Font name="Comic Sans MS" size="36.0"/>
+                            </font>
+                        </Label>
+
+                        <ImageView fx:id="settingsIcon"
+                                   fitHeight="80.0"
+                                   fitWidth="80.0"
+                                   preserveRatio="true"
+                                   pickOnBounds="true"
+                                   onMouseClicked="#goToSettings"
+                                   styleClass="clickable">
+                            <image>
+                                <Image url="@../images/settings.png"/>
+                            </image>
+                        </ImageView>
+                    </children>
+                </HBox>
+            </right>
+
+        </BorderPane>
+    </top>
+
+    <center>
+        <VBox alignment="CENTER"
+              spacing="30">
+
+            <Label text="Match Recordings"
+                   styleClass="page-title"/>
+
+            <VBox alignment="CENTER"
+                  prefWidth="973"
+                  spacing="15"
+                  styleClass="record-card">
+                <VBox.margin>
+        <Insets left="24" right="24"/>
+    </VBox.margin>
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+
+                <ScrollPane fitToWidth="true"
+                            hbarPolicy="NEVER"
+                            vbarPolicy="NEVER"
+                            styleClass="transparent-scroll">
+
+                    <content>
+                        <VBox fx:id="recordsContainer"
+                              alignment="CENTER"
+                              spacing="15"/>
+                    </content>
+
+                </ScrollPane>
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

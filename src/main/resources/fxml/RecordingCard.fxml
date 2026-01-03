@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<HBox fx:id="cardRoot"
+      xmlns="http://javafx.com/javafx/25"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.mycompany.clientside.controllers.RecordingCardController"
+      spacing="15"
+      alignment="CENTER_LEFT"
+      prefHeight="72"
+      styleClass="record-card">
+
+    <ImageView fx:id="playerImage"
+               fitWidth="40"
+               fitHeight="40"
+               preserveRatio="true">
+        <image>
+            <Image url="@../images/player.png"/>
+        </image>
+    </ImageView>
+
+    <Label fx:id="vsLabel"
+           styleClass="record-vs-text"/>
+
+    <Region HBox.hgrow="ALWAYS"/>
+
+    <VBox alignment="CENTER_RIGHT">
+
+        <Label fx:id="dateLabel"
+               styleClass="record-meta-text"/>
+
+        <Label fx:id="timeLabel"
+               styleClass="record-meta-text"/>
+
+    </VBox>
+
+</HBox>

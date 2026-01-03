@@ -1,0 +1,66 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Jan 2, 2026, 8:14:41 PM
+    Author     : 20000
+*/
+
+/* ================= ROOT ================= */
+.root-pane {
+    -fx-background-image: url("../images/DefaultMenuBG.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+/* ================= HEADER ================= */
+.header-padding {
+    -fx-padding: 24;
+}
+
+/* ================= TITLE ================= */
+.page-title {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 48px;
+    -fx-font-weight: bold;
+}
+
+/* ================= WHITE CARD ================= */
+.record-card {
+    -fx-background-color: rgba(255, 255, 255, 0.7);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: black;
+    -fx-border-width: 2;
+}
+
+/* ================= SCROLL ================= */
+.transparent-scroll {
+    -fx-background-color: transparent;
+}
+
+/* ================= CLICKABLE ================= */
+.clickable {
+    -fx-cursor: hand;
+}
+/* ================= RECORD CARD ================= */
+.record-card {
+    -fx-background-radius: 30;
+    -fx-border-radius: 30;
+    -fx-border-color: black;
+    -fx-border-width: 2;
+    -fx-padding: 15;
+}
+
+/* ================= CARD TEXT ================= */
+.record-vs-text {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+.record-meta-text {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 14px;
+}

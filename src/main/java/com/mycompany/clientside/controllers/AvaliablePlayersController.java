@@ -14,7 +14,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-
 public class AvaliablePlayersController implements Initializable {
 
     @FXML
@@ -30,10 +29,9 @@ public class AvaliablePlayersController implements Initializable {
     @FXML
     private Label challengeLabel;
 
- 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-    }    
+    }
 
     @FXML
     private void handleBack(MouseEvent event) {
@@ -42,19 +40,18 @@ public class AvaliablePlayersController implements Initializable {
 
     @FXML
     private void goToLeaderBoard(MouseEvent event) {
-        System.out.println("go to Leaderboard.");
+        SceneNavigator.navigateTo(leaderBoardText, "/fxml/LeaderBoard.fxml");
     }
 
     @FXML
     private void goToSettings(MouseEvent event) {
-        Parent root = settingsIcon.getScene().getRoot(); 
+        Parent root = settingsIcon.getScene().getRoot();
         DialogUtil.openSettingsDialog(root);
     }
 
     // Challenge action
     @FXML
     private void challengeAction(MouseEvent event) {
-        System.out.println("challenge others :)");
-        // TODO : Add Challenge Action
+
     }
 }

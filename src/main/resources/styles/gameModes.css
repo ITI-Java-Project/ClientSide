@@ -1,0 +1,46 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Jan 2, 2026, 8:21:28 PM
+    Author     : 20000
+*/
+
+/* ================= ROOT ================= */
+.root-pane {
+    -fx-background-image: url("../images/GameModeMenuBG.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+/* ================= HEADER ================= */
+.header-padding {
+    -fx-padding: 24;
+}
+
+/* ================= TITLE ================= */
+.page-title {
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 96px;
+}
+
+/* ================= BUTTON ================= */
+.game-button {
+    -fx-background-color: #89CFF0;
+    -fx-border-color: black;
+    -fx-border-width: 2;
+    -fx-border-style: dashed;
+    -fx-background-radius: 50;
+    -fx-border-radius: 50;
+
+    -fx-font-family: "Comic Sans MS";
+    -fx-font-size: 38px;
+
+    -fx-cursor: hand;
+}
+
+/* ================= CLICKABLE ICONS ================= */
+.clickable {
+    -fx-cursor: hand;
+}

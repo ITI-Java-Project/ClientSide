@@ -18,7 +18,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
 
 /**
  * FXML Controller class
@@ -27,8 +26,7 @@ import javafx.scene.layout.StackPane;
  */
 public class GameModesController implements Initializable {
 
-    @FXML
-    private ImageView bgImage;
+
     @FXML
     private Label leaderBoardText;
     @FXML
@@ -49,16 +47,7 @@ public class GameModesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        bgImage.setImage(
-                new Image(getClass().getResource("/images/GameModeMenuBG.png").toExternalForm())
-        );
-
-        bgImage.sceneProperty().addListener((obs, oldScene, newScene) -> {
-            if (newScene != null) {
-                bgImage.fitWidthProperty().bind(newScene.widthProperty());
-                bgImage.fitHeightProperty().bind(newScene.heightProperty());
-            }
-        });
+        
     }
 
     @FXML
