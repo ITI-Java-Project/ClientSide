@@ -7,7 +7,6 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
            fx:controller="com.mycompany.clientside.controllers.LandingController" 
-           prefHeight="800.0" prefWidth="1200.0"
            style="-fx-background-image: url('images/LandingBG.png'); 
                   -fx-background-size: cover; 
                   -fx-background-position: center;">

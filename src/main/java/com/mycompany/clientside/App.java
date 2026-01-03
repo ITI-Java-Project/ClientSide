@@ -20,6 +20,7 @@ public class App extends Application {
         stage.initStyle(StageStyle.UNDECORATED);
         stage.setScene(scene);
         stage.setFullScreen(true);
+        stage.setFullScreenExitHint("");
 
         stage.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
