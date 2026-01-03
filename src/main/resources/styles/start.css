@@ -1,0 +1,64 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/* 
+    Created on : Jan 2, 2026, 8:40:24 PM
+    Author     : 20000
+*/
+
+/* ================= ROOT ================= */
+/* ===== ROOT / BACKGROUND ===== */
+.root {
+    -fx-font-family: "Comic Sans MS";
+}
+
+/* ===== TOP BAR ===== */
+.label.link {
+    -fx-font-size: 36px;
+    -fx-underline: true;
+}
+
+.label.link:hover {
+    -fx-text-fill: #1e90ff;
+}
+
+/* ===== BUTTON BASE ===== */
+.button {
+    -fx-border-color: black;
+    -fx-border-width: 2;
+    -fx-background-radius: 50;
+    -fx-border-radius: 50;
+    -fx-cursor: hand;
+}
+
+/* ===== START BUTTON ===== */
+.start-button {
+    -fx-background-color: #89CFF0;
+    -fx-border-style: dashed;
+    -fx-font-size: 48px;
+}
+
+/* ===== RECORDINGS BUTTON ===== */
+.recordings-button {
+    -fx-background-color: #FFF94B;
+    -fx-font-size: 48px;
+}
+
+/* ===== EXIT BUTTON ===== */
+.exit-button {
+    -fx-background-color: #F34B4E;
+    -fx-font-size: 48px;
+}
+
+/* ===== ICONS ===== */
+.icon {
+    -fx-cursor: hand;
+}
+/* ===== MAIN MENU BACKGROUND ===== */
+.main-menu-bg {
+    -fx-background-image: url("../images/MainMenuBG.png");
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+}

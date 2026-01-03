@@ -8,104 +8,114 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<BorderPane
+        styleClass="root-pane"
+        stylesheets="@../styles/gameModes.css"
+        xmlns="http://javafx.com/javafx/25"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.mycompany.clientside.controllers.GameModesController">
 
-      <BorderPane prefHeight="800.0" prefWidth="1200.0" style="         -fx-background-image: url('images/GameModeMenuBG.png');         -fx-background-size: cover;         -fx-background-position: center;     " xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.clientside.controllers.GameModesController">
-         <top>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <right>
-                  <HBox alignment="CENTER_RIGHT" prefHeight="130.0" prefWidth="404.0" spacing="24.0" BorderPane.alignment="CENTER">
-                     <children>
-                        <Label fx:id="leaderBoardText" onMouseClicked="#goToLeaderBoard" text="LeaderBoard" underline="true">
-                           <font>
-                              <Font name="Comic Sans MS" size="36.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
+    <top>
+        <BorderPane prefHeight="200.0"
+                    styleClass="header-padding"
+                    BorderPane.alignment="CENTER">
+
+            <left>
+                <ImageView fx:id="backBtn"
+                           fitHeight="80"
+                           fitWidth="80"
+                           preserveRatio="true"
+                           onMouseClicked="#handleBack"
+                           styleClass="clickable"
+                           BorderPane.alignment="CENTER">
+                    <image>
+                        <Image url="@../images/arrow.png"/>
+                    </image>
+                </ImageView>
+            </left>
+
+            <right>
+                <HBox alignment="CENTER_RIGHT"
+                      spacing="24"
+                      BorderPane.alignment="CENTER">
+
+                    <children>
+                        <Label fx:id="leaderBoardText"
+                               text="LeaderBoard"
+                               underline="true"
+                               onMouseClicked="#goToLeaderBoard"
+                               styleClass="clickable">
+                            <font>
+                                <Font name="Comic Sans MS" size="36"/>
+                            </font>
                         </Label>
-                        <ImageView fx:id="settingsIcon" fitHeight="80.0" fitWidth="80.0" onMouseClicked="#goToSettings" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/settings.png" />
-                           </image>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
+
+                        <ImageView fx:id="settingsIcon"
+                                   fitHeight="80"
+                                   fitWidth="80"
+                                   preserveRatio="true"
+                                   onMouseClicked="#goToSettings"
+                                   styleClass="clickable">
+                            <image>
+                                <Image url="@../images/settings.png"/>
+                            </image>
                         </ImageView>
-                     </children>
-                  </HBox>
-               </right>
-               <padding>
-                  <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
-               </padding>
-               <left>
-                  <ImageView fx:id="backBtn" fitHeight="80.0" fitWidth="80.0" onMouseClicked="#handleBack" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-                     <image>
-                        <Image url="@../images/arrow.png" />
-                     </image>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </ImageView>
-               </left>
-            </BorderPane>
-         </top>
-         <center>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="130.0" BorderPane.alignment="CENTER">
-               <children>
-                  <Label alignment="CENTER" text="Game Modes" textAlignment="CENTER" wrapText="true">
-                     <font>
-                        <Font name="Comic Sans MS" size="96.0" />
-                     </font>
-                  </Label>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="500.0">
-                     <children>
-                        <Button fx:id="onlineBtn" alignment="CENTER" mnemonicParsing="false" onAction="#handleOnline" prefHeight="130.0" prefWidth="374.0" style="-fx-background-color: #89CFF0; -fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-border-style: dashed;" text="Online" textAlignment="CENTER" wrapText="true">
-                           
-                           <font>
-                              <Font name="Comic Sans MS" size="38.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
-                        <Button fx:id="localMultiplayerBtn" mnemonicParsing="false" onAction="#handleLocalMultiplayer" prefHeight="130.0" prefWidth="374.0" style="-fx-background-color: #89CFF0; -fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-border-style: dashed;" text="Local Multiplayer">
-                           
-                           <font>
-                              <Font name="Comic Sans MS" size="38.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
-                     </children>
-                  </HBox>
-                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="500.0">
-                     <children>
-                        <Button fx:id="cpuBtn" mnemonicParsing="false" onAction="#handleCpu" prefHeight="130.0" prefWidth="374.0" style="-fx-background-color: #89CFF0; -fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-border-style: dashed;" text="CPU" textAlignment="CENTER" wrapText="true">
-                           
-                           <font>
-                              <Font name="Comic Sans MS" size="38.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
-                        <Button fx:id="localNetworkBtn" mnemonicParsing="false" onAction="#handleLocalNetwork" prefHeight="130.0" prefWidth="374.0" style="-fx-background-color: #89CFF0; -fx-border-color: black; -fx-border-width: 2; -fx-border-radius: 50; -fx-background-radius: 50; -fx-border-style: dashed;" text="Local Network" textAlignment="CENTER" wrapText="true">
-                           
-                           <font>
-                              <Font name="Comic Sans MS" size="38.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
-                        </Button>
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
-         </center>
-      </BorderPane>
+                    </children>
+                </HBox>
+            </right>
+
+        </BorderPane>
+    </top>
+
+    <center>
+        <VBox alignment="CENTER"
+              spacing="80">
+
+            <Label text="Game Modes"
+                   styleClass="page-title"/>
+
+            <HBox alignment="CENTER"
+                  spacing="500">
+
+                <Button fx:id="onlineBtn"
+                        text="Online"
+                        prefWidth="374"
+                        prefHeight="130"
+                        onAction="#handleOnline"
+                        styleClass="game-button"/>
+
+                <Button fx:id="localMultiplayerBtn"
+                        text="Local Multiplayer"
+                        prefWidth="374"
+                        prefHeight="130"
+                        onAction="#handleLocalMultiplayer"
+                        styleClass="game-button"/>
+
+            </HBox>
+
+            <HBox alignment="CENTER"
+                  spacing="500">
+
+                <Button fx:id="cpuBtn"
+                        text="CPU"
+                        prefWidth="374"
+                        prefHeight="130"
+                        onAction="#handleCpu"
+                        styleClass="game-button"/>
+
+                <Button fx:id="localNetworkBtn"
+                        text="Local Network"
+                        prefWidth="374"
+                        prefHeight="130"
+                        onAction="#handleLocalNetwork"
+                        styleClass="game-button"/>
+
+            </HBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>

@@ -11,75 +11,97 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="800.0" prefWidth="1200.0" style="         -fx-background-image: url('images/DefaultMenuBG.png');         -fx-background-size: cover;         -fx-background-position: center;     " stylesheets="@../styles/app.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.clientside.controllers.RecordingController">
+<BorderPane
+        styleClass="root-pane"
+        stylesheets="@../styles/recording.css"
+        xmlns="http://javafx.com/javafx/25"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="com.mycompany.clientside.controllers.RecordingController">
 
     <top>
-        <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-               <right>
-                  <HBox alignment="CENTER_RIGHT" prefHeight="130.0" prefWidth="404.0" spacing="24.0" BorderPane.alignment="CENTER">
-                     <children>
-                        <Label fx:id="leaderBoardText" onMouseClicked="#goToLeaderBoard" text="LeaderBoard" underline="true">
-                           <font>
-                              <Font name="Comic Sans MS" size="36.0" />
-                           </font>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
+        <BorderPane prefHeight="200.0"
+                    styleClass="header-padding"
+                    BorderPane.alignment="CENTER">
+
+            <left>
+                <ImageView fx:id="backBtn"
+                           fitHeight="80.0"
+                           fitWidth="80.0"
+                           preserveRatio="true"
+                           pickOnBounds="true"
+                           onMouseClicked="#handleBack"
+                           styleClass="clickable"
+                           BorderPane.alignment="CENTER">
+                    <image>
+                        <Image url="@../images/arrow.png"/>
+                    </image>
+                </ImageView>
+            </left>
+
+            <right>
+                <HBox alignment="CENTER_RIGHT"
+                      spacing="24.0"
+                      BorderPane.alignment="CENTER">
+
+                    <children>
+                        <Label fx:id="leaderBoardText"
+                               text="LeaderBoard"
+                               underline="true"
+                               onMouseClicked="#goToLeaderBoard"
+                               styleClass="clickable">
+                            <font>
+                                <Font name="Comic Sans MS" size="36.0"/>
+                            </font>
                         </Label>
-                        <ImageView fx:id="settingsIcon" fitHeight="80.0" fitWidth="80.0" onMouseClicked="#goToSettings" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@../images/settings.png" />
-                           </image>
-                           <cursor>
-                              <Cursor fx:constant="HAND" />
-                           </cursor>
+
+                        <ImageView fx:id="settingsIcon"
+                                   fitHeight="80.0"
+                                   fitWidth="80.0"
+                                   preserveRatio="true"
+                                   pickOnBounds="true"
+                                   onMouseClicked="#goToSettings"
+                                   styleClass="clickable">
+                            <image>
+                                <Image url="@../images/settings.png"/>
+                            </image>
                         </ImageView>
-                     </children>
-                  </HBox>
-               </right>
-               <padding>
-                  <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
-               </padding>
-               <left>
-                  <ImageView fx:id="backBtn" fitHeight="80.0" fitWidth="80.0" onMouseClicked="#handleBack" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
-                     <image>
-                        <Image url="@../images/arrow.png" />
-                     </image>
-                     <cursor>
-                        <Cursor fx:constant="HAND" />
-                     </cursor>
-                  </ImageView>
-               </left>
-            </BorderPane>
+                    </children>
+                </HBox>
+            </right>
+
+        </BorderPane>
     </top>
 
-    <!-- ================= CENTER ================= -->
     <center>
-        <VBox alignment="CENTER" spacing="30">
+        <VBox alignment="CENTER"
+              spacing="30">
 
-            <Label text="Match Recordings">
-                <font>
-                    <Font name="Comic Sans MS Bold" size="48" />
-                </font>
-            </Label>
+            <Label text="Match Recordings"
+                   styleClass="page-title"/>
 
-            <!-- WHITE CARD -->
-            <VBox alignment="CENTER" prefWidth="973" style="                     -fx-background-color: rgba(255,255,255,0.7);                     -fx-background-radius: 20;                     -fx-border-radius: 20;                     -fx-border-color: black;                     -fx-border-width: 2;                   ">
+            <VBox alignment="CENTER"
+                  prefWidth="973"
+                  spacing="15"
+                  styleClass="record-card">
+                <VBox.margin>
+        <Insets left="24" right="24"/>
+    </VBox.margin>
                 <padding>
-                    <Insets bottom="20" left="20" right="20" top="20" />
+                    <Insets top="20" right="20" bottom="20" left="20"/>
                 </padding>
 
-                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent;" vbarPolicy="NEVER">
+                <ScrollPane fitToWidth="true"
+                            hbarPolicy="NEVER"
+                            vbarPolicy="NEVER"
+                            styleClass="transparent-scroll">
+
                     <content>
-                        <VBox fx:id="recordsContainer" alignment="CENTER" spacing="15" />
+                        <VBox fx:id="recordsContainer"
+                              alignment="CENTER"
+                              spacing="15"/>
                     </content>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
+
                 </ScrollPane>
-            <VBox.margin>
-               <Insets left="16.0" right="16.0" />
-            </VBox.margin>
             </VBox>
 
         </VBox>

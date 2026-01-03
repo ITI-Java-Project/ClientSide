@@ -6,7 +6,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <HBox fx:id="cardRoot"
       xmlns="http://javafx.com/javafx/25"
@@ -15,13 +14,7 @@
       spacing="15"
       alignment="CENTER_LEFT"
       prefHeight="72"
-      style="
-        -fx-background-radius: 30;
-        -fx-border-radius: 30;
-        -fx-border-color: black;
-        -fx-border-width: 2;
-        -fx-padding: 15;
-      ">
+      styleClass="record-card">
 
     <ImageView fx:id="playerImage"
                fitWidth="40"
@@ -32,25 +25,19 @@
         </image>
     </ImageView>
 
-    <Label fx:id="vsLabel">
-        <font>
-            <Font name="Comic Sans MS Bold" size="20"/>
-        </font>
-    </Label>
+    <Label fx:id="vsLabel"
+           styleClass="record-vs-text"/>
 
     <Region HBox.hgrow="ALWAYS"/>
 
     <VBox alignment="CENTER_RIGHT">
-        <Label fx:id="dateLabel">
-            <font>
-                <Font name="Comic Sans MS" size="14"/>
-            </font>
-        </Label>
-        <Label fx:id="timeLabel">
-            <font>
-                <Font name="Comic Sans MS" size="14"/>
-            </font>
-        </Label>
+
+        <Label fx:id="dateLabel"
+               styleClass="record-meta-text"/>
+
+        <Label fx:id="timeLabel"
+               styleClass="record-meta-text"/>
+
     </VBox>
 
 </HBox>
