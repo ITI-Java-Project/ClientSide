@@ -2,7 +2,6 @@ package com.mycompany.clientside.utils;
 
 import java.util.Stack;
 import javafx.animation.FadeTransition;
-import javafx.animation.ParallelTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -14,8 +13,7 @@ import javafx.util.Duration;
 public class SceneNavigator {
 
     private static final Stack<String> pages = new Stack<>();
-    private static final Duration FADE_DURATION = Duration.millis(500);
-    private static boolean isNavigating = false;
+    private static final Duration FADE_DURATION = Duration.millis(1000);
 
     public static void navigateTo(Node currentNode, String fxmlPath) {
         navigateToInternal(currentNode, fxmlPath, true);
@@ -30,33 +28,52 @@ public class SceneNavigator {
     }
 
     private static void navigateToInternal(Node currentNode, String fxmlPath, boolean pushToHistory) {
-        if (isNavigating) {
-            return;
-        }
-        isNavigating = true;
-
         try {
-            Stage stage = (Stage) currentNode.getScene().getWindow();
-            Scene scene = stage.getScene();
-
+            
+            Scene scene = currentNode.getScene();
+            
+            Parent oldRoot = scene.getRoot();
             Parent newRoot = FXMLLoader.load(SceneNavigator.class.getResource(fxmlPath));
+
+            StackPane transitionRoot = new StackPane(oldRoot, newRoot);
             newRoot.setOpacity(0);
 
-            scene.setRoot(newRoot);
+            scene.setRoot(transitionRoot);
 
-            FadeTransition fadeIn = new FadeTransition(FADE_DURATION, newRoot);
-            fadeIn.setFromValue(0);
-            fadeIn.setToValue(1);
-            fadeIn.setOnFinished(e -> isNavigating = false);
-            fadeIn.play();
+            fadeOut(oldRoot);
+            FadeTransition fadeInTransition = fadeIn(newRoot);
+
+            fadeInTransition.setOnFinished(e -> {
+                transitionRoot.getChildren().remove(oldRoot);
+                scene.setRoot(transitionRoot);
+            });
 
             if (pushToHistory) {
                 pages.push(fxmlPath);
             }
 
         } catch (Exception e) {
-            isNavigating = false;
             e.printStackTrace();
         }
+    }
+
+
+    private static FadeTransition fadeIn(Parent node) {
+        FadeTransition ft = new FadeTransition(FADE_DURATION, node);
+        ft.setFromValue(0);
+        ft.setToValue(1);
+        ft.play();
+        return ft;
+    }
+
+    private static void fadeOut(Parent node) {
+        FadeTransition ft = new FadeTransition(FADE_DURATION, node);
+        ft.setFromValue(1);
+        ft.setToValue(0);
+        ft.play();
+    }
+
+    private static StackPane createStack(Parent node) {
+        return (node instanceof StackPane) ? (StackPane) node : new StackPane(node);
     }
 }
