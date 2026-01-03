@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import javafx.scene.control.Alert;
 
 public class LocalConnection implements ConnectionStrategy {
@@ -20,22 +20,18 @@ public class LocalConnection implements ConnectionStrategy {
     private int portNumber;
     private Thread listenerThread;
 
-    public LocalConnection(DataInputStream dataInputStream, DataOutputStream dataOutputStream, InetAddress ip) {
-        this.dataInputStream = dataInputStream;
-        this.dataOutputStream = dataOutputStream;
+    public LocalConnection(InetAddress ip) {
         this.ip = ip;
-        portNumber = 5005;
+        portNumber = 5000;
         isConnected = false;
         listenerThread = null;
     }
 
-    public LocalConnection(DataInputStream dis, DataOutputStream dos) {
+    public LocalConnection() {
         try {
-            this.dataInputStream = dis;
-            this.dataOutputStream = dos;
             this.ip = InetAddress.getByName("127.0.0.1");
             isConnected = false;
-            portNumber = 5005;
+            portNumber = 5000;
             listenerThread = null;
         } catch (UnknownHostException ex) {
             AlertUtil.showAlert("Server Ip Error", "Invalid Ip Address", Alert.AlertType.ERROR);
@@ -56,20 +52,25 @@ public class LocalConnection implements ConnectionStrategy {
         return isConnected;
     }
 
-    public void sendMove(int position) {
+    public void sendMove(int x , int y) {
         try {
-            dataOutputStream.writeInt(position);
+            String command = "MOVE " + x + " " + y;
+            dataOutputStream.writeUTF(command);
+            dataOutputStream.flush();
         } catch (IOException ex) {
             AlertUtil.showAlert("Send Error", "Failed to send move to server.", Alert.AlertType.ERROR);
         }
     }
 
-    public void recieveMove(Consumer<Integer> onMoveReceived) {
+    public void recieveMove(BiConsumer<Integer,Integer> onMoveReceived) {
         listenerThread = new Thread(() -> {
             while (isConnected) {
                 try {
-                    int receviablePosition = dataInputStream.readInt();
-                    onMoveReceived.accept(receviablePosition);
+                    String receviablePosition = dataInputStream.readUTF();
+                    String[] parts = receviablePosition.split(" ");
+                    int row = Integer.parseInt(parts[1]);
+                    int col = Integer.parseInt(parts[2]);
+                    onMoveReceived.accept(row,col);
                 } catch (IOException ex) {
                     AlertUtil.showAlert("Recieve Error", "Failed to receive the next move from server.", Alert.AlertType.ERROR);
                 }
