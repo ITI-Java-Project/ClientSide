@@ -4,12 +4,15 @@
  */
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.game.AiGame;
+import com.mycompany.clientside.game.Board;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.game.GameStartegy;
 import com.mycompany.clientside.game.LocalGame;
 import com.mycompany.clientside.matchRecording.MatchRecorder;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.animation.PauseTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,6 +23,8 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
+import models.Difficulty;
 
 /**
  * FXML Controller class
@@ -63,51 +68,80 @@ public class GameController implements Initializable {
     @FXML
     private Button cell22;
 
-    private boolean xTurn; 
+    private boolean xTurn;
     private GameStartegy gameStrategy;
-    private MatchRecorder matchRecorder;
-    
-   
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         System.out.println("GameController INITIALIZED");
         xTurn = true;
-    }
-    
-    public void setGameStrategy(GameStartegy gameStartegy){
-        this.gameStrategy=gameStrategy;
+        gameStrategy = new AiGame(Difficulty.HARD);
     }
 
-    @FXML
-    private void handleCellClick(ActionEvent event) {
-        Button clicked = (Button) event.getSource();
+//    @FXML
+//    private void handleCellClick(ActionEvent event) {
+//        Button clicked = (Button) event.getSource();
+//
+//        if (!clicked.getText().isEmpty()) {
+//            return;
+//        }
+//        char move = xTurn ? 'X' : 'O';
+//        clicked.setText(Character.toString(move));
+//        xTurn = !xTurn;
+//
+//        Integer row = GridPane.getRowIndex(clicked);
+//        Integer col = GridPane.getColumnIndex(clicked);
+//        row = (row == null) ? 0 : row;
+//        col = (col == null) ? 0 : col;
+//        gameStrategy.play(row, col, move);
+//        int[][] winningCells = gameStrategy.winner();
+//        if (winningCells != null) {
+//            highlightWinningCells(winningCells);
+//            disableBoard();
+//        }
+//
+//    }
+@FXML
+private void handleCellClick(ActionEvent event) {
+    Button clicked = (Button) event.getSource();
 
-        
-        if (!clicked.getText().isEmpty()) return;
-        char move = xTurn ? 'X' : 'O';
-        clicked.setText(Character.toString(move));
-        xTurn = !xTurn;
+    if (!clicked.getText().isEmpty()) return;
 
-       
-        Integer row = GridPane.getRowIndex(clicked);
-        Integer col = GridPane.getColumnIndex(clicked);
-        row = (row == null) ? 0 : row;
-        col = (col == null) ? 0 : col;
-        gameStrategy.play(row, col, move);
+    // Human move
+    clicked.setText("X");
+
+    Integer row = GridPane.getRowIndex(clicked);
+    Integer col = GridPane.getColumnIndex(clicked);
+    row = (row == null) ? 0 : row;
+    col = (col == null) ? 0 : col;
+
+    // Play human move (AI move happens inside strategy)
+    gameStrategy.play(row, col, 'X');
+
+    // ⏳ AI thinking delay (UX improvement)
+    PauseTransition pause = new PauseTransition(Duration.seconds(0.6)); // adjust time
+    pause.setOnFinished(e -> {
+
+        // Sync UI AFTER AI move
+        syncBoardWithUI();
+
+        // Check winner after AI move
         int[][] winningCells = gameStrategy.winner();
         if (winningCells != null) {
             highlightWinningCells(winningCells);
             disableBoard();
         }
-        
-    }
+    });
+
+    pause.play();
+}
 
     @FXML
     private void handleSettingClick(ActionEvent event) {
         Parent root = ((Node) event.getSource()).getScene().getRoot();
         DialogUtil.openSettingsDialog(root);
     }
-    
+
     private void disableBoard() {
         for (Node node : gameBoard.getChildren()) {
             if (node instanceof Button) {
@@ -115,7 +149,7 @@ public class GameController implements Initializable {
             }
         }
     }
-    
+
     private void highlightWinningCells(int[][] cells) {
         for (int[] pos : cells) {
             int row = pos[0];
@@ -133,5 +167,23 @@ public class GameController implements Initializable {
             }
         }
     }
-    
+
+    private void syncBoardWithUI() {
+        char[][] board = Board.getInstance().getBoard();
+
+        for (Node node : gameBoard.getChildren()) {
+            if (node instanceof Button) {
+                Button btn = (Button) node;
+
+                Integer r = GridPane.getRowIndex(btn);
+                Integer c = GridPane.getColumnIndex(btn);
+                r = (r == null) ? 0 : r;
+                c = (c == null) ? 0 : c;
+
+                if (btn.getText().isEmpty() && board[r][c] != '\0') {
+                    btn.setText(String.valueOf(board[r][c]));
+                }
+            }
+        }
+    }
 }

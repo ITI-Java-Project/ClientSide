@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.function.BiConsumer;
 import javafx.scene.control.Alert;
+import javafx.stage.Window;
 
 public class LocalConnection implements ConnectionStrategy {
 
@@ -19,22 +20,26 @@ public class LocalConnection implements ConnectionStrategy {
     private boolean isConnected;
     private int portNumber;
     private Thread listenerThread;
+    private Window owner;
 
-    public LocalConnection(InetAddress ip) {
+    public LocalConnection(InetAddress ip,Window owner) {
         this.ip = ip;
+        this.owner = owner;
         portNumber = 5000;
         isConnected = false;
         listenerThread = null;
     }
 
-    public LocalConnection() {
+    public LocalConnection(Window owner) {
+       this.owner = owner;
         try {
             this.ip = InetAddress.getByName("127.0.0.1");
             isConnected = false;
             portNumber = 5000;
             listenerThread = null;
+            this.owner = owner;
         } catch (UnknownHostException ex) {
-            AlertUtil.showAlert("Server Ip Error", "Invalid Ip Address", Alert.AlertType.ERROR);
+            AlertUtil.showAlert("Server Ip Error", "Invalid Ip Address", Alert.AlertType.ERROR,owner);
         }
     }
 
@@ -47,7 +52,7 @@ public class LocalConnection implements ConnectionStrategy {
             isConnected = true;
         } catch (IOException ex) {
             isConnected = false;
-            AlertUtil.showAlert("Connection Failed", "Unable to connect to server.\nPlease check server status.", Alert.AlertType.ERROR);
+            AlertUtil.showAlert("Connection Failed", "Unable to connect to server.\nPlease check server status.", Alert.AlertType.ERROR,owner);
         }
         return isConnected;
     }
@@ -58,7 +63,7 @@ public class LocalConnection implements ConnectionStrategy {
             dataOutputStream.writeUTF(command);
             dataOutputStream.flush();
         } catch (IOException ex) {
-            AlertUtil.showAlert("Send Error", "Failed to send move to server.", Alert.AlertType.ERROR);
+            AlertUtil.showAlert("Send Error", "Failed to send move to server.", Alert.AlertType.ERROR,owner);
         }
     }
 
@@ -72,7 +77,7 @@ public class LocalConnection implements ConnectionStrategy {
                     int col = Integer.parseInt(parts[2]);
                     onMoveReceived.accept(row,col);
                 } catch (IOException ex) {
-                    AlertUtil.showAlert("Recieve Error", "Failed to receive the next move from server.", Alert.AlertType.ERROR);
+                    AlertUtil.showAlert("Recieve Error", "Failed to receive the next move from server.", Alert.AlertType.ERROR,owner);
                 }
             }
         });
@@ -94,7 +99,7 @@ public class LocalConnection implements ConnectionStrategy {
             }
             isConnected = false;
         } catch (IOException e) {
-            AlertUtil.showAlert("Close Error", "Error while closing connection.", Alert.AlertType.ERROR);
+            AlertUtil.showAlert("Close Error", "Error while closing connection.", Alert.AlertType.ERROR,owner);
         }
     }
 }
