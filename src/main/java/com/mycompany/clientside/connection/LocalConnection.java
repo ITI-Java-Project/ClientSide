@@ -1,9 +1,11 @@
 package com.mycompany.clientside.connection;
 
 import com.mycompany.clientside.utils.AlertUtil;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -13,8 +15,8 @@ import javafx.scene.control.Alert;
 public class LocalConnection implements ConnectionStrategy {
 
     private Socket socket;
-    private DataInputStream dataInputStream;
-    private DataOutputStream dataOutputStream;
+    private BufferedReader reader;
+    private PrintWriter writer;
     private InetAddress ip;
     private boolean isConnected;
     private int portNumber;
@@ -22,19 +24,21 @@ public class LocalConnection implements ConnectionStrategy {
 
     public LocalConnection(InetAddress ip) {
         this.ip = ip;
-        portNumber = 5000;
-        isConnected = false;
-        listenerThread = null;
+        this.portNumber = 5000;
+        this.isConnected = false;
     }
 
     public LocalConnection() {
         try {
             this.ip = InetAddress.getByName("127.0.0.1");
-            isConnected = false;
-            portNumber = 5000;
-            listenerThread = null;
+            this.portNumber = 5000;
+            this.isConnected = false;
         } catch (UnknownHostException ex) {
-            AlertUtil.showAlert("Server Ip Error", "Invalid Ip Address", Alert.AlertType.ERROR);
+            AlertUtil.showAlert(
+                "Server Ip Error",
+                "Invalid Ip Address",
+                Alert.AlertType.ERROR
+            );
         }
     }
 
@@ -42,42 +46,84 @@ public class LocalConnection implements ConnectionStrategy {
     public boolean connectToServer() {
         try {
             socket = new Socket(ip, portNumber);
-            dataInputStream = new DataInputStream(socket.getInputStream());
-            dataOutputStream = new DataOutputStream(socket.getOutputStream());
+
+            reader = new BufferedReader(
+                new InputStreamReader(socket.getInputStream())
+            );
+
+            writer = new PrintWriter(
+                new OutputStreamWriter(socket.getOutputStream()),
+                true 
+            );
+
             isConnected = true;
+
         } catch (IOException ex) {
             isConnected = false;
-            AlertUtil.showAlert("Connection Failed", "Unable to connect to server.\nPlease check server status.", Alert.AlertType.ERROR);
+            AlertUtil.showAlert(
+                "Connection Failed",
+                "Unable to connect to server.\nPlease check server status.",
+                Alert.AlertType.ERROR
+            );
         }
         return isConnected;
     }
 
-    public void sendMove(int x , int y) {
-        try {
-            String command = "MOVE " + x + " " + y;
-            dataOutputStream.writeUTF(command);
-            dataOutputStream.flush();
-        } catch (IOException ex) {
-            AlertUtil.showAlert("Send Error", "Failed to send move to server.", Alert.AlertType.ERROR);
+    // SEND
+    public void sendMove(int x, int y) {
+        if (!isConnected) return;
+        writer.println("MOVE " + x + " " + y);
+    }
+    
+    // SIGNUP
+    public boolean signup(String username, String email, String password) {
+        
+        if (!isConnected) {
+            connectToServer();   
         }
+
+        if (!isConnected) return false;
+        
+        String command = "REGISTER " + username + " " + email + " " + password;
+        writer.println(command);
+        try {
+            if(reader.readLine().startsWith("REGISTERED")){
+                return true;
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 
-    public void recieveMove(BiConsumer<Integer,Integer> onMoveReceived) {
+    //RECEIVE
+
+    public void recieveMove(BiConsumer<Integer, Integer> onMoveReceived) {
         listenerThread = new Thread(() -> {
-            while (isConnected) {
-                try {
-                    String receviablePosition = dataInputStream.readUTF();
-                    String[] parts = receviablePosition.split(" ");
-                    int row = Integer.parseInt(parts[1]);
-                    int col = Integer.parseInt(parts[2]);
-                    onMoveReceived.accept(row,col);
-                } catch (IOException ex) {
-                    AlertUtil.showAlert("Recieve Error", "Failed to receive the next move from server.", Alert.AlertType.ERROR);
+            try {
+                String message;
+                while (isConnected && (message = reader.readLine()) != null) {
+
+                    if (message.startsWith("MOVE")) {
+                        String[] parts = message.split(" ");
+                        int row = Integer.parseInt(parts[1]);
+                        int col = Integer.parseInt(parts[2]);
+                        onMoveReceived.accept(row, col);
+                    }
                 }
+            } catch (IOException ex) {
+                AlertUtil.showAlert(
+                    "Receive Error",
+                    "Failed to receive data from server.",
+                    Alert.AlertType.ERROR
+                );
             }
         });
+
         listenerThread.start();
     }
+
+    //CONNECTION
 
     public boolean reconnect() {
         closeConnection();
@@ -86,15 +132,21 @@ public class LocalConnection implements ConnectionStrategy {
 
     public void closeConnection() {
         try {
+            isConnected = false;
+
             if (listenerThread != null && listenerThread.isAlive()) {
                 listenerThread.interrupt();
             }
-            if (socket != null) {
+            if (socket != null && !socket.isClosed()) {
                 socket.close();
             }
-            isConnected = false;
+
         } catch (IOException e) {
-            AlertUtil.showAlert("Close Error", "Error while closing connection.", Alert.AlertType.ERROR);
+            AlertUtil.showAlert(
+                "Close Error",
+                "Error while closing connection.",
+                Alert.AlertType.ERROR
+            );
         }
     }
 }

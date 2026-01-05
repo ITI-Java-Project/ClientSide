@@ -1,5 +1,6 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.connection.LocalConnection;
 import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -26,10 +27,11 @@ public class SignupController implements Initializable {
     private TextField emailField;
     @FXML
     private Button signupButton;
+    private LocalConnection con;
    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        con = new LocalConnection();
     }    
     
     @FXML
@@ -37,6 +39,10 @@ public class SignupController implements Initializable {
 
     @FXML
     private void handleSignup(ActionEvent event) {
-        SceneNavigator.navigateTo(signupButton, "/fxml/Start.fxml");
+        System.out.println("userName : " + usernameField.getText());
+        System.out.println("Email : " + emailField.getText());
+        System.out.println("Password : " + passwordField.getText());
+        boolean isRegistered = con.signup(usernameField.getText(), emailField.getText(), passwordField.getText());
+        if(isRegistered) SceneNavigator.navigateTo(signupButton, "/fxml/Start.fxml");
     }
 }
