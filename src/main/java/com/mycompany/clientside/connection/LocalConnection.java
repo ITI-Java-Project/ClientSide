@@ -26,6 +26,7 @@ public class LocalConnection implements ConnectionStrategy {
         this.ip = ip;
         this.portNumber = 5000;
         this.isConnected = false;
+        listenerThread = null;
     }
 
     public LocalConnection() {
@@ -33,12 +34,9 @@ public class LocalConnection implements ConnectionStrategy {
             this.ip = InetAddress.getByName("127.0.0.1");
             this.portNumber = 5000;
             this.isConnected = false;
+            listenerThread = null;
         } catch (UnknownHostException ex) {
-            AlertUtil.showAlert(
-                "Server Ip Error",
-                "Invalid Ip Address",
-                Alert.AlertType.ERROR
-            );
+            AlertUtil.showAlert("Server Ip Error", "Invalid Ip Address",Alert.AlertType.ERROR);
         }
     }
 
@@ -46,38 +44,29 @@ public class LocalConnection implements ConnectionStrategy {
     public boolean connectToServer() {
         try {
             socket = new Socket(ip, portNumber);
-
             reader = new BufferedReader(
                 new InputStreamReader(socket.getInputStream())
             );
-
             writer = new PrintWriter(
                 new OutputStreamWriter(socket.getOutputStream()),
                 true 
             );
-
             isConnected = true;
 
         } catch (IOException ex) {
             isConnected = false;
-            AlertUtil.showAlert(
-                "Connection Failed",
-                "Unable to connect to server.\nPlease check server status.",
-                Alert.AlertType.ERROR
-            );
+            AlertUtil.showAlert("Connection Failed","Unable to connect to server.\nPlease check server status.", Alert.AlertType.ERROR);
         }
         return isConnected;
     }
 
-    // SEND
+
     public void sendMove(int x, int y) {
         if (!isConnected) return;
         writer.println("MOVE " + x + " " + y);
     }
-    
-    // SIGNUP
+ 
     public boolean signup(String username, String email, String password) {
-        
         if (!isConnected) {
             connectToServer();   
         }
@@ -91,12 +80,10 @@ public class LocalConnection implements ConnectionStrategy {
                 return true;
             }
         } catch (IOException ex) {
-            ex.printStackTrace();
+            AlertUtil.showAlert("Sginup Failed","Unable to sign up.\nPlease retry again", Alert.AlertType.ERROR);
         }
         return false;
     }
-
-    //RECEIVE
 
     public void recieveMove(BiConsumer<Integer, Integer> onMoveReceived) {
         listenerThread = new Thread(() -> {
@@ -112,18 +99,11 @@ public class LocalConnection implements ConnectionStrategy {
                     }
                 }
             } catch (IOException ex) {
-                AlertUtil.showAlert(
-                    "Receive Error",
-                    "Failed to receive data from server.",
-                    Alert.AlertType.ERROR
-                );
+                AlertUtil.showAlert("Receive Error","Failed to receive data from server.",Alert.AlertType.ERROR);
             }
         });
-
         listenerThread.start();
     }
-
-    //CONNECTION
 
     public boolean reconnect() {
         closeConnection();
@@ -132,21 +112,16 @@ public class LocalConnection implements ConnectionStrategy {
 
     public void closeConnection() {
         try {
-            isConnected = false;
-
             if (listenerThread != null && listenerThread.isAlive()) {
                 listenerThread.interrupt();
             }
             if (socket != null && !socket.isClosed()) {
                 socket.close();
             }
+             isConnected = false;
 
         } catch (IOException e) {
-            AlertUtil.showAlert(
-                "Close Error",
-                "Error while closing connection.",
-                Alert.AlertType.ERROR
-            );
+            AlertUtil.showAlert("Close Error", "Error while closing connection.", Alert.AlertType.ERROR);
         }
     }
 }
