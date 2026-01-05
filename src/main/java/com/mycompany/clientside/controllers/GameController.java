@@ -7,6 +7,7 @@ package com.mycompany.clientside.controllers;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.game.GameStartegy;
 import com.mycompany.clientside.game.LocalGame;
+import com.mycompany.clientside.matchRecording.MatchRecorder;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -64,13 +65,17 @@ public class GameController implements Initializable {
 
     private boolean xTurn; 
     private GameStartegy gameStrategy;
+    private MatchRecorder matchRecorder;
     
    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         System.out.println("GameController INITIALIZED");
         xTurn = true;
-        gameStrategy= new LocalGame();
+    }
+    
+    public void setGameStrategy(GameStartegy gameStartegy){
+        this.gameStrategy=gameStrategy;
     }
 
     @FXML

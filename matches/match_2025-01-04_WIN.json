@@ -1,0 +1,12 @@
+{
+  "oponentName": "Sara Ahmed",
+  "moves": [
+    {"x": 1, "y": 1, "move": "X"},
+    {"x": 0, "y": 0, "move": "O"},
+    {"x": 0, "y": 2, "move": "X"},
+    {"x": 1, "y": 0, "move": "O"},
+    {"x": 2, "y": 0, "move": "X"}
+  ],
+  "result": "WIN",
+  "date": "Jan 4, 2025 7:45:00 PM"
+}

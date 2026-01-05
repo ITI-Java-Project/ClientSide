@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.image.*?>
+
+<BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.mycompany.clientside.controllers.RecordedMatchController" 
+           prefHeight="800.0" prefWidth="1200.0"
+           style="-fx-background-image: url('images/GameBG.png'); 
+                  -fx-background-size: cover; 
+                  -fx-background-position: center;">
+
+    <top>
+        <BorderPane style="-fx-padding: 40 50 30 50;">
+            <left>
+                <HBox alignment="CENTER_LEFT" spacing="20">
+                    <Button fx:id="backButton" 
+                            text="← Back"
+                            onMouseClicked="#handleBack"
+                            style="-fx-background-color: rgba(0,0,0,0.7); 
+                                   -fx-text-fill: white; 
+                                   -fx-font-size: 16px; 
+                                   -fx-padding: 10 20;
+                                   -fx-cursor: hand;
+                                   -fx-background-radius: 5;"/>
+                    <VBox spacing="5">
+                        <Label fx:id="matchInfoLabel" 
+                               text="Replaying Match..."
+                               style="-fx-text-fill: white; 
+                                      -fx-font-size: 20px; 
+                                      -fx-font-weight: bold;"/>
+                        <Label fx:id="resultLabel" 
+                               text=""
+                               style="-fx-text-fill: #FFD700; 
+                                      -fx-font-size: 16px;"/>
+                    </VBox>
+                </HBox>
+            </left>
+          
+        </BorderPane>
+    </top>
+
+    <center>
+        <StackPane>
+            <GridPane fx:id="gameBoard" alignment="CENTER" hgap="0" vgap="0">
+
+                <Button fx:id="cell00" prefWidth="180" prefHeight="180" 
+                        style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-cursor: default; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-fill: white;"
+                        GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <Button fx:id="cell01" prefWidth="180" prefHeight="180"
+                        style="-fx-background-color: transparent; -fx-border-color: #333333; -fx-border-width: 0 8 0 8; -fx-cursor: default; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-fill: white;"
+                        GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                <Button fx:id="cell02" prefWidth="180" prefHeight="180" 
+                        style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-cursor: default; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-fill: white;"
+                        GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+                
+                <Button fx:id="cell10" prefWidth="180" prefHeight="180" 
+                        style="-fx-background-color: transparent; -fx-border-color: #333333; -fx-border-width: 8 0 8 0; -fx-cursor: default; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-fill: white;"
+                        GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <Button fx:id="cell11" prefWidth="180" prefHeight="180" 
+                        style="-fx-background-color: transparent; -fx-border-color: #333333; -fx-border-width: 8 8 8 8; -fx-cursor: default; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-fill: white;"
+                        GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                <Button fx:id="cell12" prefWidth="180" prefHeight="180" 
+                        style="-fx-background-color: transparent; -fx-border-color: #333333; -fx-border-width: 8 0 8 0; -fx-cursor: default; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-fill: white;"
+                        GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+    
+                <Button fx:id="cell20" prefWidth="180" prefHeight="180"
+                        style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-cursor: default; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-fill: white;"
+                        GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                <Button fx:id="cell21" prefWidth="180" prefHeight="180"
+                        style="-fx-background-color: transparent; -fx-border-color: #333333; -fx-border-width: 0 8 0 8; -fx-cursor: default; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-fill: white;"
+                        GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <Button fx:id="cell22" prefWidth="180" prefHeight="180" 
+                        style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-cursor: default; -fx-font-size: 72px; -fx-font-weight: bold; -fx-text-fill: white;"
+                        GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+            </GridPane>
+        </StackPane>
+    </center>
+    
+    <bottom>
+        <VBox alignment="CENTER" spacing="15" style="-fx-padding: 20 50 40 50; -fx-background-color: rgba(0,0,0,0.3);">
+            <!-- Move counter and slider -->
+            <VBox alignment="CENTER" spacing="10">
+                <Label fx:id="moveCountLabel" 
+                       text="0 / 0"
+                       style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                <Slider fx:id="moveSlider" 
+                        prefWidth="600" 
+                        min="0" 
+                        max="9" 
+                        value="0"
+                        showTickMarks="true"
+                        showTickLabels="false"
+                        snapToTicks="true"
+                        style="-fx-cursor: hand;"/>
+            </VBox>
+            
+            <!-- Playback controls -->
+            <HBox alignment="CENTER" spacing="20">
+                <Button fx:id="restartButton" 
+                        text="⏮"
+                        onMouseClicked="#handleRestart"
+                        prefWidth="60" 
+                        prefHeight="60"
+                        style="-fx-background-color: rgba(255,255,255,0.2); 
+                               -fx-text-fill: white; 
+                               -fx-font-size: 24px; 
+                               -fx-cursor: hand;
+                               -fx-background-radius: 30;
+                               -fx-border-color: white;
+                               -fx-border-width: 2;
+                               -fx-border-radius: 30;"/>
+                               
+                <Button fx:id="previousButton" 
+                        text="⏪"
+                        onMouseClicked="#handlePrevious"
+                        prefWidth="60" 
+                        prefHeight="60"
+                        style="-fx-background-color: rgba(255,255,255,0.2); 
+                               -fx-text-fill: white; 
+                               -fx-font-size: 24px; 
+                               -fx-cursor: hand;
+                               -fx-background-radius: 30;
+                               -fx-border-color: white;
+                               -fx-border-width: 2;
+                               -fx-border-radius: 30;"/>
+                               
+                <Button fx:id="playPauseButton" 
+                        text="▶"
+                        onMouseClicked="#handlePlayPause"
+                        prefWidth="80" 
+                        prefHeight="80"
+                        style="-fx-background-color: rgba(255,255,255,0.3); 
+                               -fx-text-fill: white; 
+                               -fx-font-size: 32px; 
+                               -fx-cursor: hand;
+                               -fx-background-radius: 40;
+                               -fx-border-color: white;
+                               -fx-border-width: 3;
+                               -fx-border-radius: 40;"/>
+                               
+                <Button fx:id="nextButton" 
+                        text="⏩"
+                        onMouseClicked="#handleNext"
+                        prefWidth="60" 
+                        prefHeight="60"
+                        style="-fx-background-color: rgba(255,255,255,0.2); 
+                               -fx-text-fill: white; 
+                               -fx-font-size: 24px; 
+                               -fx-cursor: hand;
+                               -fx-background-radius: 30;
+                               -fx-border-color: white;
+                               -fx-border-width: 2;
+                               -fx-border-radius: 30;"/>
+            </HBox>
+        </VBox>
+    </bottom>
+    
+</BorderPane>

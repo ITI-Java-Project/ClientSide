@@ -4,10 +4,7 @@
  */
 package models;
 
-/**
- *
- * @author 20000
- */
+
 public enum MatchResultGame {
     WIN,
     DRAW,

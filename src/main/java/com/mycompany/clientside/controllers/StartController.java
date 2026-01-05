@@ -62,7 +62,7 @@ public class StartController implements Initializable {
 
     @FXML
     private void handleRecording(ActionEvent event) {
-                SceneNavigator.navigateTo(recordingBtn, "/fxml/Recording.fxml");
+        SceneNavigator.navigateTo(recordingBtn, "/fxml/Recording.fxml");
 
     }
 
