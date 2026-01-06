@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import javafx.scene.control.Alert;
+import javafx.stage.Window;
 
 public abstract class ConnectionStrategy {
 
@@ -17,6 +18,7 @@ public abstract class ConnectionStrategy {
     protected boolean isConnected;
     protected int portNumber;
     protected Thread listenerThread;
+    protected Window owner;
 
     public Socket getSocket() {
         return socket;
@@ -64,7 +66,7 @@ public abstract class ConnectionStrategy {
             isConnected = false;
 
         } catch (IOException e) {
-            AlertUtil.showAlert("Close Error", "Error while closing connection.", Alert.AlertType.ERROR);
+            AlertUtil.showAlert("Close Error", "Error while closing connection.", Alert.AlertType.ERROR,owner);
         }
     }
 }

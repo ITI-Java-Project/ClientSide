@@ -10,24 +10,28 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import javafx.scene.control.Alert;
+import javafx.stage.Window;
 
 public class LocalConnection extends ConnectionStrategy {
 
-    public LocalConnection(InetAddress ip) {
+    public LocalConnection(InetAddress ip,Window owner) {
         this.ip = ip;
         this.portNumber = 5000;
         this.isConnected = false;
         this.listenerThread = null;
+        this.owner = owner;
     }
 
-    public LocalConnection() {
+    public LocalConnection(Window owner) {
+       this.owner = owner;
         try {
             this.ip = InetAddress.getByName("127.0.0.1");
             this.portNumber = 5000;
             this.isConnected = false;
             this.listenerThread = null;
+
         } catch (UnknownHostException ex) {
-            AlertUtil.showAlert("Server Ip Error", "Invalid Ip Address", Alert.AlertType.ERROR);
+            AlertUtil.showAlert("Server Ip Error", "Invalid Ip Address", Alert.AlertType.ERROR,owner);
         }
     }
 
@@ -46,7 +50,7 @@ public class LocalConnection extends ConnectionStrategy {
 
         } catch (IOException ex) {
             isConnected = false;
-            AlertUtil.showAlert("Connection Failed", "Unable to connect to server.\nPlease check server status.", Alert.AlertType.ERROR);
+            AlertUtil.showAlert("Connection Failed", "Unable to connect to server.\nPlease check server status.", Alert.AlertType.ERROR,owner);
         }
         return isConnected;
     }

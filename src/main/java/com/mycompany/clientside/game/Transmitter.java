@@ -5,15 +5,18 @@ import com.mycompany.clientside.utils.AlertUtil;
 import java.io.IOException;
 import java.util.function.BiConsumer;
 import javafx.scene.control.Alert;
+import javafx.stage.Window;
 
 public class Transmitter {
 
-    ConnectionStrategy conn;
-    Thread listenerThread;
+    private final ConnectionStrategy conn;
+    private Thread listenerThread;
+    private final Window owner;
 
-    public Transmitter(ConnectionStrategy conn, Thread listenerThread) {
+    public Transmitter(ConnectionStrategy conn, Thread listenerThread,Window owner) {
         this.conn = conn;
         this.listenerThread = listenerThread;
+        this.owner = owner;
     }
 
     public void sendMove(int x, int y) {
@@ -37,7 +40,7 @@ public class Transmitter {
                     }
                 }
             } catch (IOException ex) {
-                AlertUtil.showAlert("Receive Error", "Failed to receive data from server.", Alert.AlertType.ERROR);
+                AlertUtil.showAlert("Receive Error", "Failed to receive data from server.", Alert.AlertType.ERROR,owner);
             }
         });
         listenerThread.start();
