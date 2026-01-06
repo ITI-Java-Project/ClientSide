@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class Authentication {
 
-    ConnectionStrategy conn;
+    private ConnectionStrategy conn;
 
     public Authentication(ConnectionStrategy conn) {
         this.conn = conn;
