@@ -65,6 +65,6 @@ public class RecordingController implements Initializable {
     @FXML
     private void goToSettings(MouseEvent event) {
         StackPane root = (StackPane) settingsIcon.getScene().getRoot();
-        DialogUtil.openSettingsDialog(root);
+DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
 }
