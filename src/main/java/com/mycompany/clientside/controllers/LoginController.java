@@ -48,21 +48,42 @@ public class LoginController implements Initializable {
 
     @FXML
     private void handleLogin(ActionEvent event) {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
+        new Thread(() -> {
 
-        if (conn.connectToServer()) {
+            if (!conn.connectToServer()) {
+                Platform.runLater(() -> AlertUtil.showAlert(
+                        "Error", "Cannot connect to server", Alert.AlertType.ERROR, owner
+                ));
+                return;
+            }
+
+            String username = usernameField.getText();
+            String password = passwordField.getText();
+
             if (username.isEmpty() || password.isEmpty()) {
-                AlertUtil.showAlert("Warning", "PLease Fill username and password fields", Alert.AlertType.WARNING, owner);
-            } else {
-                boolean isSuccess = auth.login(usernameField.getText(), passwordField.getText());
+                Platform.runLater(() -> AlertUtil.showAlert(
+                        "Warning",
+                        "Please fill username and password fields",
+                        Alert.AlertType.WARNING, owner
+                ));
+                return;
+            }
+
+            boolean isSuccess = auth.login(username, password);
+
+            Platform.runLater(() -> {
                 if (isSuccess) {
                     SceneNavigator.navigateTo(loginButton, "/fxml/Start.fxml");
                 } else {
-                    AlertUtil.showAlert("Login failed", "PLease Ensure you entered corrcrt username and password ", Alert.AlertType.ERROR, owner);
+                    AlertUtil.showAlert(
+                            "Login failed",
+                            "Please ensure you entered correct username and password",
+                            Alert.AlertType.ERROR, owner
+                    );
                 }
-            }
-        }
+            });
+
+        }).start();
     }
 
     @FXML

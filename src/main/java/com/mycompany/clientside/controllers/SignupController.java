@@ -54,11 +54,23 @@ public class SignupController implements Initializable {
         System.out.println("userName : " + usernameField.getText());
         System.out.println("Email : " + emailField.getText());
         System.out.println("Password : " + passwordField.getText());
-        boolean isRegistered = auth.signup(usernameField.getText(), emailField.getText(), passwordField.getText());
-        if (isRegistered) {
-            SceneNavigator.navigateTo(signupButton, "/fxml/Start.fxml");
-        } else {
-            AlertUtil.showAlert("Signup Failed", "This Email is used before please enter another email", Alert.AlertType.WARNING, owner);
-        }
+
+        new Thread(() -> {
+            if (!con.connectToServer()) {
+                Platform.runLater(() -> AlertUtil.showAlert(
+                        "Error", "Cannot connect to server", Alert.AlertType.ERROR, owner
+                ));
+                return;
+            }
+            boolean isRegistered = auth.signup(usernameField.getText(), emailField.getText(), passwordField.getText());
+            
+            Platform.runLater(() -> {
+                if (isRegistered) {
+                    SceneNavigator.navigateTo(signupButton, "/fxml/Start.fxml");
+                } else {
+                    AlertUtil.showAlert("Signup Failed", "This Email is used before please enter another email", Alert.AlertType.WARNING, owner);
+                }
+            });
+        }).start();
     }
 }
