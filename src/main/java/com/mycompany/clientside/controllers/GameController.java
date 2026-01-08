@@ -1,15 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package com.mycompany.clientside.controllers;
 
-import com.mycompany.clientside.game.AiGame;
-import com.mycompany.clientside.game.Board;
+import com.mycompany.clientside.game.*;
+import com.mycompany.clientside.matchRecording.*;
 import com.mycompany.clientside.utils.DialogUtil;
-import com.mycompany.clientside.game.GameStartegy;
-import com.mycompany.clientside.game.LocalGame;
-import com.mycompany.clientside.matchRecording.MatchRecorder;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.PauseTransition;
@@ -22,15 +15,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
-import models.Difficulty;
 
-/**
- * FXML Controller class
- *
- * @author sian
- */
 public class GameController implements Initializable {
 
     @FXML
@@ -46,126 +32,149 @@ public class GameController implements Initializable {
     @FXML
     private ImageView player2Avatar;
     @FXML
+    private Label player2Score;
+    @FXML
     private Button settingsButton;
     @FXML
     private GridPane gameBoard;
-    @FXML
-    private Button cell00;
-    @FXML
-    private Button cell01;
-    @FXML
-    private Button cell02;
-    @FXML
-    private Button cell10;
-    @FXML
-    private Button cell11;
-    @FXML
-    private Button cell12;
-    @FXML
-    private Button cell20;
-    @FXML
-    private Button cell21;
-    @FXML
-    private Button cell22;
 
-    private boolean xTurn;
     private GameStartegy gameStrategy;
+    private char currentPlayer;
+    private boolean waitingForMove;
+    private boolean gameOver;
+    private MatchRecorder matchRecorder;
+    private String opponentName;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         System.out.println("GameController INITIALIZED");
-        xTurn = true;
-        gameStrategy = new AiGame(Difficulty.HARD);
+        currentPlayer = 'X';
+        waitingForMove = false;
+        gameOver = false;
     }
 
-//    @FXML
-//    private void handleCellClick(ActionEvent event) {
-//        Button clicked = (Button) event.getSource();
-//
-//        if (!clicked.getText().isEmpty()) {
-//            return;
-//        }
-//        char move = xTurn ? 'X' : 'O';
-//        clicked.setText(Character.toString(move));
-//        xTurn = !xTurn;
-//
-//        Integer row = GridPane.getRowIndex(clicked);
-//        Integer col = GridPane.getColumnIndex(clicked);
-//        row = (row == null) ? 0 : row;
-//        col = (col == null) ? 0 : col;
-//        gameStrategy.play(row, col, move);
-//        int[][] winningCells = gameStrategy.winner();
-//        if (winningCells != null) {
-//            highlightWinningCells(winningCells);
-//            disableBoard();
-//        }
-//
-//    }
-@FXML
-private void handleCellClick(ActionEvent event) {
-    Button clicked = (Button) event.getSource();
+    public void setGameStrategy(GameStartegy strategy) {
+        this.gameStrategy = strategy;
+        this.currentPlayer = 'X';
 
-    if (!clicked.getText().isEmpty()) return;
-
-    // Human move
-    clicked.setText("X");
-
-    Integer row = GridPane.getRowIndex(clicked);
-    Integer col = GridPane.getColumnIndex(clicked);
-    row = (row == null) ? 0 : row;
-    col = (col == null) ? 0 : col;
-
-    // Play human move (AI move happens inside strategy)
-    gameStrategy.play(row, col, 'X');
-
-    // ⏳ AI thinking delay (UX improvement)
-    PauseTransition pause = new PauseTransition(Duration.seconds(0.6)); // adjust time
-    pause.setOnFinished(e -> {
-
-        // Sync UI AFTER AI move
-        syncBoardWithUI();
-
-        // Check winner after AI move
-        int[][] winningCells = gameStrategy.winner();
-        if (winningCells != null) {
-            highlightWinningCells(winningCells);
-            disableBoard();
+        if (strategy instanceof AiGame) {
+            this.opponentName = "AI";
+        } else if (strategy instanceof LocalGame) {
+            this.opponentName = player2Name != null ? player2Name.getText() : "Player 2";
+        } else {
+            this.opponentName = "Opponent";
         }
-    });
 
-    pause.play();
-}
+        matchRecorder = new MatchRecorder(opponentName);
+
+        resetGame();
+    }
 
     @FXML
-    private void handleSettingClick(ActionEvent event) {
-        Parent root = ((Node) event.getSource()).getScene().getRoot();
-        DialogUtil.openSettingsDialog(root);
+    private void handleCellClick(ActionEvent event) {
+        if (gameOver || waitingForMove) {
+            return;
+        }
+
+        Button clicked = (Button) event.getSource();
+        if (!clicked.getText().isEmpty()) {
+            return;
+        }
+
+        Integer row = GridPane.getRowIndex(clicked);
+        Integer col = GridPane.getColumnIndex(clicked);
+        row = (row == null) ? 0 : row;
+        col = (col == null) ? 0 : col;
+
+        makeMove(row, col, clicked);
     }
 
-    private void disableBoard() {
-        for (Node node : gameBoard.getChildren()) {
-            if (node instanceof Button) {
-                ((Button) node).setDisable(true);
+    private void makeMove(int row, int col, Button button) {
+        button.setText(String.valueOf(currentPlayer));
+        gameStrategy.play(row, col, currentPlayer);
+        matchRecorder.addMove(new Move(row, col, currentPlayer));
+
+        if (checkGameOver()) {
+            return;
+        }
+        handleNextTurn();
+    }
+
+    private void handleNextTurn() {
+        if (gameStrategy instanceof AiGame) {
+            waitForAiMove();
+        } else if (gameStrategy instanceof LocalGame) {
+            switchPlayer();
+        } else {
+            switchPlayer();
+        }
+    }
+
+    private void waitForAiMove() {
+        waitingForMove = true;
+        setBoardEnabled(false);
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(0.6));
+        pause.setOnFinished(e -> {
+            recordAiMove();
+            syncBoardWithUI();
+
+            if (!checkGameOver()) {
+                waitingForMove = false;
+                setBoardEnabled(true);
+            }
+        });
+        pause.play();
+    }
+
+    private void recordAiMove() {
+        char[][] board = Board.getInstance().getBoard();
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                Button btn = getCellButton(i, j);
+                if (btn != null && btn.getText().isEmpty() && board[i][j] != '\0') {
+                    matchRecorder.addMove(new Move(i, j, board[i][j]));
+                    return;
+                }
             }
         }
     }
 
-    private void highlightWinningCells(int[][] cells) {
-        for (int[] pos : cells) {
-            int row = pos[0];
-            int col = pos[1];
-
-            for (Node node : gameBoard.getChildren()) {
+    private Button getCellButton(int row, int col) {
+        for (Node node : gameBoard.getChildren()) {
+            if (node instanceof Button) {
                 Integer r = GridPane.getRowIndex(node);
                 Integer c = GridPane.getColumnIndex(node);
                 r = (r == null) ? 0 : r;
                 c = (c == null) ? 0 : c;
 
-                if (node instanceof Button && r == row && c == col) {
-                    ((Button) node).setTextFill(javafx.scene.paint.Color.RED);
+                if (r == row && c == col) {
+                    return (Button) node;
                 }
             }
         }
+        return null;
+    }
+
+    private void switchPlayer() {
+        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+    }
+
+    private boolean checkGameOver() {
+        int[][] winningCells = gameStrategy.winner();
+
+        if (winningCells != null) {
+            handleWin(winningCells);
+            return true;
+        }
+
+        if (isBoardFull()) {
+            handleDraw();
+            return true;
+        }
+
+        return false;
     }
 
     private void syncBoardWithUI() {
@@ -185,5 +194,126 @@ private void handleCellClick(ActionEvent event) {
                 }
             }
         }
+    }
+
+    private boolean isBoardFull() {
+        char[][] board = Board.getInstance().getBoard();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == '\0') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void handleWin(int[][] winningCells) {
+        gameOver = true;
+        highlightWinningCells(winningCells);
+        setBoardEnabled(false);
+
+        char winner = Board.getInstance().getBoard()[winningCells[0][0]][winningCells[0][1]];
+        updateScore(winner);
+
+        Result result;
+        if (winner == 'X') {
+            result = Result.WIN;
+        } else {
+            result = Result.LOSE;
+        }
+
+        matchRecorder.endMatch(result);
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
+        pause.setOnFinished(e -> {
+            showGameOverDialog(winner + " wins!");
+            resetGame();
+        });
+        pause.play();
+    }
+
+    private void handleDraw() {
+        gameOver = true;
+        setBoardEnabled(false);
+
+        int draws = Integer.parseInt(drawScore.getText());
+        drawScore.setText(String.valueOf(draws + 1));
+
+        matchRecorder.endMatch(Result.DRAW);
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
+        pause.setOnFinished(e -> {
+            showGameOverDialog("It's a draw!");
+            resetGame();
+        });
+        pause.play();
+    }
+
+    private void updateScore(char winner) {
+        if (winner == 'X') {
+            if (player1Score != null) {
+                int score = Integer.parseInt(player1Score.getText());
+                player1Score.setText(String.valueOf(score + 1));
+            }
+        } else {
+            if (player2Score != null) {
+                int score = Integer.parseInt(player2Score.getText());
+                player2Score.setText(String.valueOf(score + 1));
+            }
+        }
+    }
+
+    private void highlightWinningCells(int[][] cells) {
+        for (int[] pos : cells) {
+            for (Node node : gameBoard.getChildren()) {
+                Integer r = GridPane.getRowIndex(node);
+                Integer c = GridPane.getColumnIndex(node);
+                r = (r == null) ? 0 : r;
+                c = (c == null) ? 0 : c;
+
+                if (node instanceof Button && r == pos[0] && c == pos[1]) {
+                    ((Button) node).setTextFill(javafx.scene.paint.Color.RED);
+                }
+            }
+        }
+    }
+
+    private void setBoardEnabled(boolean enabled) {
+        for (Node node : gameBoard.getChildren()) {
+            if (node instanceof Button) {
+                node.setDisable(!enabled);
+            }
+        }
+    }
+
+    private void resetGame() {
+        gameOver = false;
+        waitingForMove = false;
+        currentPlayer = 'X';
+        Board.getInstance().resetBoard();
+
+        if (opponentName != null) {
+            matchRecorder = new MatchRecorder(opponentName);
+        }
+
+        for (Node node : gameBoard.getChildren()) {
+            if (node instanceof Button) {
+                Button btn = (Button) node;
+                btn.setText("");
+                btn.setDisable(false);
+                btn.setTextFill(javafx.scene.paint.Color.BLACK);
+            }
+        }
+    }
+
+    private void showGameOverDialog(String message) {
+        System.out.println("Game Over: " + message);
+    }
+
+    @FXML
+    private void handleSettingClick(ActionEvent event) {
+        Parent root = ((Node) event.getSource()).getScene().getRoot();
+        DialogUtil.openSettingsDialog(root);
     }
 }

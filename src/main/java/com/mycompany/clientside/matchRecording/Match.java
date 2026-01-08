@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.clientside.matchRecording;
 
 import java.util.Date;
@@ -13,28 +9,24 @@ import java.util.Queue;
  * @author sian
  */
 public class Match {
-    
-    private String oponentName; 
-    private Queue<Move>moves;
+
+    private String oponentName;
+    private Queue<Move> moves;
     private Result result;
-    private Date date; 
-    
-    public Match(String oponentName ){
-       date= new Date();
-       this.oponentName=oponentName;
-       this.moves= new LinkedList<>();
-    } 
-    
-    public void addMove( Move move){
+    private Date date;
+
+    public Match(String oponentName) {
+        date = new Date();
+        this.oponentName = oponentName;
+        this.moves = new LinkedList<>();
+    }
+
+    public void addMove(Move move) {
         this.moves.add(move);
     }
-    
-    public void finish(Result result){
-        this.result=result;
-        saveToFile();
-    }
-    private void saveToFile(){
-        
+
+    public void finish(Result result) {
+        this.result = result;
     }
 
     public String getOponentName() {
@@ -68,7 +60,4 @@ public class Match {
     public void setDate(Date date) {
         this.date = date;
     }
-
-
-    
 }

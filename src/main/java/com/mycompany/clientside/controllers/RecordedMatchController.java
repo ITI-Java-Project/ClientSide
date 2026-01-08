@@ -39,8 +39,7 @@ public class RecordedMatchController implements Initializable {
     private Button cell10, cell11, cell12;
     @FXML
     private Button cell20, cell21, cell22;
-    
-    // Playback controls
+
     @FXML
     private Button playPauseButton;
     @FXML
@@ -81,15 +80,14 @@ public class RecordedMatchController implements Initializable {
         for (Button[] row : cells) {
             for (Button cell : row) {
                 cell.setDisable(true);
-                cell.setStyle(cell.getStyle() + "-fx-opacity: 1.0;");
+                cell.setStyle(cell.getStyle() + "-fx-opacity: 1.0; -fx-text-fill: black;");
             }
         }
     }
 
     private void setupPlaybackControls() {
         playPauseButton.setText("▶");
-        
-        // Slider listener to manually navigate through moves
+
         moveSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             if (!isPlaying && movesList != null) {
                 int targetMove = newVal.intValue();
@@ -104,8 +102,7 @@ public class RecordedMatchController implements Initializable {
         this.match = match;
         this.movesList = new ArrayList<>(match.getMoves());
         displayMatchInfo();
-        
-        // Setup slider
+
         if (movesList != null && !movesList.isEmpty()) {
             moveSlider.setMin(0);
             moveSlider.setMax(movesList.size());
@@ -115,18 +112,18 @@ public class RecordedMatchController implements Initializable {
             moveSlider.setMinorTickCount(0);
             moveSlider.setSnapToTicks(true);
         }
-        
+
         clearBoard();
         updateMoveCounter();
     }
 
     private void displayMatchInfo() {
         if (match != null) {
-            String info = String.format("VS %s - %s", 
-                match.getOponentName(), 
-                dateFormat.format(match.getDate()));
+            String info = String.format("VS %s - %s",
+                    match.getOponentName(),
+                    dateFormat.format(match.getDate()));
             matchInfoLabel.setText(info);
-            
+
             String result = match.getResult().toString();
             resultLabel.setText("Result: " + result);
         }
@@ -147,17 +144,16 @@ public class RecordedMatchController implements Initializable {
             return;
         }
 
-        // Clear board and replay up to target move
         clearBoardWithoutReset();
-        
+
         for (int i = 0; i < targetMoveIndex && i < movesList.size(); i++) {
             Move move = movesList.get(i);
             applyMoveToBoard(move);
         }
-        
+
         currentMoveIndex = targetMoveIndex;
         updateMoveCounter();
-        
+
         if (!isPlaying) {
             moveSlider.setValue(currentMoveIndex);
         }
@@ -228,7 +224,7 @@ public class RecordedMatchController implements Initializable {
     private void pausePlayback() {
         isPlaying = false;
         playPauseButton.setText("▶");
-        
+
         if (autoPlayTimeline != null) {
             autoPlayTimeline.stop();
         }

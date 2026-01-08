@@ -5,6 +5,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.image.*?>
+<?import javafx.scene.effect.*?>
 
 <BorderPane fx:id="rootPane" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" 
            fx:controller="com.mycompany.clientside.controllers.RecordedMatchController" 
@@ -14,33 +15,53 @@
                   -fx-background-position: center;">
 
     <top>
-        <BorderPane style="-fx-padding: 40 50 30 50;">
-            <left>
-                <HBox alignment="CENTER_LEFT" spacing="20">
-                    <Button fx:id="backButton" 
-                            text="← Back"
-                            onMouseClicked="#handleBack"
-                            style="-fx-background-color: rgba(0,0,0,0.7); 
-                                   -fx-text-fill: white; 
-                                   -fx-font-size: 16px; 
-                                   -fx-padding: 10 20;
-                                   -fx-cursor: hand;
-                                   -fx-background-radius: 5;"/>
-                    <VBox spacing="5">
-                        <Label fx:id="matchInfoLabel" 
-                               text="Replaying Match..."
-                               style="-fx-text-fill: white; 
-                                      -fx-font-size: 20px; 
-                                      -fx-font-weight: bold;"/>
-                        <Label fx:id="resultLabel" 
-                               text=""
-                               style="-fx-text-fill: #FFD700; 
-                                      -fx-font-size: 16px;"/>
-                    </VBox>
-                </HBox>
-            </left>
-          
-        </BorderPane>
+        <VBox style="-fx-padding: 30 50 20 50;">
+            <!-- Back button and match info -->
+            <HBox alignment="CENTER_LEFT" spacing="25">
+                <Button fx:id="backButton" 
+                        text="← Back"
+                        onMouseClicked="#handleBack"
+                        style="-fx-background-color: rgba(0,0,0,0.8); 
+                               -fx-text-fill: white; 
+                               -fx-font-size: 16px; 
+                               -fx-font-weight: bold;
+                               -fx-padding: 12 24;
+                               -fx-cursor: hand;
+                               -fx-background-radius: 8;
+                               -fx-border-color: rgba(255,255,255,0.3);
+                               -fx-border-width: 1;
+                               -fx-border-radius: 8;">
+                    <effect>
+                        <DropShadow color="rgba(0,0,0,0.5)" radius="5" offsetY="2"/>
+                    </effect>
+                </Button>
+                
+                <Region HBox.hgrow="ALWAYS"/>
+                
+                <VBox spacing="8" alignment="CENTER">
+                    <Label fx:id="matchInfoLabel" 
+                           text="Replaying Match..."
+                           style="-fx-text-fill: white; 
+                                  -fx-font-size: 24px; 
+                                  -fx-font-weight: bold;">
+                        <effect>
+                            <DropShadow color="rgba(0,0,0,0.7)" radius="3" offsetY="1"/>
+                        </effect>
+                    </Label>
+                    <Label fx:id="resultLabel" 
+                           text="Result: WIN"
+                           style="-fx-text-fill: #FFD700; 
+                                  -fx-font-size: 18px;
+                                  -fx-font-weight: bold;">
+                        <effect>
+                            <DropShadow color="rgba(0,0,0,0.7)" radius="3" offsetY="1"/>
+                        </effect>
+                    </Label>
+                </VBox>
+                
+                <Region HBox.hgrow="ALWAYS"/>
+            </HBox>
+        </VBox>
     </top>
 
     <center>
@@ -81,14 +102,28 @@
     </center>
     
     <bottom>
-        <VBox alignment="CENTER" spacing="15" style="-fx-padding: 20 50 40 50; -fx-background-color: rgba(0,0,0,0.3);">
-            <!-- Move counter and slider -->
-            <VBox alignment="CENTER" spacing="10">
+        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 30 50 40 50; -fx-background-color: rgba(0,0,0,0.5);">
+            <!-- Move counter and slider container -->
+            <VBox alignment="CENTER" spacing="15" style="-fx-background-color: rgba(0,0,0,0.6); 
+                                                          -fx-background-radius: 10; 
+                                                          -fx-padding: 20 40;">
+                <effect>
+                    <DropShadow color="rgba(0,0,0,0.5)" radius="10" offsetY="3"/>
+                </effect>
+                
                 <Label fx:id="moveCountLabel" 
                        text="0 / 0"
-                       style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
+                       style="-fx-text-fill: white; 
+                              -fx-font-size: 18px; 
+                              -fx-font-weight: bold;
+                              -fx-letter-spacing: 1;">
+                    <effect>
+                        <DropShadow color="rgba(0,0,0,0.7)" radius="2" offsetY="1"/>
+                    </effect>
+                </Label>
+                
                 <Slider fx:id="moveSlider" 
-                        prefWidth="600" 
+                        prefWidth="700" 
                         min="0" 
                         max="9" 
                         value="0"
@@ -99,62 +134,78 @@
             </VBox>
             
             <!-- Playback controls -->
-            <HBox alignment="CENTER" spacing="20">
+            <HBox alignment="CENTER" spacing="25" style="-fx-padding: 10;">
                 <Button fx:id="restartButton" 
                         text="⏮"
                         onMouseClicked="#handleRestart"
-                        prefWidth="60" 
-                        prefHeight="60"
-                        style="-fx-background-color: rgba(255,255,255,0.2); 
+                        prefWidth="65" 
+                        prefHeight="65"
+                        style="-fx-background-color: rgba(30,30,30,0.9); 
                                -fx-text-fill: white; 
-                               -fx-font-size: 24px; 
+                               -fx-font-size: 26px; 
                                -fx-cursor: hand;
-                               -fx-background-radius: 30;
-                               -fx-border-color: white;
+                               -fx-background-radius: 35;
+                               -fx-border-color: rgba(255,255,255,0.4);
                                -fx-border-width: 2;
-                               -fx-border-radius: 30;"/>
+                               -fx-border-radius: 35;">
+                    <effect>
+                        <DropShadow color="rgba(0,0,0,0.6)" radius="8" offsetY="3"/>
+                    </effect>
+                </Button>
                                
                 <Button fx:id="previousButton" 
                         text="⏪"
                         onMouseClicked="#handlePrevious"
-                        prefWidth="60" 
-                        prefHeight="60"
-                        style="-fx-background-color: rgba(255,255,255,0.2); 
+                        prefWidth="65" 
+                        prefHeight="65"
+                        style="-fx-background-color: rgba(30,30,30,0.9); 
                                -fx-text-fill: white; 
-                               -fx-font-size: 24px; 
+                               -fx-font-size: 26px; 
                                -fx-cursor: hand;
-                               -fx-background-radius: 30;
-                               -fx-border-color: white;
+                               -fx-background-radius: 35;
+                               -fx-border-color: rgba(255,255,255,0.4);
                                -fx-border-width: 2;
-                               -fx-border-radius: 30;"/>
+                               -fx-border-radius: 35;">
+                    <effect>
+                        <DropShadow color="rgba(0,0,0,0.6)" radius="8" offsetY="3"/>
+                    </effect>
+                </Button>
                                
                 <Button fx:id="playPauseButton" 
                         text="▶"
                         onMouseClicked="#handlePlayPause"
-                        prefWidth="80" 
-                        prefHeight="80"
-                        style="-fx-background-color: rgba(255,255,255,0.3); 
+                        prefWidth="90" 
+                        prefHeight="90"
+                        style="-fx-background-color: linear-gradient(to bottom, #4CAF50, #45a049); 
                                -fx-text-fill: white; 
-                               -fx-font-size: 32px; 
+                               -fx-font-size: 36px; 
                                -fx-cursor: hand;
-                               -fx-background-radius: 40;
-                               -fx-border-color: white;
+                               -fx-background-radius: 45;
+                               -fx-border-color: rgba(255,255,255,0.5);
                                -fx-border-width: 3;
-                               -fx-border-radius: 40;"/>
+                               -fx-border-radius: 45;">
+                    <effect>
+                        <DropShadow color="rgba(0,0,0,0.7)" radius="12" offsetY="4"/>
+                    </effect>
+                </Button>
                                
                 <Button fx:id="nextButton" 
                         text="⏩"
                         onMouseClicked="#handleNext"
-                        prefWidth="60" 
-                        prefHeight="60"
-                        style="-fx-background-color: rgba(255,255,255,0.2); 
+                        prefWidth="65" 
+                        prefHeight="65"
+                        style="-fx-background-color: rgba(30,30,30,0.9); 
                                -fx-text-fill: white; 
-                               -fx-font-size: 24px; 
+                               -fx-font-size: 26px; 
                                -fx-cursor: hand;
-                               -fx-background-radius: 30;
-                               -fx-border-color: white;
+                               -fx-background-radius: 35;
+                               -fx-border-color: rgba(255,255,255,0.4);
                                -fx-border-width: 2;
-                               -fx-border-radius: 30;"/>
+                               -fx-border-radius: 35;">
+                    <effect>
+                        <DropShadow color="rgba(0,0,0,0.6)" radius="8" offsetY="3"/>
+                    </effect>
+                </Button>
             </HBox>
         </VBox>
     </bottom>
