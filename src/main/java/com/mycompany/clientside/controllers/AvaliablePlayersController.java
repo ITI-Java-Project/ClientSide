@@ -5,6 +5,7 @@ import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
 import com.mycompany.clientside.service.PlayerService;
 import com.mycompany.clientside.utils.DialogUtil;
+import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
 import java.io.IOException;
 import java.net.URL;
@@ -71,12 +72,17 @@ public class AvaliablePlayersController implements Initializable {
     @FXML
     private void goToSettings(MouseEvent event) {
         Parent root = settingsIcon.getScene().getRoot();
-DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
+        DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
 
     // Challenge action
     @FXML
-    private void challengeAction(MouseEvent event) {
+    private void challengeAction(Player player) {
+        Parent root = settingsIcon.getScene().getRoot();
+        System.out.println("Player Details : " + player.getName() + "- ID : " + player.getId());
+
+        GameDialogs.openInvitationDialog(root, player.getName());
+        conn.getWriter().println("INVITE " + player.getId());
 
     }
 
@@ -109,10 +115,11 @@ DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
 
                 Label nameLabel = (Label) card.lookup("#playerNameLabel");
                 Label scoreLabel = (Label) card.lookup("#playerScoreLabel");
+                Label challengeLabel = (Label) card.lookup("#challengeLabel");
 
                 nameLabel.setText(player.getName());
                 scoreLabel.setText("Score: " + player.getScore());
-                // challengeLabel.setOnMouseClicked(e -> handleChallenge(player)); TODO
+                challengeLabel.setOnMouseClicked(e -> challengeAction(player));
 
                 playersListContainer.getChildren().add(card);
 
