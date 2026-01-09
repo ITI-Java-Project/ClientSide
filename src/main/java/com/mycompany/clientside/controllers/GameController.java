@@ -8,7 +8,6 @@ import com.mycompany.clientside.game.AiGame;
 import com.mycompany.clientside.game.Board;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.game.GameStartegy;
-import com.mycompany.clientside.game.LocalGame;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.PauseTransition;
