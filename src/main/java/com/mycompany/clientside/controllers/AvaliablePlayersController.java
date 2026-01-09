@@ -80,10 +80,33 @@ public class AvaliablePlayersController implements Initializable {
     private void challengeAction(Player player) {
         Parent root = settingsIcon.getScene().getRoot();
         System.out.println("Player Details : " + player.getName() + "- ID : " + player.getId());
-
         GameDialogs.openInvitationDialog(root, player.getName());
         conn.getWriter().println("INVITE " + player.getId());
 
+      new Thread(() -> {
+        try {
+            String msgFromServer = conn.getReader().readLine();
+            System.out.println("Server Response: " + msgFromServer);
+
+            String[] parts = msgFromServer.split(" ");
+            String command = parts[0];
+
+            Platform.runLater(() -> {
+                switch (command) {
+                    case "INVITE_ACCEPT":
+                        SceneNavigator.navigateTo(root, "/fxml/Game.fxml");
+                        break;
+
+                    case "INVITE_REJECT":
+//                        DialogUtil.showInfo(root, "Invitation Rejected");
+                        break;
+                }
+            });
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }).start();
     }
 
     private void loadPlayers() {
