@@ -71,7 +71,7 @@ public class AvaliablePlayersController implements Initializable {
     @FXML
     private void goToSettings(MouseEvent event) {
         Parent root = settingsIcon.getScene().getRoot();
-        DialogUtil.openSettingsDialog(root);
+DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
 
     // Challenge action

@@ -47,7 +47,7 @@ public class GameModesController implements Initializable {
     @FXML
     private void goToSettings(MouseEvent event) {
         Parent root = settingsIcon.getScene().getRoot();
-        DialogUtil.openSettingsDialog(root);
+DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
 
     @FXML
@@ -75,8 +75,10 @@ public class GameModesController implements Initializable {
         SceneNavigator.back(backBtn);
     }
 
-    //temporary till we implement different game modes
-    private void gotToGame(Node currentNode) {
-        SceneNavigator.navigateTo(currentNode, "/fxml/Game.fxml");
+    private void gotToGame(Node currentNode){
+        SceneNavigator.navigateTo(currentNode,"/fxml/Game.fxml");
     }
+
+
+
 }

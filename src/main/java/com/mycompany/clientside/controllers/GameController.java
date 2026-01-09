@@ -99,45 +99,42 @@ public class GameController implements Initializable {
 //        }
 //
 //    }
-@FXML
-private void handleCellClick(ActionEvent event) {
-    Button clicked = (Button) event.getSource();
+    @FXML
+    private void handleCellClick(ActionEvent event) {
+        Button clicked = (Button) event.getSource();
 
-    if (!clicked.getText().isEmpty()) return;
-
-    // Human move
-    clicked.setText("X");
-
-    Integer row = GridPane.getRowIndex(clicked);
-    Integer col = GridPane.getColumnIndex(clicked);
-    row = (row == null) ? 0 : row;
-    col = (col == null) ? 0 : col;
-
-    // Play human move (AI move happens inside strategy)
-    gameStrategy.play(row, col, 'X');
-
-    // ⏳ AI thinking delay (UX improvement)
-    PauseTransition pause = new PauseTransition(Duration.seconds(0.6)); // adjust time
-    pause.setOnFinished(e -> {
-
-        // Sync UI AFTER AI move
-        syncBoardWithUI();
-
-        // Check winner after AI move
-        int[][] winningCells = gameStrategy.winner();
-        if (winningCells != null) {
-            highlightWinningCells(winningCells);
-            disableBoard();
+        if (!clicked.getText().isEmpty()) {
+            return;
         }
-    });
 
-    pause.play();
-}
+        clicked.setText("X");
+
+        Integer row = GridPane.getRowIndex(clicked);
+        Integer col = GridPane.getColumnIndex(clicked);
+        row = (row == null) ? 0 : row;
+        col = (col == null) ? 0 : col;
+
+        gameStrategy.play(row, col, 'X');
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(0.6)); // adjust time
+        pause.setOnFinished(e -> {
+
+            syncBoardWithUI();
+
+            int[][] winningCells = gameStrategy.winner();
+            if (winningCells != null) {
+                highlightWinningCells(winningCells);
+                disableBoard();
+            }
+        });
+
+        pause.play();
+    }
 
     @FXML
     private void handleSettingClick(ActionEvent event) {
         Parent root = ((Node) event.getSource()).getScene().getRoot();
-        DialogUtil.openSettingsDialog(root);
+        DialogUtil.openDialog(root, "/fxml/GameDialog.fxml");
     }
 
     private void disableBoard() {
