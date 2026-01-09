@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<StackPane pickOnBounds="true" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.mycompany.clientside.controllers.ReceiveInvitationDialogController">
+
+    <Pane fx:id="backgroundPane" style="-fx-background-color: rgba(0,0,0,0.5);" StackPane.alignment="CENTER" />
+
+    <VBox fx:id="dialogCard"
+          alignment="CENTER"
+          maxHeight="200"
+          maxWidth="420"
+          prefHeight="200"
+          prefWidth="420"
+          spacing="20"
+          style="
+              -fx-background-color: white;
+              -fx-background-radius: 40;
+              -fx-border-radius: 40;
+              -fx-border-color: black;
+              -fx-border-width: 2;
+          ">
+
+        <padding>
+            <Insets bottom="25" left="25" right="25" top="25" />
+        </padding>
+
+        <Label fx:id="titleLabel" text="Ahmed wants to play with you!">
+            <font>
+                <Font name="Comic Sans MS Bold" size="18.0" />
+            </font>
+        </Label>
+
+        <HBox alignment="CENTER" spacing="15">
+            <Label text="Record Game">
+                <font>
+                    <Font name="Comic Sans MS Bold" size="14.0" />
+                </font>
+            </Label>
+            <ToggleButton fx:id="recordToggle" 
+                          prefHeight="35" prefWidth="70"
+                          style="-fx-background-color: #cccccc; -fx-background-radius: 20;"
+                          onAction="#onRecordToggle" />
+        </HBox>
+
+        <HBox alignment="CENTER" spacing="20">
+            <Button fx:id="acceptButton" onAction="#accept" prefHeight="50" prefWidth="140" 
+                    style="-fx-background-color: #4CAF50; -fx-border-color: black; -fx-border-width: 2; -fx-background-radius: 50; -fx-border-radius: 50;" 
+                    text="Accept">
+                <font>
+                    <Font name="Comic Sans MS Bold" size="14.0" />
+                </font>
+            </Button>
+            <Button fx:id="denyButton" onAction="#deny" prefHeight="50" prefWidth="140" 
+                    style="-fx-background-color: #F34B4E; -fx-border-color: black; -fx-border-width: 2; -fx-background-radius: 50; -fx-border-radius: 50;" 
+                    text="Deny">
+                <font>
+                    <Font name="Comic Sans MS Bold" size="14.0" />
+                </font>
+            </Button>
+            
+        </HBox>
+
+    </VBox>
+</StackPane>
