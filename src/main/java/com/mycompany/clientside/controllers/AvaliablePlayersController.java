@@ -56,6 +56,51 @@ public class AvaliablePlayersController implements Initializable {
             playerService = new PlayerService(conn);
             avaliablesPlayers = new ArrayList<>();
             loadPlayers();
+            System.out.println("initialize");
+
+            new Thread(() -> {
+                try {
+                    String line;
+                    while ((line = conn.getReader().readLine()) != null) {
+                        String msg;
+                        if (line.contains(":")) msg = line.substring(0,line.indexOf(":")+1).trim();
+                        else msg = line.split(" ")[0];
+
+                        switch (msg) {
+                            case "INVITE_FROM":
+                                String fromPlayer = line.substring("INVITE_FROM".length()).trim();
+                                Platform.runLater(() -> {
+                                    GameDialogs.openReceiveInvitationDialog(
+                                            playersListContainer.getScene().getRoot(),
+                                            fromPlayer,
+                                            () -> conn.getWriter().println("INVITE_ACCEPT " + fromPlayer),
+                                            () -> conn.getWriter().println("INVITE_REJECT " + fromPlayer)
+                                    );
+                                });
+                                break;
+                            case "AVAILABLE_PLAYERS:":
+                                System.out.println("AVAILABLE_PLAYERS Block.");
+                                loadPlayers();
+                                break;
+                            case "START":
+                                Platform.runLater(()
+                                        -> SceneNavigator.navigateTo(playersListContainer.getScene().getRoot(), "/fxml/Game.fxml")
+                                );
+                                break;
+
+                            case "INVITE_REJECT":
+                                System.out.println("Invitation rejected");
+                                break;
+
+                            default:
+                                System.out.println("Unknown message: " + msg + "\nLine:" + line);
+                        }
+
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }).start();
         });
     }
 
@@ -83,30 +128,30 @@ public class AvaliablePlayersController implements Initializable {
         GameDialogs.openInvitationDialog(root, player.getName());
         conn.getWriter().println("INVITE " + player.getId());
 
-      new Thread(() -> {
-        try {
-            String msgFromServer = conn.getReader().readLine();
-            System.out.println("Server Response: " + msgFromServer);
+        new Thread(() -> {
+            try {
+                String msgFromServer = conn.getReader().readLine();
+                System.out.println("Server Response: " + msgFromServer);
 
-            String[] parts = msgFromServer.split(" ");
-            String command = parts[0];
+                String[] parts = msgFromServer.split(" ");
+                String command = parts[0];
 
-            Platform.runLater(() -> {
-                switch (command) {
-                    case "INVITE_ACCEPT":
-                        SceneNavigator.navigateTo(root, "/fxml/Game.fxml");
-                        break;
+                Platform.runLater(() -> {
+                    switch (command) {
+                        case "START":
+                            SceneNavigator.navigateTo(root, "/fxml/Game.fxml");
+                            break;
 
-                    case "INVITE_REJECT":
+                        case "INVITE_REJECT":
 //                        DialogUtil.showInfo(root, "Invitation Rejected");
-                        break;
-                }
-            });
+                            break;
+                    }
+                });
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }).start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     private void loadPlayers() {
