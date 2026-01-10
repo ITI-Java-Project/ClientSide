@@ -4,7 +4,6 @@ import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
 import com.mycompany.clientside.service.ClientMessageCallback;
-import com.mycompany.clientside.service.ClientMessageListener;
 import com.mycompany.clientside.service.PlayerService;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.GameDialogs;
@@ -147,8 +146,16 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
                         conn.getWriter().println("INVITE_ACCEPT");
                     },
                     () -> {
-                        System.out.println("Invitation Denied");
+                        conn.getWriter().println("INVITE_REJECT");
                     });
+        });
+    }
+
+    @Override
+    public void onInviteRejected(String[] parts) {
+        Parent root = leaderBoardText.getScene().getRoot();
+        Platform.runLater(() -> {
+            GameDialogs.openRejectInvitationDialog(root, parts[2]);
         });
     }
 }

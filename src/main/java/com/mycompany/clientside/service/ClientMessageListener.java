@@ -33,14 +33,12 @@ public class ClientMessageListener implements Runnable {
             String line;
             while (running && (line = conn.getReader().readLine()) != null) {
                 String msg = line.trim();
-                Platform.runLater(() -> onMessage(msg));
+                Platform.runLater(() -> onMessage(msg)); //why runLater?
             }
         } catch (IOException e) {
             System.out.println("Connection closed.");
         }
     }
-
-    
 
     private void onMessage(String msg) {
         System.out.println("Received from Server: " + msg);
@@ -56,7 +54,10 @@ public class ClientMessageListener implements Runnable {
                 }
                 break;
             case "INVITE_REJECT":
-                handleRejectInvitation(msg);
+               if (callback != null) {
+                    String[] parts = msg.split(" ", 3);
+                    callback.onInviteRejected(parts);
+                }
                 break;
             case "AVAILABLE_PLAYERS":
                 if (callback != null) {
@@ -88,13 +89,13 @@ public class ClientMessageListener implements Runnable {
         System.out.println("Move received: " + row + "," + col);
     }
 
-    private void handleStartGame() {
-        System.out.println("Game Started!");
-    }
+//    private void handleStartGame() {
+//        System.out.println("Game Started!");
+//    }
 
-    private void handleRejectInvitation(String msg) {
-        System.out.println("Invitation rejected");
-    }
+//    private void handleRejectInvitation(String msg) {
+//        System.out.println("Invitation rejected");
+//    }
 
     private List<Player> getAllAvailablePlayers(String response) {
         if (response.contains(":")) {
