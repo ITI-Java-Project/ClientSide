@@ -67,8 +67,6 @@ public class RecordingController implements Initializable {
                 return MatchResultGame.WIN;
             case LOSE:
                 return MatchResultGame.LOSE;
-            case DRAW:
-                return MatchResultGame.DRAW;
             default:
                 return MatchResultGame.DRAW;
         }
