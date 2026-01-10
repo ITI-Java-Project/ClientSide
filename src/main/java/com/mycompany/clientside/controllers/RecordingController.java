@@ -1,8 +1,13 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.matchRecording.Match;
+import com.mycompany.clientside.matchRecording.MatchRecorder;
+import com.mycompany.clientside.matchRecording.Result;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,14 +31,48 @@ public class RecordingController implements Initializable {
     @FXML
     private ImageView settingsIcon;
 
+    private MatchRecorder matchRecorder;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        loadRecord("Ahmed Salah", "2025-01-01", "08:30 PM", MatchResultGame.WIN);
-        loadRecord("Omar Hassan", "2025-01-02", "10:15 PM", MatchResultGame.LOSE);
-        loadRecord("Mohamed Ali", "2025-01-03", "09:00 PM", MatchResultGame.DRAW);
+        matchRecorder = new MatchRecorder("");
+        loadAllMatches();
     }
 
-    private void loadRecord(String playerName, String date, String time, MatchResultGame result) {
+    private void loadAllMatches() {
+        List<Match> matches = matchRecorder.loadAllMatches();
+        
+        if (matches.isEmpty()) {
+            Label noRecordsLabel = new Label("No match recordings found");
+            noRecordsLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #666;");
+            recordsContainer.getChildren().add(noRecordsLabel);
+            return;
+        }
+
+        for (Match match : matches) {
+            String playerName = match.getOponentName();
+            String date = dateFormat.format(match.getDate());
+            String time = timeFormat.format(match.getDate());
+            MatchResultGame result = convertResultToMatchResultGame(match.getResult());
+            
+            loadRecord(playerName, date, time, result, match);
+        }
+    }
+
+    private MatchResultGame convertResultToMatchResultGame(Result result) {
+        switch (result) {
+            case WIN:
+                return MatchResultGame.WIN;
+            case LOSE:
+                return MatchResultGame.LOSE;
+            default:
+                return MatchResultGame.DRAW;
+        }
+    }
+
+    private void loadRecord(String playerName, String date, String time, MatchResultGame result, Match match) {
         try {
             FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/fxml/RecordingCard.fxml")
@@ -43,12 +82,23 @@ public class RecordingController implements Initializable {
             RecordingCardController controller = loader.getController();
 
             controller.setData(playerName, date, time, result);
+            
+            // Make card clickable to view match replay
+            card.setOnMouseClicked(event -> openMatchReplay(match));
+            card.setStyle(card.getStyle() + "-fx-cursor: hand;");
 
             recordsContainer.getChildren().add(card);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void openMatchReplay(Match match) {
+        SceneNavigator.navigateTo(recordsContainer, "/fxml/RecordedMatch.fxml", 
+            (RecordedMatchController controller) -> {
+                controller.setMatch(match);
+            });
     }
 
     @FXML
@@ -58,8 +108,7 @@ public class RecordingController implements Initializable {
 
     @FXML
     private void goToLeaderBoard(MouseEvent event) {
-               SceneNavigator.navigateTo(leaderBoardText, "/fxml/LeaderBoard.fxml");
-
+        SceneNavigator.navigateTo(leaderBoardText, "/fxml/LeaderBoard.fxml");
     }
 
     @FXML
