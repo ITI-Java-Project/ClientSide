@@ -3,6 +3,8 @@ package com.mycompany.clientside.controllers;
 import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
+import com.mycompany.clientside.service.ClientMessageCallback;
+import com.mycompany.clientside.service.ClientMessageListener;
 import com.mycompany.clientside.service.PlayerService;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.GameDialogs;
@@ -28,7 +30,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Window;
 
-public class AvaliablePlayersController implements Initializable {
+public class AvaliablePlayersController implements Initializable, ClientMessageCallback {
 
     @FXML
     private ImageView bgImage;
@@ -47,6 +49,7 @@ public class AvaliablePlayersController implements Initializable {
     private Window owner;
     private PlayerService playerService;
     private List<Player> avaliablesPlayers;
+    private Thread th;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -55,52 +58,10 @@ public class AvaliablePlayersController implements Initializable {
             conn = ConnectionManager.getConnection();
             playerService = new PlayerService(conn);
             avaliablesPlayers = new ArrayList<>();
-            loadPlayers();
-            System.out.println("initialize");
+            conn.startListener(this);
 
-            new Thread(() -> {
-                try {
-                    String line;
-                    while ((line = conn.getReader().readLine()) != null) {
-                        String msg;
-                        if (line.contains(":")) msg = line.substring(0,line.indexOf(":")+1).trim();
-                        else msg = line.split(" ")[0];
+            conn.getWriter().println("GET_AVAILABLE_PLAYERS");
 
-                        switch (msg) {
-                            case "INVITE_FROM":
-                                String fromPlayer = line.substring("INVITE_FROM".length()).trim();
-                                Platform.runLater(() -> {
-                                    GameDialogs.openReceiveInvitationDialog(
-                                            playersListContainer.getScene().getRoot(),
-                                            fromPlayer,
-                                            () -> conn.getWriter().println("INVITE_ACCEPT " + fromPlayer),
-                                            () -> conn.getWriter().println("INVITE_REJECT " + fromPlayer)
-                                    );
-                                });
-                                break;
-                            case "AVAILABLE_PLAYERS:":
-                                System.out.println("AVAILABLE_PLAYERS Block.");
-                                loadPlayers();
-                                break;
-                            case "START":
-                                Platform.runLater(()
-                                        -> SceneNavigator.navigateTo(playersListContainer.getScene().getRoot(), "/fxml/Game.fxml")
-                                );
-                                break;
-
-                            case "INVITE_REJECT":
-                                System.out.println("Invitation rejected");
-                                break;
-
-                            default:
-                                System.out.println("Unknown message: " + msg + "\nLine:" + line);
-                        }
-
-                    }
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }).start();
         });
     }
 
@@ -120,46 +81,17 @@ public class AvaliablePlayersController implements Initializable {
         DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
 
-    // Challenge action
     @FXML
     private void challengeAction(Player player) {
         Parent root = settingsIcon.getScene().getRoot();
         System.out.println("Player Details : " + player.getName() + "- ID : " + player.getId());
         GameDialogs.openInvitationDialog(root, player.getName());
         conn.getWriter().println("INVITE " + player.getId());
-
-        new Thread(() -> {
-            try {
-                String msgFromServer = conn.getReader().readLine();
-                System.out.println("Server Response: " + msgFromServer);
-
-                String[] parts = msgFromServer.split(" ");
-                String command = parts[0];
-
-                Platform.runLater(() -> {
-                    switch (command) {
-                        case "START":
-                            SceneNavigator.navigateTo(root, "/fxml/Game.fxml");
-                            break;
-
-                        case "INVITE_REJECT":
-//                        DialogUtil.showInfo(root, "Invitation Rejected");
-                            break;
-                    }
-                });
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
     }
 
-    private void loadPlayers() {
-        new Thread(() -> {
-            List<Player> players = playerService.getAllavaliablesPlayers();
-
-            Platform.runLater(() -> showPlayers(players));
-        }).start();
+    @Override
+    public void loadPlayers(List<Player> players) {
+        Platform.runLater(() -> showPlayers(players));
     }
 
     private void showPlayers(List<Player> players) {
@@ -195,5 +127,28 @@ public class AvaliablePlayersController implements Initializable {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void startGame() {
+        System.out.println("=================================");
+
+        Platform.runLater(() -> {
+            SceneNavigator.navigateTo(leaderBoardText, "/fxml/Game.fxml");
+        });
+    }
+
+    @Override
+    public void onInviteReceived(String[] parts) {
+        Parent root = leaderBoardText.getScene().getRoot();
+        Platform.runLater(() -> {
+            GameDialogs.openReceiveInvitationDialog(root, parts[2],
+                    () -> {
+                        conn.getWriter().println("INVITE_ACCEPT");
+                    },
+                    () -> {
+                        System.out.println("Invitation Denied");
+                    });
+        });
     }
 }
