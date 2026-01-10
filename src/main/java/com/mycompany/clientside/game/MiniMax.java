@@ -43,7 +43,6 @@ public class MiniMax {
     private int minimax(char[][] board, int depth, boolean isMaximizing) {
         Integer result = evaluate(board);
         if (result != null) {
-            // Depth-based scoring
             return result > 0 ? result - depth : result + depth;
         }
 

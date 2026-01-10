@@ -25,7 +25,6 @@ import javafx.scene.input.MouseEvent;
  */
 public class StartController implements Initializable {
 
-    
     @FXML
     private Label leaderBoardText;
     @FXML
@@ -40,19 +39,17 @@ public class StartController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        
     }
-
 
     @FXML
     private void goToLeaderBoard(MouseEvent event) {
-       SceneNavigator.navigateTo(leaderBoardText, "/fxml/LeaderBoard.fxml");
+        SceneNavigator.navigateTo(leaderBoardText, "/fxml/LeaderBoard.fxml");
     }
 
     @FXML
     private void goToSettings(MouseEvent event) {
-        Parent root =  settingsIcon.getScene().getRoot();
-        DialogUtil.openSettingsDialog(root);
+        Parent root = settingsIcon.getScene().getRoot();
+        DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
 
     @FXML

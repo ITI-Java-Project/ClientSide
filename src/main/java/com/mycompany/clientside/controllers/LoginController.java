@@ -1,6 +1,7 @@
 package com.mycompany.clientside.controllers;
 
 import com.mycompany.clientside.auth.Authentication;
+import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.connection.LocalConnection;
 import com.mycompany.clientside.utils.AlertUtil;
@@ -41,7 +42,8 @@ public class LoginController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Platform.runLater(() -> {
             owner = loginButton.getScene().getWindow();
-            conn = new LocalConnection(owner);
+            ConnectionManager.init((new LocalConnection(owner)));
+            conn = ConnectionManager.getConnection();     
             auth = new Authentication(conn);
         });
     }

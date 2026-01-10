@@ -1,6 +1,5 @@
 package com.mycompany.clientside.utils;
 
-import com.mycompany.clientside.controllers.CustomDialogController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,9 +10,30 @@ public class DialogUtil {
 
     private DialogUtil() {}
 
-    public static void openSettingsDialog(Parent root) {
-        StackPane overlayRoot = ensureOverlayRoot(root);
-        showSettingsDialog(overlayRoot);
+    public static Object openDialog(Parent root, String fxmlPath) {
+        try {
+            StackPane overlayRoot = ensureOverlayRoot(root);
+            
+            if (!overlayRoot.getChildren().isEmpty()) {
+                overlayRoot.getChildren().get(0).setEffect(new GaussianBlur(20));
+            }
+
+            FXMLLoader loader = new FXMLLoader(DialogUtil.class.getResource(fxmlPath));
+            Parent dialog = loader.load();
+
+            Object controller = loader.getController();
+            controller.getClass()
+                    .getMethod("setRootPane", StackPane.class)
+                    .invoke(controller, overlayRoot);
+
+            overlayRoot.getChildren().add(dialog);
+            
+            return controller;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private static StackPane ensureOverlayRoot(Parent root) {
@@ -25,25 +45,5 @@ public class DialogUtil {
         StackPane wrapper = new StackPane(root);
         scene.setRoot(wrapper);
         return wrapper;
-    }
-
-    private static void showSettingsDialog(StackPane overlayRoot) {
-        try {
-            if (!overlayRoot.getChildren().isEmpty()) {
-                overlayRoot.getChildren().get(0).setEffect(new GaussianBlur(20));
-            }
-
-            FXMLLoader loader = new FXMLLoader(DialogUtil.class.getResource("/fxml/CustomDialog.fxml"));//in the future we can pass this path instead to handdle multiple dialogues
-            Parent dialog = loader.load();
-
-            CustomDialogController controller =
-                    loader.getController();
-            controller.setRootPane(overlayRoot);
-
-            overlayRoot.getChildren().add(dialog);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

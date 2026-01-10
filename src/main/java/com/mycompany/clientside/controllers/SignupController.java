@@ -1,6 +1,8 @@
 package com.mycompany.clientside.controllers;
 
 import com.mycompany.clientside.auth.Authentication;
+import com.mycompany.clientside.connection.ConnectionManager;
+import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.connection.LocalConnection;
 import com.mycompany.clientside.utils.AlertUtil;
 import com.mycompany.clientside.utils.SceneNavigator;
@@ -32,7 +34,7 @@ public class SignupController implements Initializable {
     @FXML
     private Button signupButton;
 
-    private LocalConnection con;
+    private ConnectionStrategy con;
     private Authentication auth;
     private Window owner;
 
@@ -40,7 +42,8 @@ public class SignupController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         Platform.runLater(() -> {
             owner = signupButton.getScene().getWindow();
-            con = new LocalConnection(owner);
+            ConnectionManager.init((new LocalConnection(owner)));
+            con = ConnectionManager.getConnection();  
             auth = new Authentication(con);
         });
     }

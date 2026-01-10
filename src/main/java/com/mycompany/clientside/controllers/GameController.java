@@ -314,6 +314,6 @@ public class GameController implements Initializable {
     @FXML
     private void handleSettingClick(ActionEvent event) {
         Parent root = ((Node) event.getSource()).getScene().getRoot();
-        DialogUtil.openSettingsDialog(root);
+        DialogUtil.openDialog(root,"/fxml/CustomDialog.fxml");
     }
 }
