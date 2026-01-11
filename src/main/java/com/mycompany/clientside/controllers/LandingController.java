@@ -1,7 +1,9 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
 import javafx.fxml.FXML;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 
 public class LandingController {
@@ -15,7 +17,24 @@ public class LandingController {
 
     @FXML
     private void handleLogin() { 
-        SceneNavigator.navigateTo(loginButton, "/fxml/Login.fxml");
+//        SceneNavigator.navigateTo(loginButton, "/fxml/Login.fxml");
+        Parent root = loginButton.getScene().getRoot();
+
+        GameDialogs.openChooseTurnDialog(
+    root,
+    () -> {
+        // X was chosen
+        System.out.println("Playing as X");
+    },
+    () -> {
+        // O was chosen
+        System.out.println("Playing as O");
+    },
+    () -> {
+        // Cancelled
+        System.out.println("Cancelled");
+    }
+);
     }
 
     @FXML
