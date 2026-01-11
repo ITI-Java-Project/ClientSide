@@ -186,4 +186,8 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
     @Override
     public void endGame() {
     }
+
+    @Override
+    public void loadLeaderBoard(List<Player> players) {
+    }
 }

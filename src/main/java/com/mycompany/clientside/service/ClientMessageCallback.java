@@ -26,4 +26,7 @@ public interface ClientMessageCallback {
     void onCellOccupied();
     
     void endGame();
+    
+    void loadLeaderBoard(List<Player> players);
+
 }

@@ -62,12 +62,18 @@ public class ClientMessageListener implements Runnable {
                     callback.loadPlayers(getAllAvailablePlayers(msg));
                 }
                 break;
-                
-            case "END" :
-                if(callback != null){
+
+            case "END":
+                if (callback != null) {
                     callback.endGame();
                 }
                 break;
+            case "ALL_PLAYERS":
+                if (callback != null) {
+                    callback.loadLeaderBoard(getAllPlayers(msg));
+                }
+                break;
+
             case "INVITE_FROM": // INVITE_FROM 5 MOAZ
                 if (callback != null) {
                     String[] parts = msg.split(" ", 3);
@@ -108,6 +114,18 @@ public class ClientMessageListener implements Runnable {
         }
     }
 
+    private List<Player> getAllPlayers(String response) {
+        if (response.contains(":")) {
+            response = response.substring(response.indexOf(":") + 1).trim();
+        }
+
+        if ("NONE".equals(response)) {
+            return new ArrayList<>();
+        }
+
+        return JsonUtil.fromJsonList(response);
+    }
+
     private String extractCommand(String msg) {
         if (msg.contains(":")) {
             return msg.substring(0, msg.indexOf(":"));
@@ -118,11 +136,11 @@ public class ClientMessageListener implements Runnable {
     private void handleMove(String msg) {
         String[] parts = msg.split(" ");
         if (parts.length < 4) {
-            return; 
+            return;
         }
         int row = Integer.parseInt(parts[1]);
         int col = Integer.parseInt(parts[2]);
-        char player = parts[3].charAt(0); 
+        char player = parts[3].charAt(0);
 
         System.out.println("Move received: " + row + "," + col + " Player: " + player);
 

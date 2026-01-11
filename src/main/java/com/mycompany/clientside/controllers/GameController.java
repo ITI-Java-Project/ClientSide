@@ -178,7 +178,11 @@ public class GameController implements Initializable, ClientMessageCallback {
 
     @Override
     public void endGame() {
-        Parent root = player2Name.getScene().getRoot();        
+        Parent root = player2Name.getScene().getRoot();
         SceneNavigator.navigateTo(root, "/fxml/GameModes.fxml");
+    }
+
+    @Override
+    public void loadLeaderBoard(List<Player> players) {
     }
 }
