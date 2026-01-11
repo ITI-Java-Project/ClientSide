@@ -24,4 +24,6 @@ public interface ClientMessageCallback {
     void onNotYourTurn();
 
     void onCellOccupied();
+    
+    void endGame();
 }

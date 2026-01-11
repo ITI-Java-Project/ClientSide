@@ -62,6 +62,12 @@ public class ClientMessageListener implements Runnable {
                     callback.loadPlayers(getAllAvailablePlayers(msg));
                 }
                 break;
+                
+            case "END" :
+                if(callback != null){
+                    callback.endGame();
+                }
+                break;
             case "INVITE_FROM": // INVITE_FROM 5 MOAZ
                 if (callback != null) {
                     String[] parts = msg.split(" ", 3);

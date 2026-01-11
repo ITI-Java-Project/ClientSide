@@ -182,4 +182,8 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
     @Override
     public void onLose(char loser) {
     }
+
+    @Override
+    public void endGame() {
+    }
 }

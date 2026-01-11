@@ -9,6 +9,7 @@ import com.mycompany.clientside.game.OnlineGame;
 import com.mycompany.clientside.service.ClientMessageCallback;
 import com.mycompany.clientside.service.ClientMessageListener;
 import com.mycompany.clientside.utils.DialogUtil;
+import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -173,5 +174,11 @@ public class GameController implements Initializable, ClientMessageCallback {
                 ((Button) node).setText("");
             }
         }
+    }
+
+    @Override
+    public void endGame() {
+        Parent root = player2Name.getScene().getRoot();        
+        SceneNavigator.navigateTo(root, "/fxml/GameModes.fxml");
     }
 }
