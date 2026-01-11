@@ -8,10 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Platform;
 
-/**
- *
- * @author ezemo
- */
 public class ClientMessageListener implements Runnable {
 
     private final ConnectionStrategy conn;
@@ -33,7 +29,7 @@ public class ClientMessageListener implements Runnable {
             String line;
             while (running && (line = conn.getReader().readLine()) != null) {
                 String msg = line.trim();
-                Platform.runLater(() -> onMessage(msg)); //why runLater?
+                Platform.runLater(() -> onMessage(msg));
             }
         } catch (IOException e) {
             System.out.println("Connection closed.");
@@ -46,7 +42,9 @@ public class ClientMessageListener implements Runnable {
 
         switch (command) {
             case "MOVE":
-                handleMove(msg);
+                if (callback != null) {
+                    handleMove(msg);
+                }
                 break;
             case "START":
                 if (callback != null) {
@@ -54,7 +52,7 @@ public class ClientMessageListener implements Runnable {
                 }
                 break;
             case "INVITE_REJECT":
-               if (callback != null) {
+                if (callback != null) {
                     String[] parts = msg.split(" ", 3);
                     callback.onInviteRejected(parts);
                 }
@@ -64,10 +62,39 @@ public class ClientMessageListener implements Runnable {
                     callback.loadPlayers(getAllAvailablePlayers(msg));
                 }
                 break;
-            case "INVITE_FROM":
+            case "INVITE_FROM": // INVITE_FROM 5 MOAZ
                 if (callback != null) {
                     String[] parts = msg.split(" ", 3);
                     callback.onInviteReceived(parts);
+                }
+                break;
+            case "WIN":
+                if (callback != null) {
+                    char winner = msg.split(" ")[1].charAt(0);
+                    callback.onWin(winner);
+                }
+                break;
+            case "Lose":
+                if (callback != null) {
+                    char loser = msg.split(" ")[1].charAt(0);
+                    callback.onLose(loser);
+                }
+                break;
+
+            case "DRAW":
+                if (callback != null) {
+                    callback.onDraw();
+                }
+                break;
+
+            case "NOT_YOUR_TURN":
+                if (callback != null) {
+                    callback.onNotYourTurn();
+                }
+                break;
+            case "CELL_OCCUPIED":
+                if (callback != null) {
+                    callback.onCellOccupied();
                 }
                 break;
             default:
@@ -84,18 +111,19 @@ public class ClientMessageListener implements Runnable {
 
     private void handleMove(String msg) {
         String[] parts = msg.split(" ");
+        if (parts.length < 4) {
+            return; 
+        }
         int row = Integer.parseInt(parts[1]);
         int col = Integer.parseInt(parts[2]);
-        System.out.println("Move received: " + row + "," + col);
+        char player = parts[3].charAt(0); 
+
+        System.out.println("Move received: " + row + "," + col + " Player: " + player);
+
+        if (callback != null) {
+            callback.onMoveReceived(row, col, player);
+        }
     }
-
-//    private void handleStartGame() {
-//        System.out.println("Game Started!");
-//    }
-
-//    private void handleRejectInvitation(String msg) {
-//        System.out.println("Invitation rejected");
-//    }
 
     private List<Player> getAllAvailablePlayers(String response) {
         if (response.contains(":")) {
@@ -106,7 +134,7 @@ public class ClientMessageListener implements Runnable {
         }
         return JsonUtil.fromJsonList(response);
     }
-    
+
     public void stopListener() {
         running = false;
     }
