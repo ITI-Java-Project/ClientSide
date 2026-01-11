@@ -50,6 +50,8 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
     private ObservableList<Player> avaliablesPlayers;
     private Thread th;
 
+    private InvitationDialogController currentInviteDialog;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Platform.runLater(() -> {
@@ -94,7 +96,7 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
     private void challengeAction(Player player) {
         Parent root = settingsIcon.getScene().getRoot();
         System.out.println("Player Details : " + player.getName() + "- ID : " + player.getId());
-        GameDialogs.openInvitationDialog(root, player.getName());
+        currentInviteDialog = GameDialogs.openInvitationDialog(root, player.getName());
         conn.getWriter().println("INVITE " + player.getId()); // send server INVITE 5
     }
 
@@ -169,6 +171,7 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
     public void onInviteRejected(String[] parts) {
         Parent root = leaderBoardText.getScene().getRoot();
         Platform.runLater(() -> {
+            currentInviteDialog.closeDialog();
             GameDialogs.openRejectInvitationDialog(root, parts[2]);
         });
     }

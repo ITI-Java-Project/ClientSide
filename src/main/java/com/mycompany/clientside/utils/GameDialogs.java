@@ -116,8 +116,7 @@ public class GameDialogs {
                 DialogUtil.openDialog(root, "/fxml/RejectInvitationDialog.fxml");
 
         if (result != null) {
-            RejectInvitationDialogController controller =
-                    (RejectInvitationDialogController) result;
+            RejectInvitationDialogController controller = (RejectInvitationDialogController) result;
             controller.setPlayerName(playerName);
             return controller;
         }
