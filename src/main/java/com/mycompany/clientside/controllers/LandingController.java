@@ -14,27 +14,9 @@ public class LandingController {
     @FXML
     private Button signupButton;
 
-
     @FXML
-    private void handleLogin() { 
-//        SceneNavigator.navigateTo(loginButton, "/fxml/Login.fxml");
-        Parent root = loginButton.getScene().getRoot();
-
-        GameDialogs.openChooseTurnDialog(
-    root,
-    () -> {
-        // X was chosen
-        System.out.println("Playing as X");
-    },
-    () -> {
-        // O was chosen
-        System.out.println("Playing as O");
-    },
-    () -> {
-        // Cancelled
-        System.out.println("Cancelled");
-    }
-);
+    private void handleLogin() {
+        SceneNavigator.navigateTo(loginButton, "/fxml/Login.fxml");
     }
 
     @FXML
