@@ -16,35 +16,33 @@ public class ChooseTurnDialogController implements Initializable {
 
     @FXML
     private Pane backgroundPane;
-    
+
     @FXML
     private VBox dialogCard;
-    
+
     @FXML
     private Label titleLabel;
-    
+
     @FXML
     private Button xButton;
-    
+
     @FXML
     private Button oButton;
-    
+
     @FXML
     private Button cancelButton;
-    
+
     private StackPane rootPane;
-    
+
     private Consumer<Turn> onTurnSelected;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         setupDialogBehavior();
     }
-    
+
     private void setupDialogBehavior() {
-        // Close dialog when clicking outside
         backgroundPane.setOnMouseClicked(e -> cancel());
-        // Prevent clicks on dialog from closing it
         dialogCard.setOnMouseClicked(e -> e.consume());
     }
 
@@ -55,37 +53,31 @@ public class ChooseTurnDialogController implements Initializable {
     public void setTitle(String title) {
         titleLabel.setText(title);
     }
-    
-    /**
-     * Sets the callback for when a turn is selected.
-     * @param onTurnSelected Consumer that receives the selected Turn (X or O)
-     */
+
     public void setOnTurnSelected(Consumer<Turn> onTurnSelected) {
         this.onTurnSelected = onTurnSelected;
     }
-    
-    
 
     @FXML
     private void chooseX() {
         selectTurn(Turn.X);
     }
-    
+
     @FXML
     private void chooseO() {
         selectTurn(Turn.O);
     }
-    
+
     private void selectTurn(Turn turn) {
         if (onTurnSelected != null) {
             onTurnSelected.accept(turn);
         }
         closeDialog();
     }
-    
+
     @FXML
     private void cancel() {
-        
+
         closeDialog();
     }
 
