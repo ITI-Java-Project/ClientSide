@@ -8,51 +8,56 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Font?>
 
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.mycompany.clientside.controllers.RejectInvitationDialogController"
+           prefWidth="400" prefHeight="220"
+           style="-fx-background-color: transparent;"> <!-- مهم للخلفية شبه overlay -->
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.mycompany.clientside.controllers.RejectInvitationDialogController"
-            prefWidth="400" prefHeight="220"
-            style="-fx-background-color: white; -fx-background-radius: 20;">
+    <!-- شفافية خلفية للخلفية مع تأثير blur -->
+    <AnchorPane style="-fx-background-color: rgba(0,0,0,0.4);"
+                prefWidth="400" prefHeight="220"
+                onMouseClicked="#closeDialog"> <!-- لو ضغط على الخلفية يقفل الديلوج -->
+    </AnchorPane>
 
-    <VBox  alignment="CENTER"
-           maxHeight="260"
-           maxWidth="420"
-           prefHeight="260"
-           prefWidth="420"
-           spacing="25"
-           style="
-          -fx-background-color: white;
-          -fx-background-radius: 40;
-          -fx-border-radius: 40;
-          -fx-border-color: black;
-          -fx-border-width: 2;
-      ">
+    <VBox fx:id="dialogCard"
+          alignment="CENTER"
+          spacing="25"
+          maxWidth="420"
+          maxHeight="260"
+          prefWidth="420"
+          prefHeight="260"
+          style="
+              -fx-background-color: white;
+              -fx-background-radius: 20;
+              -fx-border-radius: 20;
+              -fx-border-color: black;
+              -fx-border-width: 2;">
         <padding>
             <Insets bottom="20" left="20" right="20" top="20" />
         </padding>
 
-        <Label fx:id="messageLabel"  text="Invitation Rejected">
+        <Label fx:id="messageLabel" text="Invitation Rejected">
             <font>
                 <Font name="Comic Sans MS Bold" size="18"/>
             </font>
         </Label>
 
-        <Button
-            text="Exit"
-            prefWidth="160"
-            prefHeight="60"
-            alignment="CENTER"
-            onAction="#close"
-            style="
-                -fx-background-color: #F34B4E;
-                -fx-background-radius: 50;
-                -fx-border-radius: 50;
-                -fx-border-color: black;
-                -fx-border-width: 2; ">
+        <Button text="Exit"
+                prefWidth="160"
+                prefHeight="60"
+                alignment="CENTER"
+                onAction="#closeDialog"
+                style="
+                    -fx-background-color: #F34B4E;
+                    -fx-background-radius: 50;
+                    -fx-border-radius: 50;
+                    -fx-border-color: black;
+                    -fx-border-width: 2;">
             <font>
                 <Font name="Comic Sans MS Bold" size="14"/>
             </font>
         </Button>
 
     </VBox>
-</AnchorPane>
+
+</StackPane>

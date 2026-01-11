@@ -91,8 +91,7 @@ public class GameDialogs {
         );
 
         if (result != null) {
-            RejectInvitationDialogController controller
-                    = (RejectInvitationDialogController) result;
+            RejectInvitationDialogController controller = (RejectInvitationDialogController) result;
             controller.setPlayerName(playerName);
             return controller;
         }

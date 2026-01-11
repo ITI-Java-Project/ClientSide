@@ -29,6 +29,7 @@ public class InvitationDialogController implements Initializable {
     private ToggleButton recordToggle;
     
     private StackPane rootPane;
+    
     private boolean isRecording = false;
 
     public void setRootPane(StackPane rootPane) {
@@ -75,7 +76,7 @@ public class InvitationDialogController implements Initializable {
         closeDialog();
     }
 
-    private void closeDialog() {
+    void closeDialog() {
         rootPane.getChildren().forEach(node -> node.setEffect(null));
         rootPane.getChildren().remove(rootPane.getChildren().size() - 1);
     }
