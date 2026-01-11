@@ -76,10 +76,9 @@ public class InvitationDialogController implements Initializable {
         closeDialog();
     }
 
-    void closeDialog() {
+    public void closeDialog() {
         rootPane.getChildren().forEach(node -> node.setEffect(null));
         rootPane.getChildren().remove(rootPane.getChildren().size() - 1);
     }
-
     
 }
