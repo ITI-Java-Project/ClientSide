@@ -63,6 +63,14 @@
                                         <Cursor fx:constant="HAND" />
                                     </cursor>
                                 </Label>
+                                <ImageView fx:id="refreshIcon" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#handleRefresh" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@../images/refresh.png" />
+                                    </image>
+                                    <cursor>
+                                        <Cursor fx:constant="HAND" />
+                                    </cursor>
+                                </ImageView>
                                 <ImageView fx:id="settingsIcon" fitHeight="60.0" fitWidth="60.0" onMouseClicked="#goToSettings" pickOnBounds="true" preserveRatio="true">
                                     <image>
                                         <Image url="@../images/settings.png" />

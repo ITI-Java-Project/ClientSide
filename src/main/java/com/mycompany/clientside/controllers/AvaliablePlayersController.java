@@ -10,10 +10,12 @@ import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import static javafx.collections.FXCollections.observableArrayList;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -32,8 +34,6 @@ import javafx.stage.Window;
 public class AvaliablePlayersController implements Initializable, ClientMessageCallback {
 
     @FXML
-    private ImageView bgImage;
-    @FXML
     private ImageView backIcon;
     @FXML
     private Label leaderBoardText;
@@ -42,12 +42,12 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
     @FXML
     private VBox playersListContainer;
     @FXML
-    private Label challengeLabel;
+    private ImageView refreshIcon;
 
     private ConnectionStrategy conn;
     private Window owner;
     private PlayerService playerService;
-    private List<Player> avaliablesPlayers;
+    private ObservableList<Player> avaliablesPlayers;
     private Thread th;
 
     @Override
@@ -56,11 +56,10 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
             owner = backIcon.getScene().getWindow();
             conn = ConnectionManager.getConnection();
             playerService = new PlayerService(conn);
-            avaliablesPlayers = new ArrayList<>();
+            avaliablesPlayers = observableArrayList();
             conn.startListener(this);
 
-            conn.getWriter().println("GET_AVAILABLE_PLAYERS");
-
+            requestPlayersList();
         });
     }
 
@@ -79,8 +78,19 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
         Parent root = settingsIcon.getScene().getRoot();
         DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
-
+    
     @FXML
+    private void handleRefresh(MouseEvent event) {
+        avaliablesPlayers.clear();
+        playersListContainer.getChildren().clear();
+        
+        requestPlayersList();
+    }
+
+    private void requestPlayersList() {
+        conn.getWriter().println("GET_AVAILABLE_PLAYERS");
+    }
+
     private void challengeAction(Player player) {
         Parent root = settingsIcon.getScene().getRoot();
         System.out.println("Player Details : " + player.getName() + "- ID : " + player.getId());
@@ -90,7 +100,11 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
 
     @Override
     public void loadPlayers(List<Player> players) {
-        Platform.runLater(() -> showPlayers(players));
+        Platform.runLater(() -> {
+            avaliablesPlayers.clear();
+            avaliablesPlayers.addAll(players);
+            showPlayers(avaliablesPlayers);
+        });
     }
 
     private void showPlayers(List<Player> players) {
@@ -186,4 +200,5 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
     @Override
     public void endGame() {
     }
+
 }
