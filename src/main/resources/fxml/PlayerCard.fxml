@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.Cursor?>
 
 
 <HBox xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" spacing="100"
@@ -42,6 +43,9 @@
                     <font> 
                         <Font name="Comic Sans MS" size="20.0" /> 
                     </font> 
+                    <cursor>
+                        <Cursor fx:constant="HAND" />
+                    </cursor>
                 </Label>
             </children>
         </HBox>

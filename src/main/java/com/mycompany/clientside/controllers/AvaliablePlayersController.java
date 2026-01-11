@@ -3,8 +3,10 @@ package com.mycompany.clientside.controllers;
 import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
+import com.mycompany.clientside.service.ClientMessageCallback;
 import com.mycompany.clientside.service.PlayerService;
 import com.mycompany.clientside.utils.DialogUtil;
+import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
 import java.io.IOException;
 import java.net.URL;
@@ -27,7 +29,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Window;
 
-public class AvaliablePlayersController implements Initializable {
+public class AvaliablePlayersController implements Initializable, ClientMessageCallback {
 
     @FXML
     private ImageView bgImage;
@@ -46,6 +48,7 @@ public class AvaliablePlayersController implements Initializable {
     private Window owner;
     private PlayerService playerService;
     private List<Player> avaliablesPlayers;
+    private Thread th;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -54,7 +57,10 @@ public class AvaliablePlayersController implements Initializable {
             conn = ConnectionManager.getConnection();
             playerService = new PlayerService(conn);
             avaliablesPlayers = new ArrayList<>();
-            loadPlayers();
+            conn.startListener(this);
+
+            conn.getWriter().println("GET_AVAILABLE_PLAYERS");
+
         });
     }
 
@@ -71,21 +77,20 @@ public class AvaliablePlayersController implements Initializable {
     @FXML
     private void goToSettings(MouseEvent event) {
         Parent root = settingsIcon.getScene().getRoot();
-DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
+        DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
 
-    // Challenge action
     @FXML
-    private void challengeAction(MouseEvent event) {
-
+    private void challengeAction(Player player) {
+        Parent root = settingsIcon.getScene().getRoot();
+        System.out.println("Player Details : " + player.getName() + "- ID : " + player.getId());
+        GameDialogs.openInvitationDialog(root, player.getName());
+        conn.getWriter().println("INVITE " + player.getId()); // send server INVITE 5
     }
 
-    private void loadPlayers() {
-        new Thread(() -> {
-            List<Player> players = playerService.getAllavaliablesPlayers();
-
-            Platform.runLater(() -> showPlayers(players));
-        }).start();
+    @Override
+    public void loadPlayers(List<Player> players) {
+        Platform.runLater(() -> showPlayers(players));
     }
 
     private void showPlayers(List<Player> players) {
@@ -109,10 +114,11 @@ DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
 
                 Label nameLabel = (Label) card.lookup("#playerNameLabel");
                 Label scoreLabel = (Label) card.lookup("#playerScoreLabel");
+                Label challengeLabel = (Label) card.lookup("#challengeLabel");
 
                 nameLabel.setText(player.getName());
                 scoreLabel.setText("Score: " + player.getScore());
-                // challengeLabel.setOnMouseClicked(e -> handleChallenge(player)); TODO
+                challengeLabel.setOnMouseClicked(e -> challengeAction(player));
 
                 playersListContainer.getChildren().add(card);
 
@@ -120,5 +126,64 @@ DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void startGame() {
+        System.out.println("=================================");
+        Parent root = settingsIcon.getScene().getRoot();
+        Platform.runLater(() -> {
+            SceneNavigator.navigateTo(root, "/fxml/Game.fxml");
+        });
+    }
+
+    @Override
+    public void onInviteReceived(String[] parts) {
+        Parent root = leaderBoardText.getScene().getRoot();
+        Platform.runLater(() -> {
+            GameDialogs.openReceiveInvitationDialog(root, parts[2],
+                    () -> {
+                        conn.getWriter().println("INVITE_ACCEPT " + parts[1]);
+                    },
+                    () -> {
+                        conn.getWriter().println("INVITE_REJECT " + parts[1]);
+                    });
+        });
+    }
+
+    @Override
+    public void onInviteRejected(String[] parts) {
+        Parent root = leaderBoardText.getScene().getRoot();
+        Platform.runLater(() -> {
+            GameDialogs.openRejectInvitationDialog(root, parts[2]);
+        });
+    }
+
+    @Override
+    public void onMoveReceived(int row, int col, char player) {
+    }
+
+    @Override
+    public void onWin(char winner) {
+    }
+
+    @Override
+    public void onDraw() {
+    }
+
+    @Override
+    public void onNotYourTurn() {
+    }
+
+    @Override
+    public void onCellOccupied() {
+    }
+
+    @Override
+    public void onLose(char loser) {
+    }
+
+    @Override
+    public void endGame() {
     }
 }

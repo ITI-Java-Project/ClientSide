@@ -1,5 +1,7 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.game.GameStartegy;
+import com.mycompany.clientside.game.LocalGame;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
@@ -52,17 +54,17 @@ DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
 
     @FXML
     private void handleOnline(ActionEvent event) {
-        gotToGame(onlineBtn);
+        //gotToGame(onlineBtn, new LocalGame());
     }
 
     @FXML
     private void handleLocalMultiplayer(ActionEvent event) {
-        gotToGame(localMultiplayerBtn);
+        //gotToGame(localMultiplayerBtn, new LocalGame());
     }
 
     @FXML
     private void handleCpu(ActionEvent event) {
-        gotToGame(cpuBtn);
+      //  gotToGame(cpuBtn, new LocalGame());
     }
 
     @FXML
