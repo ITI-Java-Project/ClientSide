@@ -11,12 +11,12 @@
 <StackPane xmlns:fx="http://javafx.com/fxml"
            fx:controller="com.mycompany.clientside.controllers.RejectInvitationDialogController"
            prefWidth="400" prefHeight="220"
-           style="-fx-background-color: transparent;"> <!-- مهم للخلفية شبه overlay -->
+           style="-fx-background-color: transparent;"> 
 
-    <!-- شفافية خلفية للخلفية مع تأثير blur -->
+    
     <AnchorPane style="-fx-background-color: rgba(0,0,0,0.4);"
                 prefWidth="400" prefHeight="220"
-                onMouseClicked="#closeDialog"> <!-- لو ضغط على الخلفية يقفل الديلوج -->
+                onMouseClicked="#closeDialog"> 
     </AnchorPane>
 
     <VBox fx:id="dialogCard"
