@@ -85,7 +85,7 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
         Parent root = settingsIcon.getScene().getRoot();
         System.out.println("Player Details : " + player.getName() + "- ID : " + player.getId());
         GameDialogs.openInvitationDialog(root, player.getName());
-        conn.getWriter().println("INVITE " + player.getId());
+        conn.getWriter().println("INVITE " + player.getId()); // send server INVITE 5
     }
 
     @Override
@@ -131,9 +131,9 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
     @Override
     public void startGame() {
         System.out.println("=================================");
-
+        Parent root = settingsIcon.getScene().getRoot();
         Platform.runLater(() -> {
-            SceneNavigator.navigateTo(leaderBoardText, "/fxml/Game.fxml");
+            SceneNavigator.navigateTo(root, "/fxml/Game.fxml");
         });
     }
 
@@ -143,10 +143,10 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
         Platform.runLater(() -> {
             GameDialogs.openReceiveInvitationDialog(root, parts[2],
                     () -> {
-                        conn.getWriter().println("INVITE_ACCEPT");
+                        conn.getWriter().println("INVITE_ACCEPT " + parts[1]);
                     },
                     () -> {
-                        conn.getWriter().println("INVITE_REJECT");
+                        conn.getWriter().println("INVITE_REJECT " + parts[1]);
                     });
         });
     }
@@ -157,5 +157,29 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
         Platform.runLater(() -> {
             GameDialogs.openRejectInvitationDialog(root, parts[2]);
         });
+    }
+
+    @Override
+    public void onMoveReceived(int row, int col, char player) {
+    }
+
+    @Override
+    public void onWin(char winner) {
+    }
+
+    @Override
+    public void onDraw() {
+    }
+
+    @Override
+    public void onNotYourTurn() {
+    }
+
+    @Override
+    public void onCellOccupied() {
+    }
+
+    @Override
+    public void onLose(char loser) {
     }
 }
