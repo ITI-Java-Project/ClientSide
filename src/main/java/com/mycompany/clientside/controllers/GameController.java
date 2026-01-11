@@ -39,6 +39,8 @@ public class GameController implements Initializable, ClientMessageCallback {
     @FXML
     private ImageView player2Avatar;
     @FXML
+    private Label player2Score;
+    @FXML
     private Button settingsButton;
     @FXML
     private GridPane gameBoard;
@@ -57,8 +59,11 @@ public class GameController implements Initializable, ClientMessageCallback {
     // USER ACTIONS
     @FXML
     private void handleCellClick(ActionEvent event) {
-        Button clicked = (Button) event.getSource();
+        if (gameOver || waitingForMove) {
+            return;
+        }
 
+        Button clicked = (Button) event.getSource();
         if (!clicked.getText().isEmpty()) {
             return;
         }
@@ -72,11 +77,8 @@ public class GameController implements Initializable, ClientMessageCallback {
 
     }
 
-    @FXML
-    private void handleSettingClick(ActionEvent event) {
-        Parent root = ((Node) event.getSource()).getScene().getRoot();
-        DialogUtil.openDialog(root, "/fxml/GameDialog.fxml");
-    }
+    private void recordAiMove() {
+        char[][] board = Board.getInstance().getBoard();
 
     // CALLBACKS
     @Override
@@ -166,6 +168,27 @@ public class GameController implements Initializable, ClientMessageCallback {
                 node.setDisable(false);
             }
         }
+        return null;
+    }
+
+    private void switchPlayer() {
+        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+    }
+
+    private boolean checkGameOver() {
+        int[][] winningCells = gameStrategy.winner();
+
+        if (winningCells != null) {
+            handleWin(winningCells);
+            return true;
+        }
+
+        if (isBoardFull()) {
+            handleDraw();
+            return true;
+        }
+
+        return false;
     }
 
     private void clearBoardUI() {
