@@ -2,6 +2,7 @@ package com.mycompany.clientside.controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -9,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import models.Turn;
 
 public class ChooseTurnDialogController implements Initializable {
 
@@ -32,62 +34,63 @@ public class ChooseTurnDialogController implements Initializable {
     
     private StackPane rootPane;
     
-    private Runnable onChooseX;
-    private Runnable onChooseO;
-    private Runnable onCancel;
-
-    public void setRootPane(StackPane rootPane) {
-        this.rootPane = rootPane;
-    }
+    private Consumer<Turn> onTurnSelected;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        setupDialogBehavior();
+    }
+    
+    private void setupDialogBehavior() {
+        // Close dialog when clicking outside
         backgroundPane.setOnMouseClicked(e -> cancel());
+        // Prevent clicks on dialog from closing it
         dialogCard.setOnMouseClicked(e -> e.consume());
+    }
+
+    public void setRootPane(StackPane rootPane) {
+        this.rootPane = rootPane;
     }
 
     public void setTitle(String title) {
         titleLabel.setText(title);
     }
     
-    public void setOnChooseX(Runnable onChooseX) {
-        this.onChooseX = onChooseX;
+    /**
+     * Sets the callback for when a turn is selected.
+     * @param onTurnSelected Consumer that receives the selected Turn (X or O)
+     */
+    public void setOnTurnSelected(Consumer<Turn> onTurnSelected) {
+        this.onTurnSelected = onTurnSelected;
     }
     
-    public void setOnChooseO(Runnable onChooseO) {
-        this.onChooseO = onChooseO;
-    }
     
-    public void setOnCancel(Runnable onCancel) {
-        this.onCancel = onCancel;
-    }
 
     @FXML
     private void chooseX() {
-        if (onChooseX != null) {
-            onChooseX.run();
-        }
-        closeDialog();
+        selectTurn(Turn.X);
     }
     
     @FXML
     private void chooseO() {
-        if (onChooseO != null) {
-            onChooseO.run();
+        selectTurn(Turn.O);
+    }
+    
+    private void selectTurn(Turn turn) {
+        if (onTurnSelected != null) {
+            onTurnSelected.accept(turn);
         }
         closeDialog();
     }
     
     @FXML
     private void cancel() {
-        if (onCancel != null) {
-            onCancel.run();
-        }
+        
         closeDialog();
     }
 
     private void closeDialog() {
-        if (rootPane != null) {
+        if (rootPane != null && !rootPane.getChildren().isEmpty()) {
             rootPane.getChildren().forEach(node -> node.setEffect(null));
             rootPane.getChildren().remove(rootPane.getChildren().size() - 1);
         }

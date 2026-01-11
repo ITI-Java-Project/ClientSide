@@ -6,6 +6,7 @@ import com.mycompany.clientside.controllers.ReceiveInvitationDialogController;
 import com.mycompany.clientside.controllers.VideoDialogController;
 import java.util.function.Consumer;
 import javafx.scene.Parent;
+import models.Turn;
 
 public class GameDialogs {
 
@@ -83,21 +84,17 @@ public class GameDialogs {
     }
 
     public static ChooseTurnDialogController openChooseTurnDialog(
-        Parent root,
-        Runnable onChooseX,
-        Runnable onChooseO,
-        Runnable onCancel) {
-    
-    Object result = DialogUtil.openDialog(root, "/fxml/ChooseTurnDialog.fxml");
-    
-    if (result != null) {
-        ChooseTurnDialogController controller = (ChooseTurnDialogController) result;
-        controller.setOnChooseX(onChooseX);
-        controller.setOnChooseO(onChooseO);
-        controller.setOnCancel(onCancel);
-        return controller;
+            Parent root,
+            Consumer<Turn> onTurnSelected) {
+
+        Object result = DialogUtil.openDialog(root, "/fxml/ChooseTurnDialog.fxml");
+
+        if (result != null) {
+            ChooseTurnDialogController controller = (ChooseTurnDialogController) result;
+            controller.setOnTurnSelected(onTurnSelected);
+            return controller;
+        }
+
+        return null;
     }
-    
-    return null;
-}
 }
