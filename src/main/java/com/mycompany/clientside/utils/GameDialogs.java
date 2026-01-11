@@ -2,6 +2,7 @@ package com.mycompany.clientside.utils;
 
 import com.mycompany.clientside.controllers.InvitationDialogController;
 import com.mycompany.clientside.controllers.ReceiveInvitationDialogController;
+import com.mycompany.clientside.controllers.RejectInvitationDialogController;
 import com.mycompany.clientside.controllers.VideoDialogController;
 import javafx.scene.Parent;
 
@@ -74,6 +75,25 @@ public class GameDialogs {
             controller.setPlayerName(playerName);
             controller.setOnAccept(onAccept);
             controller.setOnDeny(onDeny);
+            return controller;
+        }
+
+        return null;
+    }
+
+    public static RejectInvitationDialogController openRejectInvitationDialog(
+            Parent root,
+            String playerName) {
+
+        Object result = DialogUtil.openDialog(
+                root,
+                "/fxml/RejectInvitationDialog.fxml"
+        );
+
+        if (result != null) {
+            RejectInvitationDialogController controller
+                    = (RejectInvitationDialogController) result;
+            controller.setPlayerName(playerName);
             return controller;
         }
 

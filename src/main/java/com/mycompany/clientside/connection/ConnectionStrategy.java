@@ -1,5 +1,7 @@
 package com.mycompany.clientside.connection;
 
+import com.mycompany.clientside.service.ClientMessageCallback;
+import com.mycompany.clientside.service.ClientMessageListener;
 import com.mycompany.clientside.utils.AlertUtil;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,6 +21,26 @@ public abstract class ConnectionStrategy {
     protected int portNumber;
     protected Thread listenerThread;
     protected Window owner;
+    protected ClientMessageListener clientMessageListener;
+
+    public ClientMessageListener getClientMessageListener() {
+        return clientMessageListener;
+    }
+
+    public void setClientMessageListener(ClientMessageListener clientMessageListener) {
+        this.clientMessageListener = clientMessageListener;
+    }
+
+    public synchronized void startListener(ClientMessageCallback callback) {
+        if (clientMessageListener == null) {
+            clientMessageListener = new ClientMessageListener(this, callback);
+            listenerThread = new Thread(clientMessageListener);
+            listenerThread.setDaemon(true);
+            listenerThread.start();
+        } else {
+            clientMessageListener.setCallback(callback);
+        }
+    }
 
     public Socket getSocket() {
         return socket;
@@ -66,7 +88,7 @@ public abstract class ConnectionStrategy {
             isConnected = false;
 
         } catch (IOException e) {
-            AlertUtil.showAlert("Close Error", "Error while closing connection.", Alert.AlertType.ERROR,owner);
+            AlertUtil.showAlert("Close Error", "Error while closing connection.", Alert.AlertType.ERROR, owner);
         }
     }
 }
