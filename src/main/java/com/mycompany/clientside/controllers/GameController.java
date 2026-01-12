@@ -1,8 +1,5 @@
 package com.mycompany.clientside.controllers;
 
-import com.mycompany.clientside.callbacks.GameActionCallback;
-import com.mycompany.clientside.callbacks.GameLifecycleCallback;
-import com.mycompany.clientside.callbacks.GameResultCallback;
 import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
@@ -27,7 +24,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 
-public class GameController implements Initializable , GameLifecycleCallback ,GameActionCallback, GameResultCallback{
+public class GameController implements Initializable, ClientMessageCallback {
 
     @FXML
     private ImageView player1Avatar;
@@ -48,16 +45,12 @@ public class GameController implements Initializable , GameLifecycleCallback ,Ga
 
     private GameStartegy gameStrategy;
     private ConnectionStrategy conn;
-    private ClientMessageListener listener;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         System.out.println("GameController INITIALIZED");
         conn = ConnectionManager.getConnection();
-        listener = conn.getClientMessageListener();
-        if (listener != null) {
-            listener.setCallback(this);
-        }
+        conn.startListener(this);
         gameStrategy = new OnlineGame();
     }
 
@@ -124,7 +117,17 @@ public class GameController implements Initializable , GameLifecycleCallback ,Ga
         clearBoardUI();
     }
 
+    @Override
+    public void loadPlayers(List<Player> players) {
+    }
 
+    @Override
+    public void onInviteReceived(String[] parts) {
+    }
+
+    @Override
+    public void onInviteRejected(String[] parts) {
+    }
 
     @Override
     public void onCellOccupied() {
@@ -179,5 +182,7 @@ public class GameController implements Initializable , GameLifecycleCallback ,Ga
         SceneNavigator.navigateTo(root, "/fxml/GameModes.fxml");
     }
 
-
+    @Override
+    public void loadLeaderBoard(List<Player> players) {
+    }
 }
