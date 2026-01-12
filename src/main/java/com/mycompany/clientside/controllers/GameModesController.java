@@ -34,9 +34,7 @@ public class GameModesController implements Initializable {
     @FXML
     private ImageView backBtn;
 
-    /**
-     * Initializes the controller class.
-     */
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
@@ -49,22 +47,22 @@ public class GameModesController implements Initializable {
     @FXML
     private void goToSettings(MouseEvent event) {
         Parent root = settingsIcon.getScene().getRoot();
-DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
+        DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
 
     @FXML
     private void handleOnline(ActionEvent event) {
-        //gotToGame(onlineBtn, new LocalGame());
+        gotToGame(onlineBtn, new LocalGame());
     }
 
     @FXML
     private void handleLocalMultiplayer(ActionEvent event) {
-        //gotToGame(localMultiplayerBtn, new LocalGame());
+        gotToGame(localMultiplayerBtn, new LocalGame());
     }
 
     @FXML
     private void handleCpu(ActionEvent event) {
-      //  gotToGame(cpuBtn, new LocalGame());
+        gotToGame(cpuBtn, new LocalGame());
     }
 
     @FXML
@@ -77,8 +75,10 @@ DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
         SceneNavigator.back(backBtn);
     }
 
-    private void gotToGame(Node currentNode){
-        SceneNavigator.navigateTo(currentNode,"/fxml/Game.fxml");
+    private void gotToGame(Node currentNode, GameStartegy gameStartegy){
+        SceneNavigator.navigateTo(currentNode,"/fxml/Game.fxml",(GameController c)->{
+            c.setGameStrategy(gameStartegy);
+        });
     }
 
 

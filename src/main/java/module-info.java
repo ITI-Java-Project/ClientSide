@@ -13,6 +13,8 @@ module com.mycompany.clientside {
     opens com.mycompany.clientside to javafx.fxml;
     opens com.mycompany.clientside.controllers to javafx.fxml;
     opens com.mycompany.clientside.dto to com.google.gson;
+    opens com.mycompany.clientside.matchRecording to com.google.gson;
+
 
 
     exports com.mycompany.clientside;
