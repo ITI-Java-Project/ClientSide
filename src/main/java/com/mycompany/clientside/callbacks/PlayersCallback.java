@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface PlayersCallback {
     void loadPlayers(List<Player> players);
-//    void loadLeaderBoard(List<Player> players);
+    void loadLeaderBoard(List<Player> players);
 }
 
