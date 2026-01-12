@@ -75,6 +75,7 @@ public class LoginController implements Initializable {
 
             Platform.runLater(() -> {
                 if (isSuccess) {
+                    conn.startListener(null);
                     SceneNavigator.navigateTo(loginButton, "/fxml/Start.fxml");
                 } else {
                     AlertUtil.showAlert(

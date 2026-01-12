@@ -30,6 +30,8 @@ public abstract class ConnectionStrategy {
     public void setClientMessageListener(ClientMessageListener clientMessageListener) {
         this.clientMessageListener = clientMessageListener;
     }
+    
+    
 
     public synchronized void startListener(ClientMessageCallback callback) {
         if (clientMessageListener == null) {
