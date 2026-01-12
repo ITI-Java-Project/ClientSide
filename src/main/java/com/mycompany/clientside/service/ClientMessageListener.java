@@ -24,7 +24,6 @@ public class ClientMessageListener implements Runnable {
         this.callback = callback;
     }
 
-   
     public void setCallback(Object callback) {
         this.callback = callback;
     }
@@ -42,7 +41,6 @@ public class ClientMessageListener implements Runnable {
         }
     }
 
-    
     private void onMessage(String msg) {
         System.out.println("Received from Server: " + msg);
         String command = extractCommand(msg);
@@ -118,22 +116,20 @@ public class ClientMessageListener implements Runnable {
             case "AVAILABLE_PLAYERS":
                 if (callback instanceof PlayersCallback) {
                     ((PlayersCallback) callback)
-                        .loadPlayers(getAllPlayers(msg));
+                            .loadPlayers(getAllPlayers(msg));
                 }
                 break;
-
-           
 
             default:
                 System.out.println("Unknown command: " + msg);
         }
     }
 
-    //  Helper Methods 
-
     private void handleMove(String msg) {
         String[] parts = msg.split(" ");
-        if (parts.length < 4) return;
+        if (parts.length < 4) {
+            return;
+        }
 
         int row = Integer.parseInt(parts[1]);
         int col = Integer.parseInt(parts[2]);
@@ -146,6 +142,7 @@ public class ClientMessageListener implements Runnable {
         }
     }
 
+    //  Helper Methods 
     private List<Player> getAllPlayers(String response) {
         if (response.contains(":")) {
             response = response.substring(response.indexOf(":") + 1).trim();
@@ -165,7 +162,6 @@ public class ClientMessageListener implements Runnable {
         return msg.split(" ")[0];
     }
 
-    
     public void stopListener() {
         running = false;
     }

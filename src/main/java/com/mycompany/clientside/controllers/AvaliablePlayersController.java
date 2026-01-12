@@ -191,5 +191,9 @@ public class AvaliablePlayersController implements Initializable, InvitationCall
     public void endGame() {
     }
 
+    @Override
+    public void loadLeaderBoard(List<Player> players) {
+    }
+
   
 }
