@@ -45,12 +45,16 @@ public class GameController implements Initializable, ClientMessageCallback {
 
     private GameStartegy gameStrategy;
     private ConnectionStrategy conn;
+    private ClientMessageListener listener;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         System.out.println("GameController INITIALIZED");
         conn = ConnectionManager.getConnection();
-        conn.startListener(this);
+        listener = conn.getClientMessageListener();
+        if (listener != null) {
+            listener.setCallback(this);
+        }
         gameStrategy = new OnlineGame();
     }
 

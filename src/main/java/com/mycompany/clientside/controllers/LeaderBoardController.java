@@ -4,6 +4,7 @@ import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
 import com.mycompany.clientside.service.ClientMessageCallback;
+import com.mycompany.clientside.service.ClientMessageListener;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
@@ -31,12 +32,16 @@ public class LeaderBoardController implements Initializable, ClientMessageCallba
     private VBox playersListContainer;
 
     private ConnectionStrategy conn;
+    private ClientMessageListener listener;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Platform.runLater(() -> {
             conn = ConnectionManager.getConnection();
-            conn.startListener(this);
+          listener = conn.getClientMessageListener();
+            if (listener != null) {
+                listener.setCallback(this);
+            }
             conn.getWriter().println("GET_ALL_PLAYERS");
         });
     }

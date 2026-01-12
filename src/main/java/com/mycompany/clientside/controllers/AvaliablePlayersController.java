@@ -4,6 +4,7 @@ import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
 import com.mycompany.clientside.service.ClientMessageCallback;
+import com.mycompany.clientside.service.ClientMessageListener;
 import com.mycompany.clientside.service.PlayerService;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.GameDialogs;
@@ -51,6 +52,7 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
     private Thread th;
 
     private InvitationDialogController currentInviteDialog;
+    private ClientMessageListener listener;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -59,8 +61,12 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
             conn = ConnectionManager.getConnection();
             playerService = new PlayerService(conn);
             avaliablesPlayers = observableArrayList();
-            conn.startListener(this);
-
+            
+            listener = conn.getClientMessageListener();
+            if (listener != null) {
+                listener.setCallback(this);
+            }
+            
             requestPlayersList();
         });
     }
@@ -80,12 +86,12 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
         Parent root = settingsIcon.getScene().getRoot();
         DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
-    
+
     @FXML
     private void handleRefresh(MouseEvent event) {
         avaliablesPlayers.clear();
         playersListContainer.getChildren().clear();
-        
+
         requestPlayersList();
     }
 
@@ -203,10 +209,8 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
     @Override
     public void endGame() {
     }
+
     @Override
     public void loadLeaderBoard(List<Player> players) {
     }
 }
-
-
-
