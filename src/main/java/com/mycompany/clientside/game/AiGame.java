@@ -49,7 +49,8 @@ public class AiGame implements GameStartegy {
         }
 
         if (aiMove != null) {
-            board.setCell(aiMove[0], aiMove[1], 'O');
+            char ai = (move == 'X') ? 'O' : 'X';
+            board.setCell(aiMove[0], aiMove[1],ai );
         }
     }
 }

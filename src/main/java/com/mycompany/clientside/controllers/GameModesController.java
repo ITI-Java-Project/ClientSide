@@ -1,5 +1,6 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.game.AiGame;
 import com.mycompany.clientside.game.GameStartegy;
 import com.mycompany.clientside.game.LocalGame;
 import com.mycompany.clientside.utils.DialogUtil;
@@ -15,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import models.Difficulty;
 
 
 public class GameModesController implements Initializable {
@@ -62,7 +64,7 @@ public class GameModesController implements Initializable {
 
     @FXML
     private void handleCpu(ActionEvent event) {
-        gotToGame(cpuBtn, new LocalGame());
+        gotToGame(cpuBtn, new AiGame(Difficulty.HARD));
     }
 
     @FXML

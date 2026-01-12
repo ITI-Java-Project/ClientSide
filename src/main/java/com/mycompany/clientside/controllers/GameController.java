@@ -3,6 +3,7 @@ package com.mycompany.clientside.controllers;
 import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
+import com.mycompany.clientside.game.AiGame;
 import com.mycompany.clientside.game.Board;
 import com.mycompany.clientside.game.GameStartegy;
 import com.mycompany.clientside.game.LocalGame;
@@ -45,9 +46,9 @@ public class GameController implements Initializable, ClientMessageCallback {
 
     private GameStartegy gameStrategy;
     private ConnectionStrategy conn;
-    private boolean myTurn;
-    private char myChar;
-    private char oponentsChar;
+    private boolean myTurn=true;
+    private char myChar='X';
+    private char oponentsChar='O';
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -56,11 +57,22 @@ public class GameController implements Initializable, ClientMessageCallback {
     
     public void setGameStrategy(GameStartegy gameStrategy){
         this.gameStrategy=gameStrategy;
-        myTurn=true; 
-        myChar='X';
-        oponentsChar='O';
         setupConnection();
         startGame();
+    }
+    
+    public void setMyTurn(boolean myTurn){
+        this.myTurn=myTurn;
+    }
+    
+    public void setMyChar(char move){
+        myChar=move; 
+        if(myChar=='X'){
+            oponentsChar='O';
+        }
+        else{
+            oponentsChar='X';
+        }
     }
 
     private void setupConnection(){
@@ -94,25 +106,14 @@ public class GameController implements Initializable, ClientMessageCallback {
         if(myTurn){
             gameStrategy.play(row, col, myChar);
             System.out.println("My turn");
-            myTurn=!myTurn;
-
         }else{
             gameStrategy.play(row, col, oponentsChar);
             System.out.println("Oponent turn");
-            myTurn=!myTurn;
         }
-        
-        if(!(this.gameStrategy instanceof LocalGame)){
-            waitForMove();
-        }
-        
         updateUI();
         checkGameState();
     } 
     
-    private void waitForMove() {
-        disableBoard();
-    }
     
     private void updateUI(){
         Platform.runLater(() -> {
@@ -169,11 +170,11 @@ public class GameController implements Initializable, ClientMessageCallback {
                 c = (c == null) ? 0 : c;
 
                 if (node instanceof Button && r == row && c == col) {
-                    if(myTurn)
-                        ((Button) node).setTextFill(javafx.scene.paint.Color.GREEN);
-                    else 
-                        ((Button) node).setTextFill(javafx.scene.paint.Color.RED);
-
+                    Button btn= ((Button) node);
+                    if (btn.getText().equals("" + myChar))
+                        btn.setTextFill(javafx.scene.paint.Color.GREEN);
+                    else
+                        btn.setTextFill(javafx.scene.paint.Color.RED);
                 }
             }
         }
