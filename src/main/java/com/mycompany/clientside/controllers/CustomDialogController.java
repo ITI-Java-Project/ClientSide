@@ -31,6 +31,7 @@ public class CustomDialogController implements Initializable {
         dialogCard.setOnMouseClicked(e -> e.consume());
     }
 
+
     @FXML
     private void openSoundSettings() {
         try {
@@ -75,9 +76,15 @@ public class CustomDialogController implements Initializable {
         }
     }
 
+
     @FXML
     private void close() {
         Platform.exit();
+    }
+
+    @FXML
+    private void goBack() {
+        closeDialog();
     }
 
     private void closeDialog() {

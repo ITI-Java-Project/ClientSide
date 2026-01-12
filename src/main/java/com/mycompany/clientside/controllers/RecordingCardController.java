@@ -64,7 +64,6 @@ public class RecordingCardController implements Initializable {
             break;
 
         default:
-            // optional safety fallback
             break;
     }
 }
