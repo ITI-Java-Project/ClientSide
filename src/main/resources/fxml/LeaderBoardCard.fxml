@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox xmlns="http://javafx.com/javafx/11"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.mycompany.clientside.controllers.LeaderBoardCardController"
+      fx:id="root"
+      alignment="CENTER"
+      spacing="100">
+
+    <padding>
+        <Insets top="15" right="25" bottom="15" left="25"/>
+    </padding>
+
+    <!-- LEFT -->
+    <HBox fx:id="leftBox" spacing="100" HBox.hgrow="ALWAYS">
+        <ImageView fx:id="avatar" fitHeight="40" fitWidth="40">
+            <image>
+                <Image url="@../images/player.png"/>
+            </image>
+        </ImageView>
+
+        <Label fx:id="playerName" text="Player Name" textFill="BLACK">
+            <font>
+                <Font name="Comic Sans MS" size="22"/>
+            </font>
+        </Label>
+    </HBox>
+
+    <!-- RIGHT -->
+    <HBox fx:id="rightBox" spacing="15" alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+        <Label fx:id="title" text="Title" textFill="BLACK">
+            <font>
+                <Font name="Comic Sans MS" size="14"/>
+            </font>
+        </Label>
+
+        <ImageView fx:id="crown" fitHeight="30" fitWidth="30" visible="false">
+            <image>
+                <Image url="@../images/king.png"/>
+            </image>
+        </ImageView>
+
+        <Label fx:id="score" text="Score: 0" textFill="BLACK">
+            <font>
+                <Font name="Comic Sans MS" size="18"/>
+            </font>
+        </Label>
+    </HBox>
+
+</HBox>
