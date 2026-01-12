@@ -1,5 +1,8 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.callbacks.GameLifecycleCallback;
+import com.mycompany.clientside.callbacks.InvitationCallback;
+import com.mycompany.clientside.callbacks.PlayersCallback;
 import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
@@ -32,7 +35,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Window;
 
-public class AvaliablePlayersController implements Initializable, ClientMessageCallback {
+public class AvaliablePlayersController implements Initializable, InvitationCallback , GameLifecycleCallback , PlayersCallback{
 
     @FXML
     private ImageView backIcon;
@@ -182,35 +185,11 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
         });
     }
 
-    @Override
-    public void onMoveReceived(int row, int col, char player) {
-    }
-
-    @Override
-    public void onWin(char winner) {
-    }
-
-    @Override
-    public void onDraw() {
-    }
-
-    @Override
-    public void onNotYourTurn() {
-    }
-
-    @Override
-    public void onCellOccupied() {
-    }
-
-    @Override
-    public void onLose(char loser) {
-    }
+    
 
     @Override
     public void endGame() {
     }
 
-    @Override
-    public void loadLeaderBoard(List<Player> players) {
-    }
+  
 }
