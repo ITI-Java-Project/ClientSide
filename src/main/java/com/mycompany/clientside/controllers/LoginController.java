@@ -4,6 +4,8 @@ import com.mycompany.clientside.auth.Authentication;
 import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.connection.LocalConnection;
+import com.mycompany.clientside.dto.Player;
+import com.mycompany.clientside.dto.UserSession;
 import com.mycompany.clientside.utils.AlertUtil;
 import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
@@ -43,7 +45,7 @@ public class LoginController implements Initializable {
         Platform.runLater(() -> {
             owner = loginButton.getScene().getWindow();
             ConnectionManager.init((new LocalConnection(owner)));
-            conn = ConnectionManager.getConnection();     
+            conn = ConnectionManager.getConnection();
             auth = new Authentication(conn);
         });
     }
@@ -70,13 +72,14 @@ public class LoginController implements Initializable {
                 ));
                 return;
             }
-
-            boolean isSuccess = auth.login(username, password);
+            Player player = auth.login(username, password);
 
             Platform.runLater(() -> {
-                if (isSuccess) {
+                if (player != null) {
+                    UserSession.getInstance().setCurrentUser(player);
                     conn.startListener(null);
                     SceneNavigator.navigateTo(loginButton, "/fxml/Start.fxml");
+                    System.out.println(UserSession.getInstance().getCurrentUser().toString());;
                 } else {
                     AlertUtil.showAlert(
                             "Login failed",
