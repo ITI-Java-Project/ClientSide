@@ -169,20 +169,33 @@ public class AvaliablePlayersController implements Initializable, InvitationCall
 
     @Override
     public void startGame() {
-        boolean isRecord = isSender ? 
-            (currentInviteDialog != null && currentInviteDialog.isRecording()) : 
-            (receiveInvitationDialogController != null && receiveInvitationDialogController.isRecording());
-        
-        System.out.println("Starting game... isSender=" + isSender + ", myTurn=" + myTurn + ", myChar=" + myChar);
+        boolean isRecord = isSender ? currentInviteDialog.isRecording() 
+                                    : receiveInvitationDialogController.isRecording();
         
         Parent root = settingsIcon.getScene().getRoot();
+        
+        // Get current user to determine which player name to show where
+        int currentUserId = UserSession.getInstance().getCurrentUser().getId();
+        
         Platform.runLater(() -> {
             SceneNavigator.navigateTo(root, "/fxml/Game.fxml", (GameController c) -> {
                 c.setGameStrategy(new OnlineGame());
                 c.setMyTurn(myTurn);
                 c.setMyChar(myChar);
                 c.setRecording(isRecord);
-                // Names will be loaded from SessionDAO in GameController.setupConnection()
+                
+                // Set player names from session data
+                if (currentSession != null) {
+                    if (currentUserId == currentSession.getPlayer1Id()) {
+                        // I am player 1
+                        c.setPlayerNames(currentSession.getPlayer1Name(), 
+                                        currentSession.getPlayer2Name());
+                    } else {
+                        // I am player 2
+                        c.setPlayerNames(currentSession.getPlayer2Name(), 
+                                        currentSession.getPlayer1Name());
+                    }
+                }
             });
         });
     }

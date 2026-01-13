@@ -82,30 +82,55 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
     }
 
     public void setGameStrategy(GameStartegy gameStrategy) {
-        this.gameStrategy = gameStrategy;
-        setupConnection();
-        startGame();
-    }
+    this.gameStrategy = gameStrategy;
+    setupConnection();
+    // Remove startGame() call from here
+}
 
+public void initializeGame(GameStartegy strategy, boolean turn, char playerChar, boolean recording) {
+    this.myTurn = turn;
+    this.myChar = playerChar;
+    this.oponentsChar = (playerChar == 'X') ? 'O' : 'X';
+    
+    if (recording) {
+        matchRecorder = new MatchRecorder(player2Name.getText());
+    }
+    
+    this.gameStrategy = strategy;
+    setupConnection();
+    startGame();  // Now called with correct values
+}
     public void setPlayerNames(String myName, String opponentName) {
         this.myPlayerName = myName;
         this.opponentPlayerName = opponentName;
 
         // Update UI labels
         Platform.runLater(() -> {
-            if (player1Name != null) {
+            if (player1Name != null&&myChar=='X') {
                 player1Name.setText(myName);
-            }
-            if (player2Name != null) {
+                if (player2Name != null) {
                 player2Name.setText(opponentName);
             }
+                
+            }
+            else {
+               if (player2Name != null) {
+                player2Name.setText(myName);
+                if (player1Name != null) {
+                player1Name.setText(opponentName);
+            }
+                
+            } 
+            }
+            
         });
     }
 
     public void setMyTurn(boolean myTurn) {
-        this.myTurn = myTurn;
-        updateTurnIndicator();
-    }
+    this.myTurn = myTurn;
+    // Don't call updateTurnIndicator() here - it will be called in startGame()
+}
+
 
     public void setRecording(boolean record) {
         if (record) {
@@ -114,14 +139,9 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
     }
 
     public void setMyChar(char move) {
-        myChar = move;
-        if (myChar == 'X') {
-            oponentsChar = 'O';
-        } else {
-            oponentsChar = 'X';
-        }
-    }
-
+    myChar = move;
+    oponentsChar = (myChar == 'X') ? 'O' : 'X';
+}
     private void setupConnection() {
         if (this.gameStrategy instanceof OnlineGame) {
             // Set this controller as callback to receive SESSION_DATA
