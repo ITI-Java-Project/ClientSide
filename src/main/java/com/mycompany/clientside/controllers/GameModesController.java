@@ -4,6 +4,7 @@ import com.mycompany.clientside.game.AiGame;
 import com.mycompany.clientside.game.GameStartegy;
 import com.mycompany.clientside.game.LocalGame;
 import com.mycompany.clientside.utils.DialogUtil;
+import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -17,7 +18,6 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import models.Difficulty;
-
 
 public class GameModesController implements Initializable {
 
@@ -35,7 +35,6 @@ public class GameModesController implements Initializable {
     private Button localNetworkBtn;
     @FXML
     private ImageView backBtn;
-
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -64,7 +63,11 @@ public class GameModesController implements Initializable {
 
     @FXML
     private void handleCpu(ActionEvent event) {
-        gotToGame(cpuBtn, new AiGame(Difficulty.HARD));
+        Parent root = cpuBtn.getScene().getRoot();
+
+        GameDialogs.openChooseDifficultyDialog(root, (Difficulty difficulty) -> {
+            gotToGame(cpuBtn, new AiGame(difficulty));
+        });
     }
 
     @FXML
@@ -77,12 +80,10 @@ public class GameModesController implements Initializable {
         SceneNavigator.back(backBtn);
     }
 
-    private void gotToGame(Node currentNode, GameStartegy gameStartegy){
-        SceneNavigator.navigateTo(currentNode,"/fxml/Game.fxml",(GameController c)->{
+    private void gotToGame(Node currentNode, GameStartegy gameStartegy) {
+        SceneNavigator.navigateTo(currentNode, "/fxml/Game.fxml", (GameController c) -> {
             c.setGameStrategy(gameStartegy);
         });
     }
-
-
 
 }
