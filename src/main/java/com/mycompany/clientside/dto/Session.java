@@ -32,7 +32,7 @@ public class Session {
         return player1Score;
     }
 
-    public int getPlayer2Score() {
+    public int getPlayer2Score() {  
         return player2Score;
     }
 
