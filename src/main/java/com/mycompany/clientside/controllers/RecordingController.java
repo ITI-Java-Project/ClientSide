@@ -4,6 +4,7 @@ import com.mycompany.clientside.callbacks.GameLifecycleCallback;
 import com.mycompany.clientside.callbacks.InvitationCallback;
 import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
+import com.mycompany.clientside.game.OnlineGame;
 import com.mycompany.clientside.matchRecording.Match;
 import com.mycompany.clientside.matchRecording.MatchRecorder;
 import com.mycompany.clientside.matchRecording.Result;
@@ -164,11 +165,16 @@ public class RecordingController implements Initializable, InvitationCallback, G
         });
     }
 
+    @Override
     public void startGame() {
         System.out.println("=================================");
         Parent root = settingsIcon.getScene().getRoot();
         Platform.runLater(() -> {
-            SceneNavigator.navigateTo(root, "/fxml/Game.fxml");
+            SceneNavigator.navigateTo(root, "/fxml/Game.fxml", (GameController c) -> {
+                c.setGameStrategy(new OnlineGame());
+                c.setMyTurn(true);
+                c.setMyChar('X');
+            });
         });
     }
 

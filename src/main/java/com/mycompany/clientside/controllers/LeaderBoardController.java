@@ -6,6 +6,7 @@ import com.mycompany.clientside.callbacks.PlayersCallback;
 import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
+import com.mycompany.clientside.game.OnlineGame;
 import com.mycompany.clientside.service.ClientMessageCallback;
 import com.mycompany.clientside.service.ClientMessageListener;
 import com.mycompany.clientside.utils.DialogUtil;
@@ -136,11 +137,16 @@ public class LeaderBoardController implements Initializable, InvitationCallback,
         });
     }
 
+    @Override
     public void startGame() {
         System.out.println("=================================");
         Parent root = settingsIcon.getScene().getRoot();
         Platform.runLater(() -> {
-            SceneNavigator.navigateTo(root, "/fxml/Game.fxml");
+            SceneNavigator.navigateTo(root, "/fxml/Game.fxml", (GameController c) -> {
+                c.setGameStrategy(new OnlineGame());
+                c.setMyTurn(true);
+                c.setMyChar('X');
+            });
         });
     }
 

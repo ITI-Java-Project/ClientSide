@@ -1,14 +1,19 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.callbacks.GameLifecycleCallback;
+import com.mycompany.clientside.callbacks.InvitationCallback;
+import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.game.AiGame;
 import com.mycompany.clientside.game.GameStartegy;
 import com.mycompany.clientside.game.LocalGame;
+import com.mycompany.clientside.game.OnlineGame;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
 import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -20,7 +25,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import models.Difficulty;
 
-public class GameModesController implements Initializable {
+public class GameModesController implements Initializable, GameLifecycleCallback, InvitationCallback {
 
     @FXML
     private Label leaderBoardText;
@@ -36,6 +41,9 @@ public class GameModesController implements Initializable {
     private Button localNetworkBtn;
     @FXML
     private ImageView backBtn;
+    private ReceiveInvitationDialogController receiveInvitationDialogController;
+    private ConnectionStrategy conn;
+    private InvitationDialogController currentInviteDialog;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -53,7 +61,6 @@ public class GameModesController implements Initializable {
     private void goToSettings(MouseEvent event) {
         SoundManager.getInstance().playClickSound();
         Parent root = settingsIcon.getScene().getRoot();
-        DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
         DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
 
@@ -91,6 +98,48 @@ public class GameModesController implements Initializable {
     private void gotToGame(Node currentNode, GameStartegy gameStartegy) {
         SceneNavigator.navigateTo(currentNode, "/fxml/Game.fxml", (GameController c) -> {
             c.setGameStrategy(gameStartegy);
+        });
+    }
+
+    @Override
+    public void onInviteReceived(String[] parts) {
+        Parent root = leaderBoardText.getScene().getRoot();
+        Platform.runLater(() -> {
+            receiveInvitationDialogController = GameDialogs.openReceiveInvitationDialog(root, parts[2],
+                    () -> {
+                        conn.getWriter().println("INVITE_ACCEPT " + parts[1]);
+                    },
+                    () -> {
+                        conn.getWriter().println("INVITE_REJECT " + parts[1]);
+                    });
+        });
+    }
+
+    @Override
+    public void startGame() {
+        System.out.println("=================================");
+        Parent root = settingsIcon.getScene().getRoot();
+        Platform.runLater(() -> {
+            SceneNavigator.navigateTo(root, "/fxml/Game.fxml", (GameController c) -> {
+                c.setGameStrategy(new OnlineGame());
+                c.setMyTurn(true);
+                c.setMyChar('X');
+                c.setRecording(receiveInvitationDialogController.isRecording());
+            });
+        });
+    }
+
+    @Override
+    public void endGame() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void onInviteRejected(String[] parts) {
+        Parent root = leaderBoardText.getScene().getRoot();
+        Platform.runLater(() -> {
+            currentInviteDialog.closeDialog();
+            GameDialogs.openRejectInvitationDialog(root, parts[2]);
         });
     }
 
