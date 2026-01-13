@@ -1,18 +1,14 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.clientside.dto;
 
-
+import com.google.gson.Gson;
 
 public class SessionDAO {
 
     private static SessionDAO instance;
     private Session currentSession;
+    private final Gson gson = new Gson();
 
-    private SessionDAO() {
-    }
+    private SessionDAO() {}
 
     public static synchronized SessionDAO getInstance() {
         if (instance == null) {
@@ -21,17 +17,19 @@ public class SessionDAO {
         return instance;
     }
 
-    // Create / Set session
-    public void setSession(Session session) {
-        this.currentSession = session;
+    public void setSessionFromJson(String json) {
+        this.currentSession = gson.fromJson(json, Session.class);
     }
 
-    // Read
     public Session getSession() {
         return currentSession;
     }
 
-    // Update scores
+    public boolean hasActiveSession() {
+        return currentSession != null;
+    }
+
+    // ===== UPDATE (LOCAL) =====
     public void updatePlayer1Score(int score) {
         if (currentSession != null) {
             currentSession.setPlayer1Score(score);
@@ -44,13 +42,7 @@ public class SessionDAO {
         }
     }
 
-    // Clear session (end game)
     public void clearSession() {
         currentSession = null;
-    }
-
-    // Helper
-    public boolean hasActiveSession() {
-        return currentSession != null;
     }
 }
