@@ -3,7 +3,6 @@ package com.mycompany.clientside.controllers;
 import com.mycompany.clientside.callbacks.GameActionCallback;
 import com.mycompany.clientside.callbacks.GameLifecycleCallback;
 import com.mycompany.clientside.connection.ConnectionManager;
-import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
 import com.mycompany.clientside.game.AiGame;
 import com.mycompany.clientside.game.Board;
@@ -13,13 +12,12 @@ import com.mycompany.clientside.game.OnlineGame;
 import com.mycompany.clientside.matchRecording.MatchRecorder;
 import com.mycompany.clientside.matchRecording.Move;
 import com.mycompany.clientside.matchRecording.Result;
-import com.mycompany.clientside.service.ClientMessageCallback;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,9 +29,10 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
-public class GameController implements Initializable,GameLifecycleCallback,GameActionCallback {
-    
+public class GameController implements Initializable, GameLifecycleCallback, GameActionCallback {
+
     @FXML
     private ImageView player1Avatar;
     @FXML
@@ -67,39 +66,39 @@ public class GameController implements Initializable,GameLifecycleCallback,GameA
     public void initialize(URL url, ResourceBundle rb) {
         updateScoreDisplay();
     }
-    
-    public void setGameStrategy(GameStartegy gameStrategy){
+
+    public void setGameStrategy(GameStartegy gameStrategy) {
         this.gameStrategy = gameStrategy;
         setupConnection();
         startGame();
     }
-    
-    public void setMyTurn(boolean myTurn){
+
+    public void setMyTurn(boolean myTurn) {
         this.myTurn = myTurn;
         updateTurnIndicator();
     }
-    
-    public void setRecording(boolean record){
-        if(record){
-            matchRecorder= new MatchRecorder(player2Name.getText());
+
+    public void setRecording(boolean record) {
+        if (record) {
+            matchRecorder = new MatchRecorder(player2Name.getText());
         }
     }
-    public void setMyChar(char move){
-        myChar = move; 
-        if(myChar == 'X'){
+
+    public void setMyChar(char move) {
+        myChar = move;
+        if (myChar == 'X') {
             oponentsChar = 'O';
-        }
-        else{
+        } else {
             oponentsChar = 'X';
         }
     }
 
-    private void setupConnection(){
-        if(this.gameStrategy instanceof OnlineGame){
-             ConnectionManager.getConnection().getClientMessageListener().setCallback(this);
+    private void setupConnection() {
+        if (this.gameStrategy instanceof OnlineGame) {
+            ConnectionManager.getConnection().getClientMessageListener().setCallback(this);
         }
     }
-    
+
     @Override
     public void startGame() {
         Board.getInstance().resetBoard();
@@ -111,18 +110,18 @@ public class GameController implements Initializable,GameLifecycleCallback,GameA
         } else {
             disableBoard();
         }
-        
+
         updateTurnIndicator();
     }
-    
+
     @FXML
     private void handleCellClick(ActionEvent event) {
         if (gameEnded) {
             return;
         }
-        
+
         Button clicked = (Button) event.getSource();
-        
+
         if (!(clicked.getText().isEmpty())) {
             return;
         }
@@ -131,13 +130,29 @@ public class GameController implements Initializable,GameLifecycleCallback,GameA
         Integer col = GridPane.getColumnIndex(clicked);
         row = (row == null) ? 0 : row;
         col = (col == null) ? 0 : col;
-        
+
         if (gameStrategy instanceof AiGame) {
             gameStrategy.play(row, col, myChar);
             updateUI();
-            checkGameState();
+            
+            if (checkGameStateWithoutDialog()) {
+                return;
+            }
+            
+            disableBoard();
+
+            PauseTransition pause = new PauseTransition(Duration.seconds(0.6));
+            pause.setOnFinished(e -> {
+                ((AiGame) gameStrategy).playAi(myChar);
+                updateUI();
+                enableBoard();
+                checkGameState();
+                updateTurnIndicator();
+            });
+
+            pause.play();
         } else if (gameStrategy instanceof LocalGame) {
-            if(myTurn){
+            if (myTurn) {
                 gameStrategy.play(row, col, myChar);
                 myTurn = false;
             } else {
@@ -148,7 +163,7 @@ public class GameController implements Initializable,GameLifecycleCallback,GameA
             updateTurnIndicator();
             checkGameState();
         } else if (gameStrategy instanceof OnlineGame) {
-            if(myTurn){
+            if (myTurn) {
                 gameStrategy.play(row, col, myChar);
                 myTurn = false;
                 disableBoard();
@@ -158,8 +173,8 @@ public class GameController implements Initializable,GameLifecycleCallback,GameA
             }
             recordMove(new Move(row, col, myChar));
         }
-    } 
-    
+    }
+
     private void updateTurnIndicator() {
         Platform.runLater(() -> {
             if (gameEnded) {
@@ -167,13 +182,13 @@ public class GameController implements Initializable,GameLifecycleCallback,GameA
                 player2Name.setTextFill(Color.BLACK);
                 return;
             }
-            
+
             if (gameStrategy instanceof AiGame) {
                 player1Name.setTextFill(Color.BLUE);
                 player2Name.setTextFill(Color.BLACK);
                 return;
             }
-            
+
             if (myTurn) {
                 player1Name.setTextFill(Color.BLUE);
                 player2Name.setTextFill(Color.GRAY);
@@ -183,38 +198,56 @@ public class GameController implements Initializable,GameLifecycleCallback,GameA
             }
         });
     }
-    
-    private void updateUI(){
+
+    private void updateUI() {
         Platform.runLater(() -> {
-            for(Node node : gameBoard.getChildren()){
+            for (Node node : gameBoard.getChildren()) {
                 if (node instanceof Button) {
                     Integer r = GridPane.getRowIndex(node);
                     Integer c = GridPane.getColumnIndex(node);
                     r = (r == null) ? 0 : r;
                     c = (c == null) ? 0 : c;
                     if (((Button) node).getText().isEmpty()
-                        && Board.getInstance().getBoard()[r][c] != '\0') {
+                            && Board.getInstance().getBoard()[r][c] != '\0') {
 
                         ((Button) node).setText(
-                            String.valueOf(Board.getInstance().getBoard()[r][c])
+                                String.valueOf(Board.getInstance().getBoard()[r][c])
                         );
                     }
                 }
             }
         });
     }
-    
-    private void checkGameState(){
+
+
+    private boolean checkGameStateWithoutDialog() {
         int[][] winningCells = this.gameStrategy.winner();
-        if(winningCells == null){
-            checkForDraw();
+        if (winningCells != null) {
+            handleWin(winningCells);
+            return true;
         }
-        else{
-           handleWin(winningCells);
+        
+        char[][] board = Board.getInstance().getBoard();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == '\0') {
+                    return false;
+                }
+            }
+        }
+        handleDraw();
+        return true;
+    }
+
+    private void checkGameState() {
+        int[][] winningCells = this.gameStrategy.winner();
+        if (winningCells == null) {
+            checkForDraw();
+        } else {
+            handleWin(winningCells);
         }
     }
 
-    
     private void checkForDraw() {
         char[][] board = Board.getInstance().getBoard();
         for (int i = 0; i < 3; i++) {
@@ -226,66 +259,93 @@ public class GameController implements Initializable,GameLifecycleCallback,GameA
         }
         handleDraw();
     }
-    
+
     private void handleWin(int[][] winningCells) {
         gameEnded = true;
+        disableBoard();
         paintWinningCells(winningCells);
-        
-        char winningChar = Board.getInstance().getBoard()[winningCells[0][0]][winningCells[0][1]];
-        
-        Platform.runLater(() -> {
+
+        char winningChar = Board.getInstance()
+                .getBoard()[winningCells[0][0]][winningCells[0][1]];
+
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
+
+        pause.setOnFinished(e -> Platform.runLater(() -> {
+
             if (winningChar == myChar) {
                 player1Wins++;
                 player1Name.setTextFill(Color.GREEN);
                 player2Name.setTextFill(Color.RED);
-               GameDialogs.openVideoDialog(gameBoard, "You Won!", "/videos/win.mp4",()->{
-                    SceneNavigator.back(gameBoard);
-                }, ()-> { 
-                    clearBoard();
-                    enableBoard();
-                    if(matchRecorder!=null){
-                        matchRecorder.endMatch(Result.WIN);
-                    }
-                });
+
+                GameDialogs.openVideoDialog(
+                        gameBoard,
+                        "You Won!",
+                        "/videos/win.mp4",
+                        () -> SceneNavigator.back(gameBoard),
+                        () -> {
+                            startGame();
+                            if (matchRecorder != null) {
+                                matchRecorder.endMatch(Result.WIN);
+                            }
+                        }
+                );
+
             } else {
                 player2Wins++;
                 player1Name.setTextFill(Color.RED);
                 player2Name.setTextFill(Color.GREEN);
 
-                GameDialogs.openVideoDialog(gameBoard, "You Lost!", "/videos/Lose.mp4",()->{
-                    SceneNavigator.back(gameBoard);
-                }, ()-> { 
-                    clearBoard();
-                    enableBoard();
-                    matchRecorder.endMatch(Result.LOSE);
-                });
-                    }
+                GameDialogs.openVideoDialog(
+                        gameBoard,
+                        "You Lost!",
+                        "/videos/Lose.mp4",
+                        () -> SceneNavigator.back(gameBoard),
+                        () -> {
+                            startGame();
+                            if (matchRecorder != null) {
+                                matchRecorder.endMatch(Result.LOSE);
+                            }
+                        }
+                );
+            }
+
             updateScoreDisplay();
-        });
-        
-        disableBoard();
+        }));
+
+        pause.play();
     }
+
     private void handleDraw() {
         gameEnded = true;
         draws++;
-        
-        Platform.runLater(() -> {
-            player1Name.setTextFill(Color.ORANGE);
-            player2Name.setTextFill(Color.ORANGE);
-            
-            updateScoreDisplay();
-        });
-        GameDialogs.openVideoDialog(gameBoard, "Draw", "/videos/Draw.mp4",()->{
-            SceneNavigator.back(gameBoard);
-        }, ()-> { 
-            clearBoard();
-            enableBoard();
-            matchRecorder.endMatch(Result.DRAW);
-        });
         disableBoard();
+
+        player1Name.setTextFill(Color.ORANGE);
+        player2Name.setTextFill(Color.ORANGE);
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
+
+        pause.setOnFinished(e -> {
+            updateScoreDisplay();
+
+            GameDialogs.openVideoDialog(
+                    gameBoard,
+                    "Draw",
+                    "/videos/Draw.mp4",
+                    () -> SceneNavigator.back(gameBoard),
+                    () -> {
+                        startGame();
+                        if (matchRecorder != null) {
+                            matchRecorder.endMatch(Result.DRAW);
+                        }
+                    }
+            );
+        });
+
+        pause.play();
     }
 
-    
     private void updateScoreDisplay() {
         Platform.runLater(() -> {
             player1Score.setText(String.valueOf(player1Wins));
@@ -295,10 +355,10 @@ public class GameController implements Initializable,GameLifecycleCallback,GameA
             }
         });
     }
-    
+
     private void paintWinningCells(int[][] winningCells) {
         char winningChar = Board.getInstance().getBoard()[winningCells[0][0]][winningCells[0][1]];
-        
+
         for (int[] cell : winningCells) {
             int row = cell[0];
             int col = cell[1];
@@ -320,24 +380,24 @@ public class GameController implements Initializable,GameLifecycleCallback,GameA
             }
         }
     }
-    
-    private void disableBoard(){
+
+    private void disableBoard() {
         for (Node node : gameBoard.getChildren()) {
             if (node instanceof Button) {
                 node.setDisable(true);
             }
         }
     }
-    
-    private void enableBoard(){
+
+    private void enableBoard() {
         for (Node node : gameBoard.getChildren()) {
             if (node instanceof Button) {
                 node.setDisable(false);
             }
         }
     }
-    
-    private void clearBoard(){
+
+    private void clearBoard() {
         for (Node node : gameBoard.getChildren()) {
             if (node instanceof Button) {
                 Button btn = (Button) node;
@@ -347,7 +407,7 @@ public class GameController implements Initializable,GameLifecycleCallback,GameA
         }
         Board.getInstance().resetBoard();
     }
-    
+
     @FXML
     private void handleSettingClick(ActionEvent event) {
         Parent root = ((Node) event.getSource()).getScene().getRoot();
@@ -391,11 +451,10 @@ public class GameController implements Initializable,GameLifecycleCallback,GameA
         });
         recordMove(move);
     }
-    
+
     private void recordMove(Move move) {
-        if(matchRecorder!=null){
+        if (matchRecorder != null) {
             matchRecorder.addMove(move);
         }
     }
-
 }

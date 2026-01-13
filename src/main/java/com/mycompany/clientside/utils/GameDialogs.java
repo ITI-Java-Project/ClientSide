@@ -1,5 +1,6 @@
 package com.mycompany.clientside.utils;
 
+import com.mycompany.clientside.controllers.ChooseDifficultyDialogController;
 import com.mycompany.clientside.controllers.ChooseTurnDialogController;
 import com.mycompany.clientside.controllers.InvitationDialogController;
 import com.mycompany.clientside.controllers.ReceiveInvitationDialogController;
@@ -7,6 +8,7 @@ import com.mycompany.clientside.controllers.RejectInvitationDialogController;
 import com.mycompany.clientside.controllers.VideoDialogController;
 import java.util.function.Consumer;
 import javafx.scene.Parent;
+import models.Difficulty;
 import models.Turn;
 
 public class GameDialogs {
@@ -105,4 +107,19 @@ public class GameDialogs {
 
         return null;
     }
+    public static ChooseDifficultyDialogController openChooseDifficultyDialog(
+        Parent root,
+        Consumer<Difficulty> onDifficultySelected) {
+
+    Object result = DialogUtil.openDialog(root, "/fxml/ChooseDifficultyDialog.fxml");
+
+    if (result != null) {
+        ChooseDifficultyDialogController controller =
+                (ChooseDifficultyDialogController) result;
+        controller.setOnDifficultySelected(onDifficultySelected);
+        return controller;
+    }
+
+    return null;
+}
 }
