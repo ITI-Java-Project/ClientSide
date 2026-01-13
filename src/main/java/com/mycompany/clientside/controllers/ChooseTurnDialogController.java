@@ -1,5 +1,6 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
@@ -60,11 +61,13 @@ public class ChooseTurnDialogController implements Initializable {
 
     @FXML
     private void chooseX() {
+        SoundManager.getInstance().playClickSound();
         selectTurn(Turn.X);
     }
 
     @FXML
     private void chooseO() {
+        SoundManager.getInstance().playClickSound();
         selectTurn(Turn.O);
     }
 
@@ -77,7 +80,7 @@ public class ChooseTurnDialogController implements Initializable {
 
     @FXML
     private void cancel() {
-
+        SoundManager.getInstance().playClickSound();
         closeDialog();
     }
 

@@ -5,10 +5,11 @@ module com.mycompany.clientside {
     requires javafx.base;
     requires javafx.graphics;
 
+    requires java.prefs;  
     requires javafx.media;
-
     requires com.google.gson;
     
+
 
     opens com.mycompany.clientside to javafx.fxml;
     opens com.mycompany.clientside.controllers to javafx.fxml;

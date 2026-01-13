@@ -4,6 +4,7 @@ import com.mycompany.clientside.matchRecording.Match;
 import com.mycompany.clientside.matchRecording.Move;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.SceneNavigator;
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -186,6 +187,8 @@ public class RecordedMatchController implements Initializable {
 
     @FXML
     private void handlePlayPause(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         if (movesList == null || movesList.isEmpty()) {
             return;
         }
@@ -232,6 +235,8 @@ public class RecordedMatchController implements Initializable {
 
     @FXML
     private void handlePrevious(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         pausePlayback();
         if (currentMoveIndex > 0) {
             goToMove(currentMoveIndex - 1);
@@ -240,6 +245,8 @@ public class RecordedMatchController implements Initializable {
 
     @FXML
     private void handleNext(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         pausePlayback();
         if (currentMoveIndex < movesList.size()) {
             goToMove(currentMoveIndex + 1);
@@ -248,12 +255,16 @@ public class RecordedMatchController implements Initializable {
 
     @FXML
     private void handleRestart(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         pausePlayback();
         goToMove(0);
     }
 
     @FXML
     private void handleBack(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         pausePlayback();
         SceneNavigator.back(rootPane);
     }

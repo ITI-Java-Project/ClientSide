@@ -6,6 +6,7 @@ import com.mycompany.clientside.game.LocalGame;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -43,11 +44,16 @@ public class GameModesController implements Initializable {
 
     @FXML
     private void goToLeaderBoard(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+        Parent root = leaderBoardText.getScene().getRoot();
+        DialogUtil.openDialog(root, "/fxml/Leaderboard.fxml");
     }
 
     @FXML
     private void goToSettings(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
         Parent root = settingsIcon.getScene().getRoot();
+        DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
         DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
 
@@ -72,11 +78,13 @@ public class GameModesController implements Initializable {
 
     @FXML
     private void handleLocalNetwork(ActionEvent event) {
+        SoundManager.getInstance().playClickSound();
         SceneNavigator.navigateTo(localMultiplayerBtn, "/fxml/AvaliablePlayers.fxml");
     }
 
     @FXML
     private void handleBack(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
         SceneNavigator.back(backBtn);
     }
 

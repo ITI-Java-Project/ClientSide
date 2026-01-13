@@ -1,5 +1,6 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -15,21 +16,21 @@ public class InvitationDialogController implements Initializable {
 
     @FXML
     private Pane backgroundPane;
-    
+
     @FXML
     private VBox dialogCard;
-    
+
     @FXML
     private Label titleLabel;
-    
+
     @FXML
     private ProgressIndicator loadingIndicator;
-    
+
     @FXML
     private ToggleButton recordToggle;
-    
+
     private StackPane rootPane;
-    
+
     private boolean isRecording = false;
 
     public void setRootPane(StackPane rootPane) {
@@ -53,6 +54,7 @@ public class InvitationDialogController implements Initializable {
 
     @FXML
     private void onRecordToggle() {
+        SoundManager.getInstance().playClickSound();
         isRecording = recordToggle.isSelected();
         updateToggleStyle();
     }
@@ -73,6 +75,7 @@ public class InvitationDialogController implements Initializable {
 
     @FXML
     private void cancel() {
+        SoundManager.getInstance().playClickSound();
         closeDialog();
     }
 
@@ -80,5 +83,5 @@ public class InvitationDialogController implements Initializable {
         rootPane.getChildren().forEach(node -> node.setEffect(null));
         rootPane.getChildren().remove(rootPane.getChildren().size() - 1);
     }
-    
+
 }

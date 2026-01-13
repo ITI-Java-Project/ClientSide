@@ -1,5 +1,6 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -27,6 +28,8 @@ public class RejectInvitationDialogController implements Initializable {
 
     @FXML
     public void closeDialog() {
+        SoundManager.getInstance().playClickSound();
+
         rootPane.getChildren().forEach(node -> node.setEffect(null));
         rootPane.getChildren().remove(rootPane.getChildren().size() - 1);
     }

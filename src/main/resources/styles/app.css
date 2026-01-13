@@ -119,3 +119,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to ed
     -fx-highlight-fill: #333333;
     -fx-highlight-text-fill: white;
 }
+
+.error-label {
+    -fx-text-fill: #ff4444;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-color: rgba(255, 68, 68, 0.1);
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+    -fx-border-color: #ff4444;
+    -fx-border-radius: 5px;
+    -fx-border-width: 1px;
+}

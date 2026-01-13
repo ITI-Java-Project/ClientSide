@@ -1,11 +1,13 @@
 package com.mycompany.clientside.controllers;
 
-import com.mycompany.clientside.utils.SceneNavigator;
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -14,10 +16,10 @@ public class CustomDialogController implements Initializable {
 
     @FXML
     private Pane backgroundPane;
-    
+
     @FXML
     private VBox dialogCard;
-    
+
     private StackPane rootPane;
 
     public void setRootPane(StackPane rootPane) {
@@ -31,13 +33,61 @@ public class CustomDialogController implements Initializable {
     }
 
     @FXML
+    private void openSoundSettings() {
+        SoundManager.getInstance().playClickSound();
+
+        try {
+            // Remove current dialog first
+            if (rootPane != null && rootPane.getChildren().size() > 1) {
+                rootPane.getChildren().remove(rootPane.getChildren().size() - 1);
+            }
+
+            // Load sound settings dialog
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/SoundSettingsDialog.fxml")
+            );
+            Parent soundDialog = loader.load();
+
+            SoundSettingsController controller = loader.getController();
+            controller.setRootPane(rootPane);
+
+            // Set callback to reopen settings dialog when going back
+            controller.setOnBackCallback(() -> reopenSettingsDialog());
+
+            rootPane.getChildren().add(soundDialog);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void reopenSettingsDialog() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/fxml/CustomDialog.fxml")
+            );
+            Parent dialog = loader.load();
+
+            CustomDialogController controller = loader.getController();
+            controller.setRootPane(rootPane);
+
+            rootPane.getChildren().add(dialog);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void close() {
+        SoundManager.getInstance().playClickSound();
         Platform.exit();
     }
 
     @FXML
     private void goBack() {
-        SceneNavigator.back(rootPane);
+        SoundManager.getInstance().playClickSound();
+        closeDialog();
     }
 
     private void closeDialog() {

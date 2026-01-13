@@ -11,6 +11,7 @@ import com.mycompany.clientside.service.ClientMessageListener;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -51,11 +52,15 @@ public class LeaderBoardController implements Initializable, InvitationCallback,
 
     @FXML
     private void handleBack(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         SceneNavigator.back((Node) event.getSource());
     }
 
     @FXML
     private void goToSettings(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         Parent root = settingsIcon.getScene().getRoot();
         DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }

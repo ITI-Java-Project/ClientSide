@@ -12,6 +12,7 @@ import com.mycompany.clientside.service.ClientMessageListener;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -56,28 +57,38 @@ public class StartController implements Initializable, InvitationCallback, GameL
 
     @FXML
     private void goToLeaderBoard(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         SceneNavigator.navigateTo(leaderBoardText, "/fxml/LeaderBoard.fxml");
     }
 
     @FXML
     private void goToSettings(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         Parent root = settingsIcon.getScene().getRoot();
         DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
 
     @FXML
     private void handleStart(ActionEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         SceneNavigator.navigateTo(startBtn, "/fxml/GameModes.fxml");
     }
 
     @FXML
     private void handleRecording(ActionEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         SceneNavigator.navigateTo(recordingBtn, "/fxml/Recording.fxml");
 
     }
 
     @FXML
     private void handleExit(ActionEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         Platform.exit();
     }
 

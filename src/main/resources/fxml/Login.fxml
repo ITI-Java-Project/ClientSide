@@ -18,7 +18,6 @@
                    -fx-background-size: cover;
                    -fx-background-position: center;">
 
-    <!-- Centered Login Container -->
     <center>
         <StackPane alignment="CENTER">
             <VBox spacing="20"
@@ -29,9 +28,17 @@
                   maxHeight="500.0">
 
                 <Label styleClass="register-title" text="Login"/>
-                <Region prefHeight="15.0"/>
+                
+                <Label fx:id="errorLabel"
+                       text=""
+                       styleClass="error-label"
+                       visible="false"
+                       managed="false"
+                       wrapText="true"
+                       maxWidth="500.0"/>
+                
+                <Region prefHeight="10.0"/>
 
-                <!-- Username Section -->
                 <VBox prefWidth="500.0" spacing="10">
                     <Label styleClass="input-label" text="Username"/>
                     <TextField fx:id="usernameField"
@@ -39,8 +46,6 @@
                                promptText="Enter username"
                                styleClass="input-field"/>
                 </VBox>
-
-                <!-- Password Section -->
                 <VBox prefWidth="500.0" spacing="10">
                     <Label styleClass="input-label" text="Password"/>
                     <PasswordField fx:id="passwordField"
@@ -51,18 +56,11 @@
 
                 <Region prefHeight="15.0"/>
 
-                <!-- Login Button -->
                 <Button fx:id="loginButton"
                         text="Login"
                         onAction="#handleLogin"
                         prefHeight="50.0" prefWidth="250.0"
                         styleClass="primary-btn"/>
-
-                <!-- Error Label -->
-                <Label fx:id="errorLabel"
-                       text=""
-                       styleClass="error-label"
-                       visible="false"/>
             </VBox>
         </StackPane>
     </center>

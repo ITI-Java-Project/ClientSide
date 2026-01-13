@@ -11,6 +11,7 @@ import com.mycompany.clientside.service.ClientMessageListener;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -120,20 +121,26 @@ public class RecordingController implements Initializable, InvitationCallback, G
 
     @FXML
     private void handleBack(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         SceneNavigator.back(backBtn);
     }
 
     @FXML
     private void goToLeaderBoard(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         SceneNavigator.navigateTo(leaderBoardText, "/fxml/LeaderBoard.fxml");
     }
 
     @FXML
     private void goToSettings(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         StackPane root = (StackPane) settingsIcon.getScene().getRoot();
         DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
-    
+
        @Override
     public void onInviteReceived(String[] parts) {
         Parent root = leaderBoardText.getScene().getRoot();
@@ -168,4 +175,5 @@ public class RecordingController implements Initializable, InvitationCallback, G
     @Override
     public void endGame() {
     }
+
 }
