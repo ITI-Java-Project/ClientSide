@@ -38,6 +38,7 @@ public class LeaderBoardController implements Initializable, InvitationCallback,
     private ConnectionStrategy conn;
     private ClientMessageListener listener;
     private InvitationDialogController currentInviteDialog;
+    private ReceiveInvitationDialogController receiveInvitationDialogController;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -114,11 +115,11 @@ public class LeaderBoardController implements Initializable, InvitationCallback,
     public void loadPlayers(List<Player> players) {
     }
 
-    @Override
+     @Override
     public void onInviteReceived(String[] parts) {
-        Parent root = playersListContainer.getScene().getRoot();
+        Parent root = settingsIcon.getScene().getRoot();
         Platform.runLater(() -> {
-            GameDialogs.openReceiveInvitationDialog(root, parts[2],
+            receiveInvitationDialogController=GameDialogs.openReceiveInvitationDialog(root, parts[2],
                     () -> {
                         conn.getWriter().println("INVITE_ACCEPT " + parts[1]);
                     },
@@ -127,7 +128,6 @@ public class LeaderBoardController implements Initializable, InvitationCallback,
                     });
         });
     }
-
     @Override
     public void onInviteRejected(String[] parts) {
         Parent root = playersListContainer.getScene().getRoot();
@@ -137,7 +137,7 @@ public class LeaderBoardController implements Initializable, InvitationCallback,
         });
     }
 
-    @Override
+@Override
     public void startGame() {
         System.out.println("=================================");
         Parent root = settingsIcon.getScene().getRoot();
@@ -146,6 +146,7 @@ public class LeaderBoardController implements Initializable, InvitationCallback,
                 c.setGameStrategy(new OnlineGame());
                 c.setMyTurn(true);
                 c.setMyChar('X');
+                c.setRecording(receiveInvitationDialogController.isRecording());
             });
         });
     }

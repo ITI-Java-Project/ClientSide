@@ -40,6 +40,7 @@ public class RecordingController implements Initializable, InvitationCallback, G
     private Label leaderBoardText;
     @FXML
     private ImageView settingsIcon;
+    private ReceiveInvitationDialogController receiveInvitationDialogController;
 
     private MatchRecorder matchRecorder;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -53,7 +54,7 @@ public class RecordingController implements Initializable, InvitationCallback, G
     public void initialize(URL url, ResourceBundle rb) {
         matchRecorder = new MatchRecorder("");
         loadAllMatches();
-         conn = ConnectionManager.getConnection();
+        conn = ConnectionManager.getConnection();
         listener = conn.getClientMessageListener();
         if (listener != null) {
             listener.setCallback(this);
@@ -142,11 +143,11 @@ public class RecordingController implements Initializable, InvitationCallback, G
         DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
 
-       @Override
+    @Override
     public void onInviteReceived(String[] parts) {
         Parent root = leaderBoardText.getScene().getRoot();
         Platform.runLater(() -> {
-            GameDialogs.openReceiveInvitationDialog(root, parts[2],
+            receiveInvitationDialogController = GameDialogs.openReceiveInvitationDialog(root, parts[2],
                     () -> {
                         conn.getWriter().println("INVITE_ACCEPT " + parts[1]);
                     },
@@ -165,7 +166,7 @@ public class RecordingController implements Initializable, InvitationCallback, G
         });
     }
 
-    @Override
+@Override
     public void startGame() {
         System.out.println("=================================");
         Parent root = settingsIcon.getScene().getRoot();
@@ -174,6 +175,7 @@ public class RecordingController implements Initializable, InvitationCallback, G
                 c.setGameStrategy(new OnlineGame());
                 c.setMyTurn(true);
                 c.setMyChar('X');
+                c.setRecording(receiveInvitationDialogController.isRecording());
             });
         });
     }
