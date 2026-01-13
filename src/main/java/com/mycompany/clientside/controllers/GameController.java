@@ -12,6 +12,7 @@ import com.mycompany.clientside.game.OnlineGame;
 import com.mycompany.clientside.matchRecording.MatchRecorder;
 import com.mycompany.clientside.matchRecording.Move;
 import com.mycompany.clientside.matchRecording.Result;
+import com.mycompany.clientside.utils.AlertUtil;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
@@ -24,11 +25,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.stage.Window;
 import javafx.util.Duration;
 import models.Difficulty;
 
@@ -62,10 +65,14 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
     private int player1Wins = 0;
     private int player2Wins = 0;
     private int draws = 0;
+    private Window owner;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         updateScoreDisplay();
+        Platform.runLater(() -> {
+            owner = settingsButton.getScene().getWindow();
+        });
     }
 
     public void setGameStrategy(GameStartegy gameStrategy) {
@@ -135,11 +142,11 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
         if (gameStrategy instanceof AiGame) {
             gameStrategy.play(row, col, myChar);
             updateUI();
-            
+
             if (checkGameStateWithoutDialog()) {
                 return;
             }
-            
+
             disableBoard();
 
             PauseTransition pause = new PauseTransition(Duration.seconds(0.6));
@@ -220,14 +227,13 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
         });
     }
 
-
     private boolean checkGameStateWithoutDialog() {
         int[][] winningCells = this.gameStrategy.winner();
         if (winningCells != null) {
             handleWin(winningCells);
             return true;
         }
-        
+
         char[][] board = Board.getInstance().getBoard();
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -272,7 +278,6 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
         char winningChar = Board.getInstance()
                 .getBoard()[winningCells[0][0]][winningCells[0][1]];
 
-
         PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
 
         pause.setOnFinished(e -> Platform.runLater(() -> {
@@ -288,7 +293,7 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
                         "/videos/win.mp4",
                         () -> SceneNavigator.back(gameBoard),
                         () -> {
-                           restart();
+                            restart();
                         }
                 );
 
@@ -303,7 +308,7 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
                         "/videos/Lose.mp4",
                         () -> SceneNavigator.back(gameBoard),
                         () -> {
-                            restart();      
+                            restart();
                         }
                 );
             }
@@ -334,7 +339,7 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
                     "Draw",
                     "/videos/Draw.mp4",
                     () -> SceneNavigator.back(gameBoard),
-                    () -> {     
+                    () -> {
                         restart();
                     }
             );
@@ -419,14 +424,14 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
     @Override
     public void onNotYourTurn() {
         Platform.runLater(() -> {
-            DialogUtil.showError("Not Your Turn", "Please wait for your turn!");
+            AlertUtil.showAlert("Not Your Turn", "Please wait for your turn!", Alert.AlertType.ERROR, owner);
         });
     }
 
     @Override
     public void onCellOccupied() {
         Platform.runLater(() -> {
-            DialogUtil.showError("Cell Occupied", "This cell is already taken!");
+            AlertUtil.showAlert("Cell Occupied", "This cell is already taken!!", Alert.AlertType.ERROR, owner);
         });
     }
 
@@ -453,8 +458,8 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
             matchRecorder.addMove(move);
         }
     }
-    
-    private void restart(){
+
+    private void restart() {
         GameStartegy newStrategy;
 
         if (gameStrategy instanceof LocalGame) {
