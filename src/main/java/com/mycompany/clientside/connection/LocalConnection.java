@@ -31,7 +31,6 @@ public class LocalConnection extends ConnectionStrategy {
             this.listenerThread = null;
 
         } catch (UnknownHostException ex) {
-            AlertUtil.showAlert("Server Ip Error", "Invalid Ip Address", Alert.AlertType.ERROR,owner);
         }
     }
 
@@ -50,7 +49,6 @@ public class LocalConnection extends ConnectionStrategy {
 
         } catch (IOException ex) {
             isConnected = false;
-            AlertUtil.showAlert("Connection Failed", "Unable to connect to server.\nPlease check server status.", Alert.AlertType.ERROR,owner);
         }
         return isConnected;
     }

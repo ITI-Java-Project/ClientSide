@@ -18,7 +18,6 @@
                    -fx-background-size: cover;
                    -fx-background-position: center;">
 
-    <!-- Centered Sign up Container -->
     <center>
         <StackPane alignment="CENTER">
             <VBox spacing="10"
@@ -26,12 +25,20 @@
                   styleClass="register-container"
                   prefWidth="600.0"
                   maxWidth="600.0"
-                  maxHeight="500.0">
+                  maxHeight="550.0">
 
                 <Label text="Sign up" styleClass="register-title"/>
-                <Region prefHeight="10.0"/>
 
-                <!-- Username Section -->
+                <Label fx:id="errorLabel"
+                       text=""
+                       styleClass="error-label"
+                       visible="false"
+                       managed="false"
+                       wrapText="true"
+                       maxWidth="500.0"/>
+
+                <Region prefHeight="5.0"/>
+
                 <VBox spacing="8" prefWidth="300.0" alignment="TOP_LEFT">
                     <Label text="Username" styleClass="input-label"/>
                     <TextField fx:id="usernameField"
@@ -40,7 +47,6 @@
                                styleClass="input-field"/>
                 </VBox>
 
-                <!-- Email Section -->
                 <VBox spacing="8" prefWidth="300.0" alignment="TOP_LEFT">
                     <Label text="Email" styleClass="input-label"/>
                     <TextField fx:id="emailField"
@@ -49,7 +55,6 @@
                                styleClass="input-field"/>
                 </VBox>
 
-                <!-- Password Section -->
                 <VBox spacing="8" prefWidth="300.0" alignment="TOP_LEFT">
                     <Label text="Password" styleClass="input-label"/>
                     <PasswordField fx:id="passwordField"
@@ -60,18 +65,11 @@
 
                 <Region prefHeight="10.0"/>
 
-                <!-- Sign up Button -->
                 <Button fx:id="signupButton"
                         text="Sign up"
                         onAction="#handleSignup"
                         prefWidth="250.0" prefHeight="50.0"
                         styleClass="primary-btn"/>
-
-                <!-- Error Label -->
-                <Label fx:id="errorLabel"
-                       text=""
-                       styleClass="error-label"
-                       visible="false"/>
             </VBox>
         </StackPane>
     </center>

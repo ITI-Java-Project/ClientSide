@@ -1,5 +1,6 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -15,25 +16,25 @@ public class ReceiveInvitationDialogController implements Initializable {
 
     @FXML
     private Pane backgroundPane;
-    
+
     @FXML
     private VBox dialogCard;
-    
+
     @FXML
     private Label titleLabel;
-    
+
     @FXML
     private ToggleButton recordToggle;
-    
+
     @FXML
     private Button acceptButton;
-    
+
     @FXML
     private Button denyButton;
-    
+
     private StackPane rootPane;
     private boolean isRecording = false;
-    
+
     private Runnable onAccept;
     private Runnable onDeny;
 
@@ -51,17 +52,18 @@ public class ReceiveInvitationDialogController implements Initializable {
     public void setPlayerName(String playerName) {
         titleLabel.setText(playerName + " wants to play with you!");
     }
-    
+
     public void setOnAccept(Runnable onAccept) {
         this.onAccept = onAccept;
     }
-    
+
     public void setOnDeny(Runnable onDeny) {
         this.onDeny = onDeny;
     }
 
     @FXML
     private void onRecordToggle() {
+        SoundManager.getInstance().playClickSound();
         isRecording = recordToggle.isSelected();
         updateToggleStyle();
     }
@@ -82,14 +84,16 @@ public class ReceiveInvitationDialogController implements Initializable {
 
     @FXML
     private void accept() {
+        SoundManager.getInstance().playClickSound();
         if (onAccept != null) {
             onAccept.run();
         }
         closeDialog();
     }
-    
+
     @FXML
     private void deny() {
+        SoundManager.getInstance().playClickSound();
         if (onDeny != null) {
             onDeny.run();
         }

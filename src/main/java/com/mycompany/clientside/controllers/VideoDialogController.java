@@ -1,5 +1,6 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -16,19 +17,19 @@ public class VideoDialogController implements Initializable {
 
     @FXML
     private Pane backgroundPane;
-    
+
     @FXML
     private VBox dialogCard;
-    
+
     @FXML
     private Label titleLabel;
-    
+
     @FXML
     private MediaView mediaView;
-    
+
     private StackPane rootPane;
     private MediaPlayer mediaPlayer;
-    
+
     private Runnable onGoBack;
     private Runnable onPlayAgain;
 
@@ -64,14 +65,16 @@ public class VideoDialogController implements Initializable {
         mediaPlayer = new MediaPlayer(media);
         mediaView.setMediaPlayer(mediaPlayer);
         mediaPlayer.play();
-        
+
     }
 
     @FXML
     private void goBack() {
+        SoundManager.getInstance().playClickSound();
+
         stopVideo();
         closeDialog();
-        
+
         if (onGoBack != null) {
             onGoBack.run();
         }
@@ -79,9 +82,11 @@ public class VideoDialogController implements Initializable {
 
     @FXML
     private void playAgain() {
+        SoundManager.getInstance().playClickSound();
+
         stopVideo();
         closeDialog();
-        
+
         if (onPlayAgain != null) {
             onPlayAgain.run();
         }

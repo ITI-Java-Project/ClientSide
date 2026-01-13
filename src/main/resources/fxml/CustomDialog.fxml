@@ -7,38 +7,49 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane pickOnBounds="true" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.clientside.controllers.CustomDialogController">
+<StackPane pickOnBounds="true" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="com.mycompany.clientside.controllers.CustomDialogController">
 
     <Pane fx:id="backgroundPane" style="-fx-background-color: rgba(0,0,0,0.5);" StackPane.alignment="CENTER" />
 
     <VBox fx:id="dialogCard"
-      alignment="CENTER"
-      maxHeight="260"
-      maxWidth="420"
-      prefHeight="260"
-      prefWidth="420"
-      spacing="25"
-      style="
-          -fx-background-color: white;
-          -fx-background-radius: 40;
-          -fx-border-radius: 40;
-          -fx-border-color: black;
-          -fx-border-width: 2;
-      ">
+          alignment="CENTER"
+          maxHeight="260"
+          maxWidth="420"
+          prefHeight="260"
+          prefWidth="420"
+          spacing="25"
+          style="
+              -fx-background-color: white;
+              -fx-background-radius: 40;
+              -fx-border-radius: 40;
+              -fx-border-color: black;
+              -fx-border-width: 2;
+          ">
 
         <padding>
             <Insets bottom="20" left="20" right="20" top="20" />
         </padding>
 
-        <Button prefHeight="60" prefWidth="160" style="-fx-background-color: white; -fx-background-radius: 50; -fx-border-radius: 50; -fx-border-color: black; -fx-border-width: 2;" text="Sound">
-         <font>
-            <Font name="Comic Sans MS Bold" size="14.0" />
-         </font></Button>
+        <!-- Sound Button - Now opens Sound Settings -->
+        <Button onAction="#openSoundSettings" 
+                prefHeight="60" prefWidth="160" 
+                style="-fx-background-color: white; -fx-background-radius: 50; -fx-border-radius: 50; -fx-border-color: black; -fx-border-width: 2;" 
+                text="Sound">
+            <font>
+                <Font name="Comic Sans MS Bold" size="14.0" />
+            </font>
+        </Button>
 
-        <Button onAction="#close" prefHeight="60" prefWidth="160" style="-fx-background-color: #F34B4E; -fx-border-color: black; -fx-border-width: 2; -fx-background-radius: 50; -fx-border-radius: 50;" text="Exit">
-         <font>
-            <Font name="Comic Sans MS Bold" size="14.0" />
-         </font></Button>
+        <!-- Exit Button -->
+        <Button onAction="#close" 
+                prefHeight="60" prefWidth="160" 
+                style="-fx-background-color: #F34B4E; -fx-border-color: black; -fx-border-width: 2; -fx-background-radius: 50; -fx-border-radius: 50;" 
+                text="Exit">
+            <font>
+                <Font name="Comic Sans MS Bold" size="14.0" />
+            </font>
+        </Button>
 
     </VBox>
 </StackPane>

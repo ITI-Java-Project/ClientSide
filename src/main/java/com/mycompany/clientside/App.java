@@ -1,5 +1,6 @@
 package com.mycompany.clientside;
 
+import com.mycompany.clientside.utils.SoundManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,7 +14,7 @@ import javafx.stage.StageStyle;
 
 public class App extends Application {
     private static Scene scene;
-    
+
     @Override
     public void start(Stage stage) throws IOException {
         scene = new Scene(loadFXML("Landing"));
@@ -28,19 +29,28 @@ public class App extends Application {
             }
         });
 
+        // Start background music when app launches
+        SoundManager.getInstance().playBackgroundMusic();
+
         stage.show();
     }
-    
+
+    @Override
+    public void stop() {
+        // Cleanup sound resources when app closes
+        SoundManager.getInstance().cleanup();
+    }
+
     static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
     }
-    
+
     private static Parent loadFXML(String fxml) throws IOException {
         FXMLLoader fxmlLoader =
                 new FXMLLoader(App.class.getResource("/fxml/" + fxml + ".fxml"));
         return fxmlLoader.load();
     }
-    
+
     public static void main(String[] args) {
         launch();
     }

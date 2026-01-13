@@ -6,15 +6,14 @@ import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.connection.LocalConnection;
 import com.mycompany.clientside.dto.Player;
 import com.mycompany.clientside.dto.UserSession;
-import com.mycompany.clientside.utils.AlertUtil;
 import com.mycompany.clientside.utils.SceneNavigator;
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -35,9 +34,7 @@ public class LoginController implements Initializable {
     private Label errorLabel;
 
     private ConnectionStrategy conn;
-
     private Authentication auth;
-
     private Window owner;
 
     @Override
@@ -48,48 +45,75 @@ public class LoginController implements Initializable {
             conn = ConnectionManager.getConnection();
             auth = new Authentication(conn);
         });
+        
+        usernameField.textProperty().addListener((obs, old, newVal) -> hideError());
+        passwordField.textProperty().addListener((obs, old, newVal) -> hideError());
     }
 
     @FXML
     private void handleLogin(ActionEvent event) {
+        SoundManager.getInstance().playClickSound();
+        hideError();
+
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText();
+
+        if (username.isEmpty() && password.isEmpty()) {
+            showError("Please enter your username and password.");
+            return;
+        }
+        
+        if (username.isEmpty()) {
+            showError("Please enter your username.");
+            usernameField.requestFocus();
+            return;
+        }
+        
+        if (password.isEmpty()) {
+            showError("Please enter your password.");
+            passwordField.requestFocus();
+            return;
+        }
+
+        loginButton.setDisable(true);
+        
         new Thread(() -> {
-
             if (!conn.connectToServer()) {
-                Platform.runLater(() -> AlertUtil.showAlert(
-                        "Error", "Cannot connect to server", Alert.AlertType.ERROR, owner
-                ));
+                Platform.runLater(() -> {
+                    showError("Cannot connect to server. Please try again later.");
+                    loginButton.setDisable(false);
+                });
                 return;
             }
 
-            String username = usernameField.getText();
-            String password = passwordField.getText();
-
-            if (username.isEmpty() || password.isEmpty()) {
-                Platform.runLater(() -> AlertUtil.showAlert(
-                        "Warning",
-                        "Please fill username and password fields",
-                        Alert.AlertType.WARNING, owner
-                ));
-                return;
-            }
             Player player = auth.login(username, password);
 
             Platform.runLater(() -> {
+                loginButton.setDisable(false);
+                
                 if (player != null) {
                     UserSession.getInstance().setCurrentUser(player);
                     conn.startListener(null);
                     SceneNavigator.navigateTo(loginButton, "/fxml/Start.fxml");
-                    System.out.println(UserSession.getInstance().getCurrentUser().toString());;
+                    System.out.println(UserSession.getInstance().getCurrentUser().toString());
                 } else {
-                    AlertUtil.showAlert(
-                            "Login failed",
-                            "Please ensure you entered correct username and password",
-                            Alert.AlertType.ERROR, owner
-                    );
+                    showError("Invalid username or password. Please try again.");
                 }
             });
 
         }).start();
+    }
+
+    private void showError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.setManaged(true);
+    }
+
+    private void hideError() {
+        errorLabel.setText("");
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
     }
 
     @FXML
