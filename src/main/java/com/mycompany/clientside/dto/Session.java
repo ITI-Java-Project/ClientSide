@@ -43,4 +43,10 @@ public class Session {
     public void setPlayer2Score(int player2Score) {
         this.player2Score = player2Score;
     }
+
+    @Override
+    public String toString() {
+        return "Session{" + "id=" + id + ", player1Id=" + player1Id + ", player2Id=" + player2Id + ", player1Score=" + player1Score + ", player2Score=" + player2Score + '}';
+    }
+
 }
