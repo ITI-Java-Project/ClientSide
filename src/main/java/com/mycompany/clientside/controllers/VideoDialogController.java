@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -26,7 +27,8 @@ public class VideoDialogController implements Initializable {
 
     @FXML
     private MediaView mediaView;
-
+    @FXML
+    private Button playAgainButton;
     private StackPane rootPane;
     private MediaPlayer mediaPlayer;
 
@@ -64,6 +66,12 @@ public class VideoDialogController implements Initializable {
         mediaPlayer.play();
 
     }
+    public void disablePlayAgain(boolean disable) {
+    if (playAgainButton != null) {
+        playAgainButton.setDisable(disable);
+    }
+}
+
 
     @FXML
     private void goBack() {

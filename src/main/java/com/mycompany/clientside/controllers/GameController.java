@@ -3,7 +3,6 @@ package com.mycompany.clientside.controllers;
 import com.mycompany.clientside.callbacks.GameActionCallback;
 import com.mycompany.clientside.callbacks.GameLifecycleCallback;
 import com.mycompany.clientside.connection.ConnectionManager;
-import com.mycompany.clientside.dto.Player;
 import com.mycompany.clientside.game.AiGame;
 import com.mycompany.clientside.game.Board;
 import com.mycompany.clientside.game.GameStartegy;
@@ -66,7 +65,8 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
     private int player2Wins = 0;
     private int draws = 0;
     private Window owner;
-
+    private VideoDialogController videoDialogController;    
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         updateScoreDisplay();
@@ -266,12 +266,14 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
         }
         handleDraw();
     }
-
     private void handleWin(int[][] winningCells) {
+
         gameEnded = true;
+
         if (matchRecorder != null) {
             matchRecorder.endMatch(Result.WIN);
         }
+
         disableBoard();
         paintWinningCells(winningCells);
 
@@ -280,21 +282,19 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
 
         PauseTransition pause = new PauseTransition(Duration.seconds(1.5));
 
-        pause.setOnFinished(e -> Platform.runLater(() -> {
+        pause.setOnFinished(e -> {
 
             if (winningChar == myChar) {
                 player1Wins++;
                 player1Name.setTextFill(Color.GREEN);
                 player2Name.setTextFill(Color.RED);
 
-                GameDialogs.openVideoDialog(
+                videoDialogController = GameDialogs.openVideoDialog(
                         gameBoard,
                         "You Won!",
                         "/videos/win.mp4",
                         () -> SceneNavigator.back(gameBoard),
-                        () -> {
-                            restart();
-                        }
+                        this::restart
                 );
 
             } else {
@@ -302,22 +302,25 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
                 player1Name.setTextFill(Color.RED);
                 player2Name.setTextFill(Color.GREEN);
 
-                GameDialogs.openVideoDialog(
+                videoDialogController = GameDialogs.openVideoDialog(
                         gameBoard,
                         "You Lost!",
                         "/videos/Lose.mp4",
                         () -> SceneNavigator.back(gameBoard),
-                        () -> {
-                            restart();
-                        }
+                        this::restart
                 );
             }
+            if(this.gameStrategy instanceof OnlineGame){
+                        videoDialogController.disablePlayAgain(true);
 
+                    }
             updateScoreDisplay();
-        }));
+        });
+        
 
         pause.play();
     }
+
 
     private void handleDraw() {
         gameEnded = true;
@@ -334,7 +337,7 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
         pause.setOnFinished(e -> {
             updateScoreDisplay();
 
-            GameDialogs.openVideoDialog(
+            videoDialogController=GameDialogs.openVideoDialog(
                     gameBoard,
                     "Draw",
                     "/videos/Draw.mp4",
@@ -343,6 +346,9 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
                         restart();
                     }
             );
+            if(this.gameStrategy instanceof OnlineGame){
+            videoDialogController.disablePlayAgain(true);
+            }
         });
 
         pause.play();

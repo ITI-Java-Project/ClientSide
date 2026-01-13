@@ -6,6 +6,7 @@ import com.mycompany.clientside.callbacks.PlayersCallback;
 import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
+import com.mycompany.clientside.game.OnlineGame;
 import com.mycompany.clientside.service.ClientMessageCallback;
 import com.mycompany.clientside.service.ClientMessageListener;
 import com.mycompany.clientside.utils.DialogUtil;
@@ -37,6 +38,7 @@ public class LeaderBoardController implements Initializable, InvitationCallback,
     private ConnectionStrategy conn;
     private ClientMessageListener listener;
     private InvitationDialogController currentInviteDialog;
+    private ReceiveInvitationDialogController receiveInvitationDialogController;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -113,11 +115,11 @@ public class LeaderBoardController implements Initializable, InvitationCallback,
     public void loadPlayers(List<Player> players) {
     }
 
-    @Override
+     @Override
     public void onInviteReceived(String[] parts) {
-        Parent root = playersListContainer.getScene().getRoot();
+        Parent root = settingsIcon.getScene().getRoot();
         Platform.runLater(() -> {
-            GameDialogs.openReceiveInvitationDialog(root, parts[2],
+            receiveInvitationDialogController=GameDialogs.openReceiveInvitationDialog(root, parts[2],
                     () -> {
                         conn.getWriter().println("INVITE_ACCEPT " + parts[1]);
                     },
@@ -126,7 +128,6 @@ public class LeaderBoardController implements Initializable, InvitationCallback,
                     });
         });
     }
-
     @Override
     public void onInviteRejected(String[] parts) {
         Parent root = playersListContainer.getScene().getRoot();
@@ -136,11 +137,17 @@ public class LeaderBoardController implements Initializable, InvitationCallback,
         });
     }
 
+@Override
     public void startGame() {
         System.out.println("=================================");
         Parent root = settingsIcon.getScene().getRoot();
         Platform.runLater(() -> {
-            SceneNavigator.navigateTo(root, "/fxml/Game.fxml");
+            SceneNavigator.navigateTo(root, "/fxml/Game.fxml", (GameController c) -> {
+                c.setGameStrategy(new OnlineGame());
+                c.setMyTurn(true);
+                c.setMyChar('X');
+                c.setRecording(receiveInvitationDialogController.isRecording());
+            });
         });
     }
 

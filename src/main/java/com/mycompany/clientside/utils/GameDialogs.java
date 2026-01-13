@@ -39,19 +39,17 @@ public class GameDialogs {
             Runnable onGoBack,
             Runnable onPlayAgain) {
 
-        Object result = DialogUtil.openDialog(root, "/fxml/VideoDialog.fxml");
+        VideoDialogController controller =
+                (VideoDialogController)DialogUtil.openDialog(root, "/fxml/VideoDialog.fxml");
 
-        if (result != null) {
-            VideoDialogController controller =
-                    (VideoDialogController) result;
+        if (controller != null) {
             controller.setTitle(title);
             controller.setOnGoBack(onGoBack);
             controller.setOnPlayAgain(onPlayAgain);
             controller.playVideo(videoPath);
-            return controller;
         }
 
-        return null;
+        return controller;
     }
 
     public static ReceiveInvitationDialogController openReceiveInvitationDialog(

@@ -1,5 +1,7 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.game.OnlineGame;
+import com.mycompany.clientside.utils.SceneNavigator;
 import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -88,6 +90,7 @@ public class ReceiveInvitationDialogController implements Initializable {
         if (onAccept != null) {
             onAccept.run();
         }
+        
         closeDialog();
     }
 

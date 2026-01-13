@@ -44,7 +44,8 @@
                 </font>
             </Button>
 
-            <Button onAction="#playAgain" prefHeight="60" prefWidth="160" 
+            <Button fx:id="playAgainButton" 
+                onAction="#playAgain" prefHeight="60" prefWidth="160" 
                     style="-fx-background-color: #2196F3; -fx-border-color: black; -fx-border-width: 2; -fx-background-radius: 50; -fx-border-radius: 50;" 
                     text="Play Again">
                 <font>

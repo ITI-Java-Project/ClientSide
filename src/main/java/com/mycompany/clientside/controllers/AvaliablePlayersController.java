@@ -37,7 +37,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Window;
 
-public class AvaliablePlayersController implements Initializable, InvitationCallback , GameLifecycleCallback , PlayersCallback{
+public class AvaliablePlayersController implements Initializable, InvitationCallback, GameLifecycleCallback, PlayersCallback {
 
     @FXML
     private ImageView backIcon;
@@ -58,8 +58,10 @@ public class AvaliablePlayersController implements Initializable, InvitationCall
 
     private InvitationDialogController currentInviteDialog;
     private ClientMessageListener listener;
-    private boolean myTurn=false; 
-    private char myChar='O';
+    private boolean myTurn = false;
+    private char myChar = 'O';
+    private ReceiveInvitationDialogController receiveInvitationDialogController;
+    private boolean isSender=true;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Platform.runLater(() -> {
@@ -67,12 +69,12 @@ public class AvaliablePlayersController implements Initializable, InvitationCall
             conn = ConnectionManager.getConnection();
             playerService = new PlayerService(conn);
             avaliablesPlayers = observableArrayList();
-            
+
             listener = conn.getClientMessageListener();
             if (listener != null) {
                 listener.setCallback(this);
             }
-            
+
             requestPlayersList();
         });
     }
@@ -163,24 +165,27 @@ public class AvaliablePlayersController implements Initializable, InvitationCall
 
     @Override
     public void startGame() {
+        boolean isRecord=isSender?currentInviteDialog.isRecording():receiveInvitationDialogController.isRecording();
         System.out.println("=================================");
         Parent root = settingsIcon.getScene().getRoot();
         Platform.runLater(() -> {
-            SceneNavigator.navigateTo(root, "/fxml/Game.fxml",(GameController c)->{
+            SceneNavigator.navigateTo(root, "/fxml/Game.fxml", (GameController c) -> {
                 c.setGameStrategy(new OnlineGame());
                 c.setMyTurn(myTurn);
                 c.setMyChar(myChar);
+                c.setRecording(isRecord);
             });
         });
     }
 
     @Override
     public void onInviteReceived(String[] parts) {
-        myTurn=true; 
-        myChar='X';
+        myTurn = true;
+        myChar = 'X';
+        isSender=false;
         Parent root = leaderBoardText.getScene().getRoot();
         Platform.runLater(() -> {
-            GameDialogs.openReceiveInvitationDialog(root, parts[2],
+            receiveInvitationDialogController=GameDialogs.openReceiveInvitationDialog(root, parts[2],
                     () -> {
                         conn.getWriter().println("INVITE_ACCEPT " + parts[1]);
                     },
@@ -199,8 +204,6 @@ public class AvaliablePlayersController implements Initializable, InvitationCall
         });
     }
 
-    
-
     @Override
     public void endGame() {
     }
@@ -209,5 +212,4 @@ public class AvaliablePlayersController implements Initializable, InvitationCall
     public void loadLeaderBoard(List<Player> players) {
     }
 
-  
 }
