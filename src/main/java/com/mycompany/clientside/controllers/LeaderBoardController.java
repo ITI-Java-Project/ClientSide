@@ -1,10 +1,15 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.callbacks.GameLifecycleCallback;
+import com.mycompany.clientside.callbacks.InvitationCallback;
+import com.mycompany.clientside.callbacks.PlayersCallback;
 import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
 import com.mycompany.clientside.service.ClientMessageCallback;
+import com.mycompany.clientside.service.ClientMessageListener;
 import com.mycompany.clientside.utils.DialogUtil;
+import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
 import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
@@ -21,7 +26,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
-public class LeaderBoardController implements Initializable, ClientMessageCallback {
+public class LeaderBoardController implements Initializable, InvitationCallback, PlayersCallback, GameLifecycleCallback {
 
     @FXML
     private ImageView backBtn;
@@ -29,14 +34,18 @@ public class LeaderBoardController implements Initializable, ClientMessageCallba
     private ImageView settingsIcon;
     @FXML
     private VBox playersListContainer;
-
     private ConnectionStrategy conn;
+    private ClientMessageListener listener;
+    private InvitationDialogController currentInviteDialog;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Platform.runLater(() -> {
             conn = ConnectionManager.getConnection();
-            conn.startListener(this);
+            listener = conn.getClientMessageListener();
+            if (listener != null) {
+                listener.setCallback(this);
+            }
             conn.getWriter().println("GET_ALL_PLAYERS");
         });
     }
@@ -105,42 +114,38 @@ public class LeaderBoardController implements Initializable, ClientMessageCallba
     }
 
     @Override
-    public void startGame() {
-    }
-
-    @Override
     public void onInviteReceived(String[] parts) {
+        Parent root = playersListContainer.getScene().getRoot();
+        Platform.runLater(() -> {
+            GameDialogs.openReceiveInvitationDialog(root, parts[2],
+                    () -> {
+                        conn.getWriter().println("INVITE_ACCEPT " + parts[1]);
+                    },
+                    () -> {
+                        conn.getWriter().println("INVITE_REJECT " + parts[1]);
+                    });
+        });
     }
 
     @Override
     public void onInviteRejected(String[] parts) {
+        Parent root = playersListContainer.getScene().getRoot();
+        Platform.runLater(() -> {
+            currentInviteDialog.closeDialog();
+            GameDialogs.openRejectInvitationDialog(root, parts[2]);
+        });
     }
 
-    @Override
-    public void onMoveReceived(int r, int c, char p) {
-    }
-
-    @Override
-    public void onWin(char winner) {
-    }
-
-    @Override
-    public void onLose(char loser) {
-    }
-
-    @Override
-    public void onDraw() {
-    }
-
-    @Override
-    public void onNotYourTurn() {
-    }
-
-    @Override
-    public void onCellOccupied() {
+    public void startGame() {
+        System.out.println("=================================");
+        Parent root = settingsIcon.getScene().getRoot();
+        Platform.runLater(() -> {
+            SceneNavigator.navigateTo(root, "/fxml/Game.fxml");
+        });
     }
 
     @Override
     public void endGame() {
     }
+
 }

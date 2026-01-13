@@ -4,6 +4,8 @@ import com.mycompany.clientside.auth.Authentication;
 import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.connection.LocalConnection;
+import com.mycompany.clientside.dto.Player;
+import com.mycompany.clientside.dto.UserSession;
 import com.mycompany.clientside.utils.AlertUtil;
 import com.mycompany.clientside.utils.SceneNavigator;
 import com.mycompany.clientside.utils.SoundManager;
@@ -57,26 +59,40 @@ public class SignupController implements Initializable {
     private void handleSignup(ActionEvent event) {
         SoundManager.getInstance().playClickSound();
 
-        System.out.println("userName : " + usernameField.getText());
-        System.out.println("Email : " + emailField.getText());
-        System.out.println("Password : " + passwordField.getText());
-
         new Thread(() -> {
+
             if (!con.connectToServer()) {
                 Platform.runLater(() -> AlertUtil.showAlert(
                         "Error", "Cannot connect to server", Alert.AlertType.ERROR, owner
                 ));
                 return;
             }
-            boolean isRegistered = auth.signup(usernameField.getText(), emailField.getText(), passwordField.getText());
+
+            Player player = auth.signup(
+                    usernameField.getText(),
+                    emailField.getText(),
+                    passwordField.getText()
+            );
 
             Platform.runLater(() -> {
-                if (isRegistered) {
+                if (player != null) {
+
+                    UserSession.getInstance().setCurrentUser(player);
+                    con.startListener(null);
+                    System.out.println(UserSession.getInstance().getCurrentUser().toString());
                     SceneNavigator.navigateTo(signupButton, "/fxml/Start.fxml");
+
                 } else {
-                    AlertUtil.showAlert("Signup Failed", "This Email is used before please enter another email", Alert.AlertType.WARNING, owner);
+                    AlertUtil.showAlert(
+                            "Signup Failed",
+                            "This email is used before, please enter another email",
+                            Alert.AlertType.WARNING,
+                            owner
+                    );
                 }
             });
+
         }).start();
     }
+
 }
