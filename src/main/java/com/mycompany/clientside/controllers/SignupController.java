@@ -8,7 +8,9 @@ import com.mycompany.clientside.dto.Player;
 import com.mycompany.clientside.dto.UserSession;
 import com.mycompany.clientside.utils.SceneNavigator;
 import com.mycompany.clientside.utils.SoundManager;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 import javafx.application.Platform;
@@ -20,7 +22,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Window;
 
 public class SignupController implements Initializable {
@@ -35,10 +36,13 @@ public class SignupController implements Initializable {
     private TextField emailField;
     @FXML
     private Button signupButton;
+    @FXML
+    private TextField serverIpField;
 
     private ConnectionStrategy con;
     private Authentication auth;
     private Window owner;
+    private InetAddress serverIp;
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
             "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
@@ -46,20 +50,15 @@ public class SignupController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        serverIpField.setText("127.0.0.1");
         Platform.runLater(() -> {
             owner = signupButton.getScene().getWindow();
-            ConnectionManager.init((new LocalConnection(owner)));
-            con = ConnectionManager.getConnection();
-            auth = new Authentication(con);
         });
 
         usernameField.textProperty().addListener((obs, old, newVal) -> hideError());
         emailField.textProperty().addListener((obs, old, newVal) -> hideError());
         passwordField.textProperty().addListener((obs, old, newVal) -> hideError());
-    }
-
-    @FXML
-    private void handleSettings(MouseEvent event) {
+        serverIpField.textProperty().addListener((obs, old, newVal) -> hideError());
     }
 
     @FXML
@@ -70,6 +69,7 @@ public class SignupController implements Initializable {
         String username = usernameField.getText().trim();
         String email = emailField.getText().trim();
         String password = passwordField.getText();
+        String serverIpText = serverIpField.getText().trim();
 
         if (username.isEmpty() && email.isEmpty() && password.isEmpty()) {
             showError("Please fill in all fields.");
@@ -113,6 +113,17 @@ public class SignupController implements Initializable {
             return;
         }
 
+        try {
+            serverIp = InetAddress.getByName(serverIpText);
+            ConnectionManager.init(new LocalConnection(serverIp, owner));
+            con = ConnectionManager.getConnection();
+            auth = new Authentication(con);
+        } catch (UnknownHostException e) {
+            showError("Invalid server IP address!");
+            serverIpField.requestFocus();
+            return;
+        }
+
         signupButton.setDisable(true);
 
         new Thread(() -> {
@@ -142,18 +153,15 @@ public class SignupController implements Initializable {
         }).start();
     }
 
-
     private boolean isValidEmail(String email) {
         return EMAIL_PATTERN.matcher(email).matches();
     }
-
 
     private void showError(String message) {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
         errorLabel.setManaged(true);
     }
-
 
     private void hideError() {
         errorLabel.setText("");

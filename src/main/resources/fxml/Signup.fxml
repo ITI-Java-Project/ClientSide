@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
@@ -8,67 +7,73 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-
 <BorderPane 
-            xmlns:fx="http://javafx.com/fxml/1"
-            xmlns="http://javafx.com/javafx/25"
-            fx:controller="com.mycompany.clientside.controllers.SignupController"
-            stylesheets="@../styles/app.css"
-            style="-fx-background-image: url('images/DefaultMenuBG.png');
+    xmlns:fx="http://javafx.com/fxml/1"
+    xmlns="http://javafx.com/javafx/25"
+    fx:controller="com.mycompany.clientside.controllers.SignupController"
+    stylesheets="@../styles/app.css"
+    style="-fx-background-image: url('images/DefaultMenuBG.png');
                    -fx-background-size: cover;
                    -fx-background-position: center;">
-
     <center>
         <StackPane alignment="CENTER">
-            <VBox spacing="10"
+            <VBox spacing="5"
                   alignment="TOP_CENTER"
                   styleClass="register-container"
-                  prefWidth="600.0"
-                  maxWidth="600.0"
-                  maxHeight="550.0">
-
+                  prefWidth="550.0"
+                  maxWidth="550.0"
+                  maxHeight="400.0">
+                
                 <Label text="Sign up" styleClass="register-title"/>
-
+                
                 <Label fx:id="errorLabel"
                        text=""
                        styleClass="error-label"
                        visible="false"
                        managed="false"
                        wrapText="true"
-                       maxWidth="500.0"/>
-
-                <Region prefHeight="5.0"/>
-
-                <VBox spacing="8" prefWidth="300.0" alignment="TOP_LEFT">
+                       maxWidth="400.0"/>
+                
+                <Region prefHeight="3.0"/>
+                
+                <VBox spacing="5" prefWidth="250.0" alignment="TOP_LEFT">
                     <Label text="Username" styleClass="input-label"/>
                     <TextField fx:id="usernameField"
                                promptText="Enter username"
-                               prefWidth="300.0" prefHeight="40.0"
+                               prefWidth="250.0" prefHeight="35.0"
                                styleClass="input-field"/>
                 </VBox>
-
-                <VBox spacing="8" prefWidth="300.0" alignment="TOP_LEFT">
+                
+                <VBox spacing="5" prefWidth="250.0" alignment="TOP_LEFT">
                     <Label text="Email" styleClass="input-label"/>
                     <TextField fx:id="emailField"
                                promptText="Enter email"
-                               prefWidth="300.0" prefHeight="40.0"
+                               prefWidth="250.0" prefHeight="35.0"
                                styleClass="input-field"/>
                 </VBox>
-
-                <VBox spacing="8" prefWidth="300.0" alignment="TOP_LEFT">
+                
+                <VBox spacing="5" prefWidth="250.0" alignment="TOP_LEFT">
                     <Label text="Password" styleClass="input-label"/>
                     <PasswordField fx:id="passwordField"
                                    promptText="Enter password"
-                                   prefWidth="300.0" prefHeight="40.0"
+                                   prefWidth="250.0" prefHeight="35.0"
                                    styleClass="input-field"/>
                 </VBox>
-
+                
+                <VBox spacing="5" prefWidth="250.0" alignment="TOP_LEFT">
+                    <Label text="Server IP" styleClass="input-label"/>
+                    <TextField fx:id="serverIpField"
+                               promptText="Enter ServerIp"
+                               prefWidth="250.0" prefHeight="35.0"
+                               styleClass="input-field"/>
+                </VBox>
+                
                 <Region prefHeight="10.0"/>
-
+                
                 <Button fx:id="signupButton"
                         text="Sign up"
                         onAction="#handleSignup"
-                        prefWidth="250.0" prefHeight="50.0"
+                        prefWidth="200.0" prefHeight="50.0"
                         styleClass="primary-btn"/>
             </VBox>
         </StackPane>

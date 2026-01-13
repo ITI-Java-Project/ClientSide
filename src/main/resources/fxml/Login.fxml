@@ -10,11 +10,11 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane
-            xmlns:fx="http://javafx.com/fxml/1"
-            xmlns="http://javafx.com/javafx/25"
-            fx:controller="com.mycompany.clientside.controllers.LoginController"
-            stylesheets="@../styles/app.css"
-            style="-fx-background-image: url('images/DefaultMenuBG.png');
+    xmlns:fx="http://javafx.com/fxml/1"
+    xmlns="http://javafx.com/javafx/25"
+    fx:controller="com.mycompany.clientside.controllers.LoginController"
+    stylesheets="@../styles/app.css"
+    style="-fx-background-image: url('images/DefaultMenuBG.png');
                    -fx-background-size: cover;
                    -fx-background-position: center;">
 
@@ -23,9 +23,9 @@
             <VBox spacing="20"
                   alignment="CENTER"
                   styleClass="register-container"
-                  prefWidth="600.0"
-                  maxWidth="600.0"
-                  maxHeight="500.0">
+                  prefWidth="550.0"
+                  maxWidth="550.0"
+                  maxHeight="100.0">
 
                 <Label styleClass="register-title" text="Login"/>
                 
@@ -39,14 +39,14 @@
                 
                 <Region prefHeight="10.0"/>
 
-                <VBox prefWidth="500.0" spacing="10">
+                <VBox prefWidth="500.0" spacing="5">
                     <Label styleClass="input-label" text="Username"/>
                     <TextField fx:id="usernameField"
                                prefHeight="50.0" prefWidth="500.0"
                                promptText="Enter username"
                                styleClass="input-field"/>
                 </VBox>
-                <VBox prefWidth="500.0" spacing="10">
+                <VBox prefWidth="500.0" spacing="5">
                     <Label styleClass="input-label" text="Password"/>
                     <PasswordField fx:id="passwordField"
                                    prefHeight="50.0" prefWidth="500.0"
@@ -54,7 +54,15 @@
                                    styleClass="input-field"/>
                 </VBox>
 
-                <Region prefHeight="15.0"/>
+                <VBox prefWidth="500.0" spacing="5" alignment="TOP_LEFT">
+                    <Label text="Server IP" styleClass="input-label"/>
+                    <TextField fx:id="serverIpField"
+                               promptText="Enter ServerIp"
+                               prefWidth="250.0" prefHeight="35.0"
+                               styleClass="input-field"/>
+                </VBox>
+                
+                <Region prefHeight="10.0"/>
 
                 <Button fx:id="loginButton"
                         text="Login"

@@ -1,6 +1,5 @@
 package com.mycompany.clientside.connection;
 
-import com.mycompany.clientside.utils.AlertUtil;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,7 +8,6 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import javafx.scene.control.Alert;
 import javafx.stage.Window;
 
 public class LocalConnection extends ConnectionStrategy {
