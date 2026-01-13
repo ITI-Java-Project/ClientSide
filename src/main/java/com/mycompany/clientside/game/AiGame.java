@@ -20,10 +20,16 @@ public class AiGame implements GameStartegy {
         this.difficulty = difficulty;
     }
 
+    // Human move ONLY
     @Override
     public void play(int x, int y, char move) {
+        Board.getInstance().setCell(x, y, move);
+    }
+
+    // AI move ONLY
+    public void playAi(char humanChar) {
         Board board = Board.getInstance();
-        board.setCell(x, y, move);
+        char aiChar = (humanChar == 'X') ? 'O' : 'X';
 
         int[] aiMove;
 
@@ -33,11 +39,9 @@ public class AiGame implements GameStartegy {
                 break;
 
             case MEDIUM:
-                if (new Random().nextBoolean()) {
-                    aiMove = miniMax.randomMove(board);
-                } else {
-                    aiMove = miniMax.decideMove(board);
-                }
+                aiMove = new Random().nextBoolean()
+                        ? miniMax.randomMove(board)
+                        : miniMax.decideMove(board);
                 break;
 
             case HARD:
@@ -45,11 +49,11 @@ public class AiGame implements GameStartegy {
                 break;
 
             default:
-                throw new IllegalStateException("Unexpected difficulty: " + difficulty);
+                throw new IllegalStateException();
         }
 
         if (aiMove != null) {
-            board.setCell(aiMove[0], aiMove[1], 'O');
+            board.setCell(aiMove[0], aiMove[1], aiChar);
         }
     }
 }

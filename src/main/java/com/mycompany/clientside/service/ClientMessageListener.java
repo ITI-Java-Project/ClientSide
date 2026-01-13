@@ -7,6 +7,7 @@ import com.mycompany.clientside.callbacks.InvitationCallback;
 import com.mycompany.clientside.callbacks.PlayersCallback;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
+import com.mycompany.clientside.matchRecording.Move;
 import com.mycompany.clientside.utils.JsonUtil;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -134,11 +135,13 @@ public class ClientMessageListener implements Runnable {
         int row = Integer.parseInt(parts[1]);
         int col = Integer.parseInt(parts[2]);
         char player = parts[3].charAt(0);
+        
+        Move move = new Move(row, col, player);
 
         System.out.println("Move received: " + row + "," + col + " Player: " + player);
 
         if (callback instanceof GameActionCallback) {
-            ((GameActionCallback) callback).onMoveReceived(row, col, player);
+            ((GameActionCallback) callback).onMoveReceived(move);
         }
     }
 

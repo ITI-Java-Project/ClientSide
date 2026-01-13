@@ -6,6 +6,7 @@ import com.mycompany.clientside.callbacks.PlayersCallback;
 import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
+import com.mycompany.clientside.game.OnlineGame;
 import com.mycompany.clientside.service.ClientMessageCallback;
 import com.mycompany.clientside.service.ClientMessageListener;
 import com.mycompany.clientside.service.PlayerService;
@@ -57,7 +58,8 @@ public class AvaliablePlayersController implements Initializable, InvitationCall
 
     private InvitationDialogController currentInviteDialog;
     private ClientMessageListener listener;
-
+    private boolean myTurn=false; 
+    private char myChar='O';
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         Platform.runLater(() -> {
@@ -164,12 +166,18 @@ public class AvaliablePlayersController implements Initializable, InvitationCall
         System.out.println("=================================");
         Parent root = settingsIcon.getScene().getRoot();
         Platform.runLater(() -> {
-            SceneNavigator.navigateTo(root, "/fxml/Game.fxml");
+            SceneNavigator.navigateTo(root, "/fxml/Game.fxml",(GameController c)->{
+                c.setGameStrategy(new OnlineGame());
+                c.setMyTurn(myTurn);
+                c.setMyChar(myChar);
+            });
         });
     }
 
     @Override
     public void onInviteReceived(String[] parts) {
+        myTurn=true; 
+        myChar='X';
         Parent root = leaderBoardText.getScene().getRoot();
         Platform.runLater(() -> {
             GameDialogs.openReceiveInvitationDialog(root, parts[2],
