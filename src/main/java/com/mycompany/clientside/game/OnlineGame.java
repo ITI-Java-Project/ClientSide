@@ -32,11 +32,6 @@ public class OnlineGame implements GameStartegy,GameActionCallback {
     }
 
     @Override
-    public int[][] winner() {
-        return null;
-    }
-
-    @Override
     public void onMoveReceived(Move move) {
         System.out.println("CALLBACK MOVE " + move.getX() + "," + move.getY() + " " + move.getMove());
         Board.getInstance().setCell(move.getX(), move.getY(), move.getMove());

@@ -30,6 +30,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import models.Difficulty;
 
 public class GameController implements Initializable, GameLifecycleCallback, GameActionCallback {
 
@@ -262,6 +263,9 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
 
     private void handleWin(int[][] winningCells) {
         gameEnded = true;
+        if (matchRecorder != null) {
+            matchRecorder.endMatch(Result.WIN);
+        }
         disableBoard();
         paintWinningCells(winningCells);
 
@@ -284,10 +288,7 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
                         "/videos/win.mp4",
                         () -> SceneNavigator.back(gameBoard),
                         () -> {
-                            startGame();
-                            if (matchRecorder != null) {
-                                matchRecorder.endMatch(Result.WIN);
-                            }
+                           restart();
                         }
                 );
 
@@ -302,10 +303,7 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
                         "/videos/Lose.mp4",
                         () -> SceneNavigator.back(gameBoard),
                         () -> {
-                            startGame();
-                            if (matchRecorder != null) {
-                                matchRecorder.endMatch(Result.LOSE);
-                            }
+                            restart();      
                         }
                 );
             }
@@ -320,7 +318,9 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
         gameEnded = true;
         draws++;
         disableBoard();
-
+        if (matchRecorder != null) {
+            matchRecorder.endMatch(Result.DRAW);
+        }
         player1Name.setTextFill(Color.ORANGE);
         player2Name.setTextFill(Color.ORANGE);
 
@@ -334,11 +334,8 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
                     "Draw",
                     "/videos/Draw.mp4",
                     () -> SceneNavigator.back(gameBoard),
-                    () -> {
-                        startGame();
-                        if (matchRecorder != null) {
-                            matchRecorder.endMatch(Result.DRAW);
-                        }
+                    () -> {     
+                        restart();
                     }
             );
         });
@@ -435,8 +432,7 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
 
     @Override
     public void endGame() {
-        Parent root = player2Name.getScene().getRoot();
-        SceneNavigator.back(root);
+
     }
 
     @Override
@@ -456,5 +452,26 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
         if (matchRecorder != null) {
             matchRecorder.addMove(move);
         }
+    }
+    
+    private void restart(){
+        GameStartegy newStrategy;
+
+        if (gameStrategy instanceof LocalGame) {
+            newStrategy = new LocalGame();
+        } else if (gameStrategy instanceof AiGame) {
+            newStrategy = new AiGame(Difficulty.HARD);
+        } else if (gameStrategy instanceof OnlineGame) {
+            newStrategy = new OnlineGame();
+        } else {
+            newStrategy = new LocalGame();
+        }
+
+        SceneNavigator.navigateWithoutHistory(gameBoard, "/fxml/game.fxml", (GameController c) -> {
+            c.setGameStrategy(newStrategy);
+            c.setMyChar(this.myChar);
+            c.setMyTurn(myTurn);
+            c.setRecording(matchRecorder != null);
+        });
     }
 }

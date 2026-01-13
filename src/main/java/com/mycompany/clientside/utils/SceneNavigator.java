@@ -25,7 +25,9 @@ public class SceneNavigator {
     public static void navigateTo(Node currentNode, String fxmlPath) {
         navigateTo(currentNode, fxmlPath, null);
     }
-
+    public static <T> void navigateWithoutHistory(Node currentNode, String fxmlPath, Consumer<T> controllerInitializer) {
+        navigateInternal(currentNode, fxmlPath, false, controllerInitializer);
+     }
     public static <T> void navigateTo(Node currentNode, String fxmlPath, Consumer<T> controllerInitializer) {
         navigateInternal(currentNode, fxmlPath, true, controllerInitializer);
     }
