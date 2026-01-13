@@ -1,5 +1,6 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -36,7 +37,7 @@ public class CustomDialogController implements Initializable {
 
     @FXML
     private void goBack() {
-        closeDialog();
+        SceneNavigator.back(rootPane);
     }
 
     private void closeDialog() {

@@ -38,17 +38,13 @@ public class VideoDialogController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // No click handlers
+
     }
 
-    public void setWon(boolean won) {
-        if (won) {
-            titleLabel.setText("You Won!");
-            titleLabel.setStyle("-fx-text-fill: #4CAF50;");
-        } else {
-            titleLabel.setText("You Lost!");
-            titleLabel.setStyle("-fx-text-fill: #F34B4E;");
-        }
+    public void setTitle(String title) {
+        
+        titleLabel.setText(title);
+       
     }
 
     public void setOnGoBack(Runnable onGoBack) {
@@ -60,11 +56,11 @@ public class VideoDialogController implements Initializable {
     }
 
     public void playVideo(String videoPath) {
-        Media media = new Media(videoPath);
+        String resourcePath = getClass().getResource(videoPath).toExternalForm();
+        Media media = new Media(resourcePath);
         mediaPlayer = new MediaPlayer(media);
         mediaView.setMediaPlayer(mediaPlayer);
         mediaPlayer.play();
-        
     }
 
     @FXML

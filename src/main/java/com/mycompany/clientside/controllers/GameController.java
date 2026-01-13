@@ -1,5 +1,7 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.callbacks.GameActionCallback;
+import com.mycompany.clientside.callbacks.GameLifecycleCallback;
 import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
@@ -8,8 +10,12 @@ import com.mycompany.clientside.game.Board;
 import com.mycompany.clientside.game.GameStartegy;
 import com.mycompany.clientside.game.LocalGame;
 import com.mycompany.clientside.game.OnlineGame;
+import com.mycompany.clientside.matchRecording.MatchRecorder;
+import com.mycompany.clientside.matchRecording.Move;
+import com.mycompany.clientside.matchRecording.Result;
 import com.mycompany.clientside.service.ClientMessageCallback;
 import com.mycompany.clientside.utils.DialogUtil;
+import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
 import java.net.URL;
 import java.util.List;
@@ -24,8 +30,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 
-public class GameController implements Initializable, ClientMessageCallback {
+public class GameController implements Initializable,GameLifecycleCallback,GameActionCallback {
     
     @FXML
     private ImageView player1Avatar;
@@ -38,6 +45,8 @@ public class GameController implements Initializable, ClientMessageCallback {
     @FXML
     private Label player2Name;
     @FXML
+    private Label player2Score;
+    @FXML
     private ImageView player2Avatar;
     @FXML
     private Button settingsButton;
@@ -45,79 +54,139 @@ public class GameController implements Initializable, ClientMessageCallback {
     private GridPane gameBoard;
 
     private GameStartegy gameStrategy;
-    private ConnectionStrategy conn;
-    private boolean myTurn=true;
-    private char myChar='X';
-    private char oponentsChar='O';
+    private boolean myTurn = true;
+    private char myChar = 'X';
+    private char oponentsChar = 'O';
+    private boolean gameEnded = false;
+    private MatchRecorder matchRecorder;
+    private int player1Wins = 0;
+    private int player2Wins = 0;
+    private int draws = 0;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-      
+        updateScoreDisplay();
     }
     
     public void setGameStrategy(GameStartegy gameStrategy){
-        this.gameStrategy=gameStrategy;
+        this.gameStrategy = gameStrategy;
         setupConnection();
         startGame();
     }
     
     public void setMyTurn(boolean myTurn){
-        this.myTurn=myTurn;
+        this.myTurn = myTurn;
+        updateTurnIndicator();
     }
     
+    public void setRecording(boolean record){
+        if(record){
+            matchRecorder= new MatchRecorder(player2Name.getText());
+        }
+    }
     public void setMyChar(char move){
-        myChar=move; 
-        if(myChar=='X'){
-            oponentsChar='O';
+        myChar = move; 
+        if(myChar == 'X'){
+            oponentsChar = 'O';
         }
         else{
-            oponentsChar='X';
+            oponentsChar = 'X';
         }
     }
 
     private void setupConnection(){
         if(this.gameStrategy instanceof OnlineGame){
-            conn = ConnectionManager.getConnection();
-            conn.startListener(this);
-            gameStrategy = new OnlineGame();
+             ConnectionManager.getConnection().getClientMessageListener().setCallback(this);
         }
     }
     
     @Override
     public void startGame() {
         Board.getInstance().resetBoard();
-        enableBoard();
+        gameEnded = false;
         clearBoard();
+
+        if (myTurn) {
+            enableBoard();
+        } else {
+            disableBoard();
+        }
+        
+        updateTurnIndicator();
     }
     
     @FXML
     private void handleCellClick(ActionEvent event) {
+        if (gameEnded) {
+            return;
+        }
+        
         Button clicked = (Button) event.getSource();
-        System.out.println("Clicked event"+ clicked.getText());
+        
         if (!(clicked.getText().isEmpty())) {
             return;
         }
-        System.out.println("Passed empty check");
 
         Integer row = GridPane.getRowIndex(clicked);
         Integer col = GridPane.getColumnIndex(clicked);
         row = (row == null) ? 0 : row;
         col = (col == null) ? 0 : col;
-        if(myTurn){
+        
+        if (gameStrategy instanceof AiGame) {
             gameStrategy.play(row, col, myChar);
-            System.out.println("My turn");
-        }else{
-            gameStrategy.play(row, col, oponentsChar);
-            System.out.println("Oponent turn");
+            updateUI();
+            checkGameState();
+        } else if (gameStrategy instanceof LocalGame) {
+            if(myTurn){
+                gameStrategy.play(row, col, myChar);
+                myTurn = false;
+            } else {
+                gameStrategy.play(row, col, oponentsChar);
+                myTurn = true;
+            }
+            updateUI();
+            updateTurnIndicator();
+            checkGameState();
+        } else if (gameStrategy instanceof OnlineGame) {
+            if(myTurn){
+                gameStrategy.play(row, col, myChar);
+                myTurn = false;
+                disableBoard();
+                updateUI();
+                updateTurnIndicator();
+                checkGameState();
+            }
+            recordMove(new Move(row, col, myChar));
         }
-        updateUI();
-        checkGameState();
     } 
     
+    private void updateTurnIndicator() {
+        Platform.runLater(() -> {
+            if (gameEnded) {
+                player1Name.setTextFill(Color.BLACK);
+                player2Name.setTextFill(Color.BLACK);
+                return;
+            }
+            
+            if (gameStrategy instanceof AiGame) {
+                player1Name.setTextFill(Color.BLUE);
+                player2Name.setTextFill(Color.BLACK);
+                return;
+            }
+            
+            if (myTurn) {
+                player1Name.setTextFill(Color.BLUE);
+                player2Name.setTextFill(Color.GRAY);
+            } else {
+                player1Name.setTextFill(Color.GRAY);
+                player2Name.setTextFill(Color.BLUE);
+            }
+        });
+    }
     
     private void updateUI(){
         Platform.runLater(() -> {
-            for(Node node:gameBoard.getChildren()){
+            for(Node node : gameBoard.getChildren()){
                 if (node instanceof Button) {
                     Integer r = GridPane.getRowIndex(node);
                     Integer c = GridPane.getColumnIndex(node);
@@ -130,21 +199,21 @@ public class GameController implements Initializable, ClientMessageCallback {
                             String.valueOf(Board.getInstance().getBoard()[r][c])
                         );
                     }
-
                 }
             }
         });
     }
     
     private void checkGameState(){
-        int[][] winningCells= this.gameStrategy.winner();
-        if(winningCells==null){
+        int[][] winningCells = this.gameStrategy.winner();
+        if(winningCells == null){
             checkForDraw();
         }
         else{
-           paintWinningCells(winningCells);
+           handleWin(winningCells);
         }
     }
+
     
     private void checkForDraw() {
         char[][] board = Board.getInstance().getBoard();
@@ -155,10 +224,81 @@ public class GameController implements Initializable, ClientMessageCallback {
                 }
             }
         }
+        handleDraw();
+    }
+    
+    private void handleWin(int[][] winningCells) {
+        gameEnded = true;
+        paintWinningCells(winningCells);
+        
+        char winningChar = Board.getInstance().getBoard()[winningCells[0][0]][winningCells[0][1]];
+        
+        Platform.runLater(() -> {
+            if (winningChar == myChar) {
+                player1Wins++;
+                player1Name.setTextFill(Color.GREEN);
+                player2Name.setTextFill(Color.RED);
+               GameDialogs.openVideoDialog(gameBoard, "You Won!", "/videos/win.mp4",()->{
+                    SceneNavigator.back(gameBoard);
+                }, ()-> { 
+                    clearBoard();
+                    enableBoard();
+                    if(matchRecorder!=null){
+                        matchRecorder.endMatch(Result.WIN);
+                    }
+                });
+            } else {
+                player2Wins++;
+                player1Name.setTextFill(Color.RED);
+                player2Name.setTextFill(Color.GREEN);
+
+                GameDialogs.openVideoDialog(gameBoard, "You Lost!", "/videos/Lose.mp4",()->{
+                    SceneNavigator.back(gameBoard);
+                }, ()-> { 
+                    clearBoard();
+                    enableBoard();
+                    matchRecorder.endMatch(Result.LOSE);
+                });
+                    }
+            updateScoreDisplay();
+        });
+        
         disableBoard();
+    }
+    private void handleDraw() {
+        gameEnded = true;
+        draws++;
+        
+        Platform.runLater(() -> {
+            player1Name.setTextFill(Color.ORANGE);
+            player2Name.setTextFill(Color.ORANGE);
+            
+            updateScoreDisplay();
+        });
+        GameDialogs.openVideoDialog(gameBoard, "Draw", "/videos/Draw.mp4",()->{
+            SceneNavigator.back(gameBoard);
+        }, ()-> { 
+            clearBoard();
+            enableBoard();
+            matchRecorder.endMatch(Result.DRAW);
+        });
+        disableBoard();
+    }
+
+    
+    private void updateScoreDisplay() {
+        Platform.runLater(() -> {
+            player1Score.setText(String.valueOf(player1Wins));
+            drawScore.setText(String.valueOf(draws));
+            if (player2Score != null) {
+                player2Score.setText(String.valueOf(player2Wins));
+            }
+        });
     }
     
     private void paintWinningCells(int[][] winningCells) {
+        char winningChar = Board.getInstance().getBoard()[winningCells[0][0]][winningCells[0][1]];
+        
         for (int[] cell : winningCells) {
             int row = cell[0];
             int col = cell[1];
@@ -170,23 +310,23 @@ public class GameController implements Initializable, ClientMessageCallback {
                 c = (c == null) ? 0 : c;
 
                 if (node instanceof Button && r == row && c == col) {
-                    Button btn= ((Button) node);
-                    if (btn.getText().equals("" + myChar))
-                        btn.setTextFill(javafx.scene.paint.Color.GREEN);
-                    else
-                        btn.setTextFill(javafx.scene.paint.Color.RED);
+                    Button btn = ((Button) node);
+                    if (winningChar == myChar) {
+                        btn.setTextFill(Color.GREEN);
+                    } else {
+                        btn.setTextFill(Color.RED);
+                    }
                 }
             }
         }
-        disableBoard();
     }
+    
     private void disableBoard(){
         for (Node node : gameBoard.getChildren()) {
             if (node instanceof Button) {
                 node.setDisable(true);
             }
         }
-        
     }
     
     private void enableBoard(){
@@ -200,88 +340,62 @@ public class GameController implements Initializable, ClientMessageCallback {
     private void clearBoard(){
         for (Node node : gameBoard.getChildren()) {
             if (node instanceof Button) {
-                ((Button) node).setText("");
+                Button btn = (Button) node;
+                btn.setText("");
+                btn.setTextFill(Color.BLACK);
             }
         }
         Board.getInstance().resetBoard();
-
     }
-    private Node getNodeByRowColumnIndex(final int row, final int column, GridPane gridPane) {
-        for (Node node : gridPane.getChildren()) {
-            if (GridPane.getRowIndex(node) != null && GridPane.getRowIndex(node) == row &&
-                GridPane.getColumnIndex(node) != null && GridPane.getColumnIndex(node) == column) {
-                return node;
-            }
-        }
-        return null;
-    }
+    
     @FXML
     private void handleSettingClick(ActionEvent event) {
         Parent root = ((Node) event.getSource()).getScene().getRoot();
         DialogUtil.openDialog(root, "/fxml/GameDialog.fxml");
     }
 
-    @Override
-    public void loadPlayers(List<Player> players) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-
-
-    @Override
-    public void onInviteReceived(String[] parts) {
-        throw new UnsupportedOperationException("Not supported yet."); 
-    }
-
-    @Override
-    public void onInviteRejected(String[] parts) {
-        throw new UnsupportedOperationException("Not supported yet."); 
-    }
-
-    @Override
-    public void onMoveReceived(int row, int col, char player) {
-        System.out.println("CALLBACK MOVE " + row + "," + col + " " + player);
-
-        Board.getInstance().setCell(row, col, player);
-        updateUI();
-    }
-
-    @Override
-    public void onWin(char winner) {
-        throw new UnsupportedOperationException("Not supported yet."); 
-    }
-
-    @Override
-    public void onLose(char loser) {
-        throw new UnsupportedOperationException("Not supported yet."); 
-    }
-
-    @Override
-    public void onDraw() {
-        throw new UnsupportedOperationException("Not supported yet."); 
+    @FXML
+    private void handlePlayAgain(ActionEvent event) {
+        startGame();
     }
 
     @Override
     public void onNotYourTurn() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Platform.runLater(() -> {
+            DialogUtil.showError("Not Your Turn", "Please wait for your turn!");
+        });
     }
 
     @Override
     public void onCellOccupied() {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        Platform.runLater(() -> {
+            DialogUtil.showError("Cell Occupied", "This cell is already taken!");
+        });
     }
 
     @Override
     public void endGame() {
         Parent root = player2Name.getScene().getRoot();
-        SceneNavigator.navigateTo(root, "/fxml/GameModes.fxml"); 
+        SceneNavigator.back(root);
     }
 
     @Override
-    public void loadLeaderBoard(List<Player> players) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+    public void onMoveReceived(Move move) {
+        Platform.runLater(() -> {
+            Board.getInstance().setCell(move.getX(), move.getY(), move.getMove());
+            updateUI();
+            myTurn = true;
+            updateTurnIndicator();
+            enableBoard();
+            checkGameState();
+        });
+        recordMove(move);
     }
-
-
+    
+    private void recordMove(Move move) {
+        if(matchRecorder!=null){
+            matchRecorder.addMove(move);
+        }
+    }
 
 }

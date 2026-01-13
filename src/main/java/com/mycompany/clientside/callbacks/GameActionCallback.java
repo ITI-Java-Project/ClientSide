@@ -4,8 +4,10 @@
  */
 package com.mycompany.clientside.callbacks;
 
+import com.mycompany.clientside.matchRecording.Move;
+
 public interface GameActionCallback {
-    void onMoveReceived(int row, int col, char player);
+    void onMoveReceived(Move move);
     void onNotYourTurn();
     void onCellOccupied();
 }

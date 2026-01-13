@@ -32,7 +32,7 @@ public class GameDialogs {
 
     public static VideoDialogController openVideoDialog(
             Parent root,
-            boolean won,
+            String title,
             String videoPath,
             Runnable onGoBack,
             Runnable onPlayAgain) {
@@ -42,7 +42,7 @@ public class GameDialogs {
         if (result != null) {
             VideoDialogController controller =
                     (VideoDialogController) result;
-            controller.setWon(won);
+            controller.setTitle(title);
             controller.setOnGoBack(onGoBack);
             controller.setOnPlayAgain(onPlayAgain);
             controller.playVideo(videoPath);
@@ -50,24 +50,6 @@ public class GameDialogs {
         }
 
         return null;
-    }
-
-    public static VideoDialogController openWinDialog(
-            Parent root,
-            String videoPath,
-            Runnable onGoBack,
-            Runnable onPlayAgain) {
-
-        return openVideoDialog(root, true, videoPath, onGoBack, onPlayAgain);
-    }
-
-    public static VideoDialogController openLoseDialog(
-            Parent root,
-            String videoPath,
-            Runnable onGoBack,
-            Runnable onPlayAgain) {
-
-        return openVideoDialog(root, false, videoPath, onGoBack, onPlayAgain);
     }
 
     public static ReceiveInvitationDialogController openReceiveInvitationDialog(
