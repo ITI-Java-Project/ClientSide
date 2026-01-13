@@ -2,7 +2,11 @@ package com.mycompany.clientside.controllers;
 
 import com.mycompany.clientside.callbacks.GameActionCallback;
 import com.mycompany.clientside.callbacks.GameLifecycleCallback;
+import com.mycompany.clientside.callbacks.SessionCallback;
 import com.mycompany.clientside.connection.ConnectionManager;
+import com.mycompany.clientside.dto.Session;
+import com.mycompany.clientside.dto.SessionDAO;
+import com.mycompany.clientside.dto.UserSession;
 import com.mycompany.clientside.game.AiGame;
 import com.mycompany.clientside.game.Board;
 import com.mycompany.clientside.game.GameStartegy;
@@ -34,7 +38,7 @@ import javafx.stage.Window;
 import javafx.util.Duration;
 import models.Difficulty;
 
-public class GameController implements Initializable, GameLifecycleCallback, GameActionCallback {
+public class GameController implements Initializable, GameLifecycleCallback, GameActionCallback, SessionCallback {
 
     @FXML
     private ImageView player1Avatar;
@@ -65,8 +69,10 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
     private int player2Wins = 0;
     private int draws = 0;
     private Window owner;
-    private VideoDialogController videoDialogController;    
-    
+    private VideoDialogController videoDialogController;
+    private String myPlayerName = "Player 1";
+    private String opponentPlayerName = "Player 2";
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         updateScoreDisplay();
@@ -79,6 +85,21 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
         this.gameStrategy = gameStrategy;
         setupConnection();
         startGame();
+    }
+
+    public void setPlayerNames(String myName, String opponentName) {
+        this.myPlayerName = myName;
+        this.opponentPlayerName = opponentName;
+
+        // Update UI labels
+        Platform.runLater(() -> {
+            if (player1Name != null) {
+                player1Name.setText(myName);
+            }
+            if (player2Name != null) {
+                player2Name.setText(opponentName);
+            }
+        });
     }
 
     public void setMyTurn(boolean myTurn) {
@@ -103,8 +124,48 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
 
     private void setupConnection() {
         if (this.gameStrategy instanceof OnlineGame) {
+            // Set this controller as callback to receive SESSION_DATA
             ConnectionManager.getConnection().getClientMessageListener().setCallback(this);
+
+            // Check if session data already exists (might have arrived before navigation)
+            Session session = SessionDAO.getInstance().getSession();
+            if (session != null) {
+                System.out.println("Session already exists, loading names...");
+                updatePlayerNamesFromSession(session);
+            }
         }
+    }
+
+    @Override
+    public void onSessionDataReceived(Session session) {
+        System.out.println("GameController received session: " + session);
+        Platform.runLater(() -> {
+            updatePlayerNamesFromSession(session);
+        });
+    }
+
+    private void updatePlayerNamesFromSession(Session session) {
+        if (session == null) {
+            System.out.println("Session is null!");
+            return;
+        }
+
+        int currentUserId = UserSession.getInstance().getCurrentUser().getId();
+        System.out.println("Current user ID: " + currentUserId);
+        System.out.println("Player1 ID: " + session.getPlayer1Id() + " Name: " + session.getPlayer1Name());
+        System.out.println("Player2 ID: " + session.getPlayer2Id() + " Name: " + session.getPlayer2Name());
+
+        Platform.runLater(() -> {
+            if (currentUserId == session.getPlayer1Id()) {
+                // I am player 1
+                player1Name.setText(session.getPlayer1Name());
+                player2Name.setText(session.getPlayer2Name());
+            } else {
+                // I am player 2
+                player1Name.setText(session.getPlayer2Name());
+                player2Name.setText(session.getPlayer1Name());
+            }
+        });
     }
 
     @Override
@@ -266,6 +327,7 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
         }
         handleDraw();
     }
+
     private void handleWin(int[][] winningCells) {
 
         gameEnded = true;
@@ -310,17 +372,15 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
                         this::restart
                 );
             }
-            if(this.gameStrategy instanceof OnlineGame){
-                        videoDialogController.disablePlayAgain(true);
+            if (this.gameStrategy instanceof OnlineGame) {
+                videoDialogController.disablePlayAgain(true);
 
-                    }
+            }
             updateScoreDisplay();
         });
-        
 
         pause.play();
     }
-
 
     private void handleDraw() {
         gameEnded = true;
@@ -337,7 +397,7 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
         pause.setOnFinished(e -> {
             updateScoreDisplay();
 
-            videoDialogController=GameDialogs.openVideoDialog(
+            videoDialogController = GameDialogs.openVideoDialog(
                     gameBoard,
                     "Draw",
                     "/videos/Draw.mp4",
@@ -346,8 +406,8 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
                         restart();
                     }
             );
-            if(this.gameStrategy instanceof OnlineGame){
-            videoDialogController.disablePlayAgain(true);
+            if (this.gameStrategy instanceof OnlineGame) {
+                videoDialogController.disablePlayAgain(true);
             }
         });
 
