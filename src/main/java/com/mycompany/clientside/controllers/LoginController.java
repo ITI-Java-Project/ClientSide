@@ -46,7 +46,6 @@ public class LoginController implements Initializable {
             auth = new Authentication(conn);
         });
         
-        // Clear error when user starts typing
         usernameField.textProperty().addListener((obs, old, newVal) -> hideError());
         passwordField.textProperty().addListener((obs, old, newVal) -> hideError());
     }
@@ -56,7 +55,6 @@ public class LoginController implements Initializable {
         SoundManager.getInstance().playClickSound();
         hideError();
 
-        // Step 1: Get and validate input fields FIRST (on UI thread, no server call)
         String username = usernameField.getText().trim();
         String password = passwordField.getText();
 
@@ -77,11 +75,9 @@ public class LoginController implements Initializable {
             return;
         }
 
-        // Step 2: Only if validation passes, disable button and make server call
         loginButton.setDisable(true);
         
         new Thread(() -> {
-            // Step 3: Try to connect to server
             if (!conn.connectToServer()) {
                 Platform.runLater(() -> {
                     showError("Cannot connect to server. Please try again later.");
@@ -90,7 +86,6 @@ public class LoginController implements Initializable {
                 return;
             }
 
-            // Step 4: Attempt login
             Player player = auth.login(username, password);
 
             Platform.runLater(() -> {
