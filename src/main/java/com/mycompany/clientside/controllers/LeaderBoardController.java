@@ -6,6 +6,7 @@ import com.mycompany.clientside.dto.Player;
 import com.mycompany.clientside.service.ClientMessageCallback;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.SceneNavigator;
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -20,14 +21,13 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
-
 public class LeaderBoardController implements Initializable, ClientMessageCallback {
 
-    @FXML 
+    @FXML
     private ImageView backBtn;
-    @FXML 
+    @FXML
     private ImageView settingsIcon;
-    @FXML 
+    @FXML
     private VBox playersListContainer;
 
     private ConnectionStrategy conn;
@@ -43,11 +43,15 @@ public class LeaderBoardController implements Initializable, ClientMessageCallba
 
     @FXML
     private void handleBack(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         SceneNavigator.back((Node) event.getSource());
     }
 
     @FXML
     private void goToSettings(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         Parent root = settingsIcon.getScene().getRoot();
         DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
@@ -65,7 +69,7 @@ public class LeaderBoardController implements Initializable, ClientMessageCallba
             return;
         }
 
-        int rank = 1; 
+        int rank = 1;
         for (Player player : players) {
             playersListContainer.getChildren()
                     .add(createPlayerCard(player, rank++));
@@ -96,15 +100,47 @@ public class LeaderBoardController implements Initializable, ClientMessageCallba
         }
     }
 
-    @Override public void loadPlayers(List<Player> players) {}
-    @Override public void startGame() {}
-    @Override public void onInviteReceived(String[] parts) {}
-    @Override public void onInviteRejected(String[] parts) {}
-    @Override public void onMoveReceived(int r, int c, char p) {}
-    @Override public void onWin(char winner) {}
-    @Override public void onLose(char loser) {}
-    @Override public void onDraw() {}
-    @Override public void onNotYourTurn() {}
-    @Override public void onCellOccupied() {}
-    @Override public void endGame() {}
+    @Override
+    public void loadPlayers(List<Player> players) {
+    }
+
+    @Override
+    public void startGame() {
+    }
+
+    @Override
+    public void onInviteReceived(String[] parts) {
+    }
+
+    @Override
+    public void onInviteRejected(String[] parts) {
+    }
+
+    @Override
+    public void onMoveReceived(int r, int c, char p) {
+    }
+
+    @Override
+    public void onWin(char winner) {
+    }
+
+    @Override
+    public void onLose(char loser) {
+    }
+
+    @Override
+    public void onDraw() {
+    }
+
+    @Override
+    public void onNotYourTurn() {
+    }
+
+    @Override
+    public void onCellOccupied() {
+    }
+
+    @Override
+    public void endGame() {
+    }
 }

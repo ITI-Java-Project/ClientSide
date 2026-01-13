@@ -45,19 +45,15 @@ public class SoundSettingsController implements Initializable {
         backgroundPane.setOnMouseClicked(e -> goBack());
         dialogCard.setOnMouseClicked(e -> e.consume());
 
-        // Load saved settings
         loadSavedSettings();
 
-        // Setup slider listeners
         setupSliderListeners();
 
-        // Set checkboxes (checked = enabled/not muted)
         SoundManager sm = SoundManager.getInstance();
         masterMuteCheckBox.setSelected(!sm.isMasterMuted());
         clickMuteCheckBox.setSelected(!sm.isClickMuted());
         musicMuteCheckBox.setSelected(!sm.isMusicMuted());
 
-        // Update slider disabled state based on mute
         masterVolumeSlider.setDisable(sm.isMasterMuted());
         clickVolumeSlider.setDisable(sm.isClickMuted());
         musicVolumeSlider.setDisable(sm.isMusicMuted());
@@ -90,7 +86,6 @@ public class SoundSettingsController implements Initializable {
             sm.setClickVolume(value);
         });
 
-        // Play test click when slider is released
         clickVolumeSlider.setOnMouseReleased(e -> {
             sm.playClickSound();
         });
@@ -119,7 +114,6 @@ public class SoundSettingsController implements Initializable {
         clickVolumeSlider.setDisable(!enabled);
         SoundManager.getInstance().setClickMuted(!enabled);
         
-        // Play test sound if enabled
         if (enabled) {
             SoundManager.getInstance().playClickSound();
         }
@@ -134,15 +128,12 @@ public class SoundSettingsController implements Initializable {
 
     @FXML
     private void goBack() {
-        // Play click sound
         SoundManager.getInstance().playClickSound();
         
-        // Remove this dialog
         if (rootPane != null && rootPane.getChildren().size() > 1) {
             rootPane.getChildren().remove(rootPane.getChildren().size() - 1);
         }
 
-        // Execute callback if set
         if (onBackCallback != null) {
             onBackCallback.run();
         }

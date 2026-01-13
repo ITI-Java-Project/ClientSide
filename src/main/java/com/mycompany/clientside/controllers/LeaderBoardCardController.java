@@ -26,7 +26,6 @@ public class LeaderBoardCardController {
         root.setStyle(getRankStyle(rank));
     }
 
-    // ===== Java 11 safe =====
     private String getTitle(int rank) {
         if (rank == 1) return "Tic-Tac Legend";
         if (rank == 2) return "Grid Master";

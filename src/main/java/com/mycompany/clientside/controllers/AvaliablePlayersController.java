@@ -8,6 +8,7 @@ import com.mycompany.clientside.service.PlayerService;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.GameDialogs;
 import com.mycompany.clientside.utils.SceneNavigator;
+import com.mycompany.clientside.utils.SoundManager;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -67,25 +68,30 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
 
     @FXML
     private void handleBack(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
         SceneNavigator.back((Node) event.getSource());
+
     }
 
     @FXML
     private void goToLeaderBoard(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
         SceneNavigator.navigateTo(leaderBoardText, "/fxml/LeaderBoard.fxml");
     }
 
     @FXML
     private void goToSettings(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
         Parent root = settingsIcon.getScene().getRoot();
         DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
-    
+
     @FXML
     private void handleRefresh(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
         avaliablesPlayers.clear();
         playersListContainer.getChildren().clear();
-        
+
         requestPlayersList();
     }
 
@@ -203,10 +209,8 @@ public class AvaliablePlayersController implements Initializable, ClientMessageC
     @Override
     public void endGame() {
     }
+
     @Override
     public void loadLeaderBoard(List<Player> players) {
     }
 }
-
-
-

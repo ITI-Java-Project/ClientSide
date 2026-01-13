@@ -6,6 +6,7 @@ import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.connection.LocalConnection;
 import com.mycompany.clientside.utils.AlertUtil;
 import com.mycompany.clientside.utils.SceneNavigator;
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -43,7 +44,7 @@ public class SignupController implements Initializable {
         Platform.runLater(() -> {
             owner = signupButton.getScene().getWindow();
             ConnectionManager.init((new LocalConnection(owner)));
-            con = ConnectionManager.getConnection();  
+            con = ConnectionManager.getConnection();
             auth = new Authentication(con);
         });
     }
@@ -54,6 +55,8 @@ public class SignupController implements Initializable {
 
     @FXML
     private void handleSignup(ActionEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         System.out.println("userName : " + usernameField.getText());
         System.out.println("Email : " + emailField.getText());
         System.out.println("Password : " + passwordField.getText());
@@ -66,7 +69,7 @@ public class SignupController implements Initializable {
                 return;
             }
             boolean isRegistered = auth.signup(usernameField.getText(), emailField.getText(), passwordField.getText());
-            
+
             Platform.runLater(() -> {
                 if (isRegistered) {
                     SceneNavigator.navigateTo(signupButton, "/fxml/Start.fxml");

@@ -5,6 +5,7 @@ import com.mycompany.clientside.matchRecording.MatchRecorder;
 import com.mycompany.clientside.matchRecording.Result;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.SceneNavigator;
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -43,7 +44,7 @@ public class RecordingController implements Initializable {
 
     private void loadAllMatches() {
         List<Match> matches = matchRecorder.loadAllMatches();
-        
+
         if (matches.isEmpty()) {
             Label noRecordsLabel = new Label("No match recordings found");
             noRecordsLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #666;");
@@ -56,7 +57,7 @@ public class RecordingController implements Initializable {
             String date = dateFormat.format(match.getDate());
             String time = timeFormat.format(match.getDate());
             MatchResultGame result = convertResultToMatchResultGame(match.getResult());
-            
+
             loadRecord(playerName, date, time, result, match);
         }
     }
@@ -75,14 +76,14 @@ public class RecordingController implements Initializable {
     private void loadRecord(String playerName, String date, String time, MatchResultGame result, Match match) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/fxml/RecordingCard.fxml")
+                    getClass().getResource("/fxml/RecordingCard.fxml")
             );
 
             HBox card = loader.load();
             RecordingCardController controller = loader.getController();
 
             controller.setData(playerName, date, time, result);
-            
+
             // Make card clickable to view match replay
             card.setOnMouseClicked(event -> openMatchReplay(match));
             card.setStyle(card.getStyle() + "-fx-cursor: hand;");
@@ -95,25 +96,31 @@ public class RecordingController implements Initializable {
     }
 
     private void openMatchReplay(Match match) {
-        SceneNavigator.navigateTo(recordsContainer, "/fxml/RecordedMatch.fxml", 
-            (RecordedMatchController controller) -> {
-                controller.setMatch(match);
-            });
+        SceneNavigator.navigateTo(recordsContainer, "/fxml/RecordedMatch.fxml",
+                (RecordedMatchController controller) -> {
+                    controller.setMatch(match);
+                });
     }
 
     @FXML
     private void handleBack(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         SceneNavigator.back(backBtn);
     }
 
     @FXML
     private void goToLeaderBoard(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         SceneNavigator.navigateTo(leaderBoardText, "/fxml/LeaderBoard.fxml");
     }
 
     @FXML
     private void goToSettings(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         StackPane root = (StackPane) settingsIcon.getScene().getRoot();
-DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
+        DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
 }

@@ -6,6 +6,7 @@ import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.connection.LocalConnection;
 import com.mycompany.clientside.utils.AlertUtil;
 import com.mycompany.clientside.utils.SceneNavigator;
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -43,13 +44,15 @@ public class LoginController implements Initializable {
         Platform.runLater(() -> {
             owner = loginButton.getScene().getWindow();
             ConnectionManager.init((new LocalConnection(owner)));
-            conn = ConnectionManager.getConnection();     
+            conn = ConnectionManager.getConnection();
             auth = new Authentication(conn);
         });
     }
 
     @FXML
     private void handleLogin(ActionEvent event) {
+        SoundManager.getInstance().playClickSound();
+
         new Thread(() -> {
 
             if (!conn.connectToServer()) {

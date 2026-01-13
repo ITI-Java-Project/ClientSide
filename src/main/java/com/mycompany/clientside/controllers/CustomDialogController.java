@@ -1,5 +1,6 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -15,10 +16,10 @@ public class CustomDialogController implements Initializable {
 
     @FXML
     private Pane backgroundPane;
-    
+
     @FXML
     private VBox dialogCard;
-    
+
     private StackPane rootPane;
 
     public void setRootPane(StackPane rootPane) {
@@ -31,9 +32,10 @@ public class CustomDialogController implements Initializable {
         dialogCard.setOnMouseClicked(e -> e.consume());
     }
 
-
     @FXML
     private void openSoundSettings() {
+        SoundManager.getInstance().playClickSound();
+
         try {
             // Remove current dialog first
             if (rootPane != null && rootPane.getChildren().size() > 1) {
@@ -42,13 +44,13 @@ public class CustomDialogController implements Initializable {
 
             // Load sound settings dialog
             FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/fxml/SoundSettingsDialog.fxml")
+                    getClass().getResource("/fxml/SoundSettingsDialog.fxml")
             );
             Parent soundDialog = loader.load();
 
             SoundSettingsController controller = loader.getController();
             controller.setRootPane(rootPane);
-            
+
             // Set callback to reopen settings dialog when going back
             controller.setOnBackCallback(() -> reopenSettingsDialog());
 
@@ -62,7 +64,7 @@ public class CustomDialogController implements Initializable {
     private void reopenSettingsDialog() {
         try {
             FXMLLoader loader = new FXMLLoader(
-                getClass().getResource("/fxml/CustomDialog.fxml")
+                    getClass().getResource("/fxml/CustomDialog.fxml")
             );
             Parent dialog = loader.load();
 
@@ -76,14 +78,15 @@ public class CustomDialogController implements Initializable {
         }
     }
 
-
     @FXML
     private void close() {
+        SoundManager.getInstance().playClickSound();
         Platform.exit();
     }
 
     @FXML
     private void goBack() {
+        SoundManager.getInstance().playClickSound();
         closeDialog();
     }
 

@@ -35,14 +35,12 @@
             <Insets bottom="25" left="30" right="30" top="25" />
         </padding>
 
-        <!-- Title -->
         <Label text="Sound Settings" style="-fx-text-fill: #333333;">
             <font>
                 <Font name="Comic Sans MS Bold" size="22.0" />
             </font>
         </Label>
 
-        <!-- Master Volume Section -->
         <VBox spacing="8" alignment="CENTER_LEFT">
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <CheckBox fx:id="masterMuteCheckBox" text="Master Volume" onAction="#onMasterMuteChanged">
@@ -62,7 +60,6 @@
                     style="-fx-control-inner-background: #e0e0e0;"/>
         </VBox>
 
-        <!-- Click Sounds Section -->
         <VBox spacing="8" alignment="CENTER_LEFT">
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <CheckBox fx:id="clickMuteCheckBox" text="Click Sounds" onAction="#onClickMuteChanged">
@@ -81,7 +78,6 @@
                     prefWidth="350"/>
         </VBox>
 
-        <!-- Music/Background Sounds Section -->
         <VBox spacing="8" alignment="CENTER_LEFT">
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <CheckBox fx:id="musicMuteCheckBox" text="Background Music" onAction="#onMusicMuteChanged">
@@ -100,7 +96,6 @@
                     prefWidth="350"/>
         </VBox>
 
-        <!-- Back Button -->
         <Button fx:id="backButton" 
                 onAction="#goBack" 
                 prefHeight="50" prefWidth="140" 

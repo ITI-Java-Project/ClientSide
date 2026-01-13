@@ -4,6 +4,7 @@ import com.mycompany.clientside.game.GameStartegy;
 import com.mycompany.clientside.game.LocalGame;
 import com.mycompany.clientside.utils.DialogUtil;
 import com.mycompany.clientside.utils.SceneNavigator;
+import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -15,7 +16,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-
 
 public class GameModesController implements Initializable {
 
@@ -44,43 +44,50 @@ public class GameModesController implements Initializable {
 
     @FXML
     private void goToLeaderBoard(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
+        Parent root = leaderBoardText.getScene().getRoot();
+        DialogUtil.openDialog(root, "/fxml/Leaderboard.fxml");
     }
 
     @FXML
     private void goToSettings(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
         Parent root = settingsIcon.getScene().getRoot();
-DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
+        DialogUtil.openDialog(root, "/fxml/CustomDialog.fxml");
     }
 
     @FXML
     private void handleOnline(ActionEvent event) {
+        SoundManager.getInstance().playClickSound();
         //gotToGame(onlineBtn, new LocalGame());
     }
 
     @FXML
     private void handleLocalMultiplayer(ActionEvent event) {
+        SoundManager.getInstance().playClickSound();
         //gotToGame(localMultiplayerBtn, new LocalGame());
     }
 
     @FXML
     private void handleCpu(ActionEvent event) {
-      //  gotToGame(cpuBtn, new LocalGame());
+        SoundManager.getInstance().playClickSound();
+        //  gotToGame(cpuBtn, new LocalGame());
     }
 
     @FXML
     private void handleLocalNetwork(ActionEvent event) {
+        SoundManager.getInstance().playClickSound();
         SceneNavigator.navigateTo(localMultiplayerBtn, "/fxml/AvaliablePlayers.fxml");
     }
 
     @FXML
     private void handleBack(MouseEvent event) {
+        SoundManager.getInstance().playClickSound();
         SceneNavigator.back(backBtn);
     }
 
-    private void gotToGame(Node currentNode){
-        SceneNavigator.navigateTo(currentNode,"/fxml/Game.fxml");
+    private void gotToGame(Node currentNode) {
+        SceneNavigator.navigateTo(currentNode, "/fxml/Game.fxml");
     }
-
-
 
 }
