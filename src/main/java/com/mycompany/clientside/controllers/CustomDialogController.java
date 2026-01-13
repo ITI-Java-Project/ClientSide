@@ -1,5 +1,6 @@
 package com.mycompany.clientside.controllers;
 
+import com.mycompany.clientside.utils.SceneNavigator;
 import com.mycompany.clientside.utils.SoundManager;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -87,7 +88,7 @@ public class CustomDialogController implements Initializable {
     @FXML
     private void goBack() {
         SoundManager.getInstance().playClickSound();
-        closeDialog();
+        SceneNavigator.back(rootPane);
     }
 
     private void closeDialog() {
