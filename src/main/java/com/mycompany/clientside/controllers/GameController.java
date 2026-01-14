@@ -82,55 +82,16 @@ public class GameController implements Initializable, GameLifecycleCallback, Gam
     }
 
     public void setGameStrategy(GameStartegy gameStrategy) {
-    this.gameStrategy = gameStrategy;
-    setupConnection();
-    // Remove startGame() call from here
-}
+        this.gameStrategy = gameStrategy;
+        setupConnection();
+        startGame();
 
-public void initializeGame(GameStartegy strategy, boolean turn, char playerChar, boolean recording) {
-    this.myTurn = turn;
-    this.myChar = playerChar;
-    this.oponentsChar = (playerChar == 'X') ? 'O' : 'X';
-    
-    if (recording) {
-        matchRecorder = new MatchRecorder(player2Name.getText());
     }
     
-    this.gameStrategy = strategy;
-    setupConnection();
-    startGame();  // Now called with correct values
-}
-    public void setPlayerNames(String myName, String opponentName) {
-        this.myPlayerName = myName;
-        this.opponentPlayerName = opponentName;
-
-        // Update UI labels
-        Platform.runLater(() -> {
-            if (player1Name != null&&myChar=='X') {
-                player1Name.setText(myName);
-                if (player2Name != null) {
-                player2Name.setText(opponentName);
-            }
-                
-            }
-            else {
-               if (player2Name != null) {
-                player2Name.setText(myName);
-                if (player1Name != null) {
-                player1Name.setText(opponentName);
-            }
-                
-            } 
-            }
-            
-        });
-    }
 
     public void setMyTurn(boolean myTurn) {
-    this.myTurn = myTurn;
-    // Don't call updateTurnIndicator() here - it will be called in startGame()
-}
-
+        this.myTurn = myTurn;
+    }
 
     public void setRecording(boolean record) {
         if (record) {
@@ -139,15 +100,13 @@ public void initializeGame(GameStartegy strategy, boolean turn, char playerChar,
     }
 
     public void setMyChar(char move) {
-    myChar = move;
-    oponentsChar = (myChar == 'X') ? 'O' : 'X';
-}
+        myChar = move;
+        oponentsChar = (myChar == 'X') ? 'O' : 'X';
+    }
+
     private void setupConnection() {
         if (this.gameStrategy instanceof OnlineGame) {
-            // Set this controller as callback to receive SESSION_DATA
             ConnectionManager.getConnection().getClientMessageListener().setCallback(this);
-
-            // Check if session data already exists (might have arrived before navigation)
             Session session = SessionDAO.getInstance().getSession();
             if (session != null) {
                 System.out.println("Session already exists, loading names...");
@@ -176,15 +135,10 @@ public void initializeGame(GameStartegy strategy, boolean turn, char playerChar,
         System.out.println("Player2 ID: " + session.getPlayer2Id() + " Name: " + session.getPlayer2Name());
 
         Platform.runLater(() -> {
-            if (currentUserId == session.getPlayer1Id()) {
-                // I am player 1
-                player1Name.setText(session.getPlayer1Name());
-                player2Name.setText(session.getPlayer2Name());
-            } else {
-                // I am player 2
-                player1Name.setText(session.getPlayer2Name());
-                player2Name.setText(session.getPlayer1Name());
-            }
+            player1Name.setText(session.getPlayer1Name());
+            player2Name.setText(session.getPlayer2Name());
+            player1Score.setText("" + session.getPlayer1Score());
+            player2Score.setText("" + session.getPlayer2Score());
         });
     }
 
@@ -251,16 +205,21 @@ public void initializeGame(GameStartegy strategy, boolean turn, char playerChar,
             updateUI();
             updateTurnIndicator();
             checkGameState();
-        } else if (gameStrategy instanceof OnlineGame) {
+        }else if (gameStrategy instanceof OnlineGame) {
             if (myTurn) {
                 gameStrategy.play(row, col, myChar);
-                myTurn = false;
-                disableBoard();
                 updateUI();
+
+                recordMove(new Move(row, col, myChar));
+
                 updateTurnIndicator();
+
                 checkGameState();
+            if (!gameEnded) {
+                    myTurn = false;
+                    disableBoard();
+                }
             }
-            recordMove(new Move(row, col, myChar));
         }
     }
 
@@ -278,12 +237,55 @@ public void initializeGame(GameStartegy strategy, boolean turn, char playerChar,
                 return;
             }
 
-            if (myTurn) {
-                player1Name.setTextFill(Color.BLUE);
-                player2Name.setTextFill(Color.GRAY);
-            } else {
-                player1Name.setTextFill(Color.GRAY);
-                player2Name.setTextFill(Color.BLUE);
+            if (gameStrategy instanceof OnlineGame) {
+                char currentTurnChar = getCurrentTurnChar();
+                int currentUserId = UserSession.getInstance().getCurrentUser().getId();
+
+                Session session = SessionDAO.getInstance().getSession();
+                if (session == null) {
+                    if (myTurn) {
+                        player1Name.setTextFill(Color.BLUE);
+                        player2Name.setTextFill(Color.GRAY);
+                    } else {
+                        player1Name.setTextFill(Color.GRAY);
+                        player2Name.setTextFill(Color.BLUE);
+                    }
+                    return;
+                }
+                boolean isPlayer1 = (currentUserId == session.getPlayer1Id());
+                boolean isCurrentUserTurn;
+
+                if (isPlayer1) {
+                    isCurrentUserTurn = (currentTurnChar == myChar);
+                } else {
+                    isCurrentUserTurn = (currentTurnChar == myChar);
+                }
+
+                if (isCurrentUserTurn) {
+                    if (isPlayer1) {
+                        player1Name.setTextFill(Color.BLUE);
+                        player2Name.setTextFill(Color.GRAY);
+                    } else {
+                        player1Name.setTextFill(Color.GRAY);
+                        player2Name.setTextFill(Color.BLUE);
+                    }
+                } else {
+                    if (isPlayer1) {
+                        player1Name.setTextFill(Color.GRAY);
+                        player2Name.setTextFill(Color.BLUE);
+                    } else {
+                        player1Name.setTextFill(Color.BLUE);
+                        player2Name.setTextFill(Color.GRAY);
+                    }
+                }
+            } else if (gameStrategy instanceof LocalGame) {
+                if (myTurn) {
+                    player1Name.setTextFill(Color.BLUE);
+                    player2Name.setTextFill(Color.GRAY);
+                } else {
+                    player1Name.setTextFill(Color.GRAY);
+                    player2Name.setTextFill(Color.BLUE);
+                }
             }
         });
     }
@@ -454,6 +456,7 @@ public void initializeGame(GameStartegy strategy, boolean turn, char playerChar,
             for (Node node : gameBoard.getChildren()) {
                 Integer r = GridPane.getRowIndex(node);
                 Integer c = GridPane.getColumnIndex(node);
+                Integer c2 = GridPane.getColumnIndex(node);
                 r = (r == null) ? 0 : r;
                 c = (c == null) ? 0 : c;
 
@@ -531,10 +534,30 @@ public void initializeGame(GameStartegy strategy, boolean turn, char playerChar,
         Platform.runLater(() -> {
             Board.getInstance().setCell(move.getX(), move.getY(), move.getMove());
             updateUI();
-            myTurn = true;
-            updateTurnIndicator();
-            enableBoard();
-            checkGameState();
+            int[][] winningCells = this.gameStrategy.winner();
+            boolean isDraw = false;
+            
+            if (winningCells == null) {
+                char[][] board = Board.getInstance().getBoard();
+                isDraw = true;
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        if (board[i][j] == '\0') {
+                            isDraw = false;
+                            break;
+                        }
+                    }
+                    if (!isDraw) break;
+                }
+            }
+           
+            if (winningCells == null && !isDraw) {
+                myTurn = true;
+                updateTurnIndicator();
+                enableBoard();
+            } else {
+                checkGameState();
+            }
         });
         recordMove(move);
     }
@@ -564,5 +587,18 @@ public void initializeGame(GameStartegy strategy, boolean turn, char playerChar,
             c.setMyTurn(myTurn);
             c.setRecording(matchRecorder != null);
         });
+    }
+    private char getCurrentTurnChar() {
+        char[][] board = Board.getInstance().getBoard();
+        int xCount = 0;
+        int oCount = 0;
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[i][j] == 'X') xCount++;
+                if (board[i][j] == 'O') oCount++;
+            }
+        }
+        return xCount == oCount ? 'X' : 'O';
     }
 }

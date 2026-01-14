@@ -173,8 +173,6 @@ public class AvaliablePlayersController implements Initializable, InvitationCall
                                     : receiveInvitationDialogController.isRecording();
         
         Parent root = settingsIcon.getScene().getRoot();
-        
-        // Get current user to determine which player name to show where
         int currentUserId = UserSession.getInstance().getCurrentUser().getId();
         
         Platform.runLater(() -> {
@@ -183,19 +181,6 @@ public class AvaliablePlayersController implements Initializable, InvitationCall
                 c.setMyTurn(myTurn);
                 c.setMyChar(myChar);
                 c.setRecording(isRecord);
-                
-                // Set player names from session data
-                if (currentSession != null) {
-                    if (currentUserId == currentSession.getPlayer1Id()) {
-                        // I am player 1
-                        c.setPlayerNames(currentSession.getPlayer1Name(), 
-                                        currentSession.getPlayer2Name());
-                    } else {
-                        // I am player 2
-                        c.setPlayerNames(currentSession.getPlayer2Name(), 
-                                        currentSession.getPlayer1Name());
-                    }
-                }
             });
         });
     }
