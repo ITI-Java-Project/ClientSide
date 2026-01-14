@@ -25,6 +25,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class LeaderBoardController implements Initializable, InvitationCallback, PlayersCallback, GameLifecycleCallback {
@@ -135,6 +136,8 @@ public class LeaderBoardController implements Initializable, InvitationCallback,
             currentInviteDialog.closeDialog();
             GameDialogs.openRejectInvitationDialog(root, parts[2]);
         });
+    }
+    public void setRootPane(StackPane rootPane) {
     }
 
 @Override

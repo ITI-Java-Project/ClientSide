@@ -114,14 +114,25 @@ public class ClientMessageListener implements Runnable {
                     ((InvitationCallback) callback).onInviteRejected(parts);
                 }
                 break;
+                
             case "SESSION_DATA":
                 handleSessionData(msg);
                 break;
+                
             //  PLAYERS / LEADERBOARD 
             case "AVAILABLE_PLAYERS":
                 if (callback instanceof PlayersCallback) {
-                    ((PlayersCallback) callback)
-                            .loadPlayers(getAllPlayers(msg));
+                    List<Player> players = getAllPlayers(msg);
+                    System.out.println("Available players parsed: " + players.size());
+                    ((PlayersCallback) callback).loadPlayers(players);
+                }
+                break;
+
+            case "ALL_PLAYERS":
+                if (callback instanceof PlayersCallback) {
+                    List<Player> allPlayers = getAllPlayers(msg);
+                    System.out.println("All players parsed for leaderboard: " + allPlayers.size());
+                    ((PlayersCallback) callback).loadLeaderBoard(allPlayers);
                 }
                 break;
 
@@ -131,19 +142,19 @@ public class ClientMessageListener implements Runnable {
     }
 
     private void handleSessionData(String msg) {
-    String json = msg.substring(msg.indexOf(":") + 1).trim();
-    System.out.println("Session JSON received: " + json);
-    
-    // Store in singleton
-    SessionDAO.getInstance().setSessionFromJson(json);
-    
-    // Notify callback
-    if (callback instanceof SessionCallback) {
-        ((SessionCallback) callback).onSessionDataReceived(
-            SessionDAO.getInstance().getSession()
-        );
+        String json = msg.substring(msg.indexOf(":") + 1).trim();
+        System.out.println("Session JSON received: " + json);
+        
+        // Store in singleton
+        SessionDAO.getInstance().setSessionFromJson(json);
+        
+        // Notify callback
+        if (callback instanceof SessionCallback) {
+            ((SessionCallback) callback).onSessionDataReceived(
+                SessionDAO.getInstance().getSession()
+            );
+        }
     }
-}
 
     private void handleMove(String msg) {
         String[] parts = msg.split(" ");
@@ -166,15 +177,30 @@ public class ClientMessageListener implements Runnable {
 
     //  Helper Methods 
     private List<Player> getAllPlayers(String response) {
+        System.out.println("Parsing players from response: " + response);
+        
         if (response.contains(":")) {
             response = response.substring(response.indexOf(":") + 1).trim();
+            System.out.println("Extracted JSON: " + response);
         }
 
         if ("NONE".equals(response)) {
+            System.out.println("No players found (NONE)");
             return new ArrayList<>();
         }
 
-        return JsonUtil.fromJsonList(response);
+        try {
+            List<Player> players = JsonUtil.fromJsonList(response);
+            System.out.println("Successfully parsed " + players.size() + " players");
+            for (Player p : players) {
+                System.out.println("  - " + p.getName() + " (Score: " + p.getScore() + ")");
+            }
+            return players;
+        } catch (Exception e) {
+            System.err.println("Error parsing players JSON: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
     private String extractCommand(String msg) {
