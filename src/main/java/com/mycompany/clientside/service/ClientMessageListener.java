@@ -5,8 +5,10 @@ import com.mycompany.clientside.callbacks.GameLifecycleCallback;
 import com.mycompany.clientside.callbacks.GameResultCallback;
 import com.mycompany.clientside.callbacks.InvitationCallback;
 import com.mycompany.clientside.callbacks.PlayersCallback;
+import com.mycompany.clientside.callbacks.SessionCallback;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
+import com.mycompany.clientside.dto.SessionDAO;
 import com.mycompany.clientside.matchRecording.Move;
 import com.mycompany.clientside.utils.JsonUtil;
 import java.io.IOException;
@@ -112,7 +114,9 @@ public class ClientMessageListener implements Runnable {
                     ((InvitationCallback) callback).onInviteRejected(parts);
                 }
                 break;
-
+            case "SESSION_DATA":
+                handleSessionData(msg);
+                break;
             //  PLAYERS / LEADERBOARD 
             case "AVAILABLE_PLAYERS":
                 if (callback instanceof PlayersCallback) {
@@ -126,6 +130,21 @@ public class ClientMessageListener implements Runnable {
         }
     }
 
+    private void handleSessionData(String msg) {
+    String json = msg.substring(msg.indexOf(":") + 1).trim();
+    System.out.println("Session JSON received: " + json);
+    
+    // Store in singleton
+    SessionDAO.getInstance().setSessionFromJson(json);
+    
+    // Notify callback
+    if (callback instanceof SessionCallback) {
+        ((SessionCallback) callback).onSessionDataReceived(
+            SessionDAO.getInstance().getSession()
+        );
+    }
+}
+
     private void handleMove(String msg) {
         String[] parts = msg.split(" ");
         if (parts.length < 4) {
@@ -135,7 +154,7 @@ public class ClientMessageListener implements Runnable {
         int row = Integer.parseInt(parts[1]);
         int col = Integer.parseInt(parts[2]);
         char player = parts[3].charAt(0);
-        
+
         Move move = new Move(row, col, player);
 
         System.out.println("Move received: " + row + "," + col + " Player: " + player);

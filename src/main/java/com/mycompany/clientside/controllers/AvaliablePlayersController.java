@@ -3,9 +3,12 @@ package com.mycompany.clientside.controllers;
 import com.mycompany.clientside.callbacks.GameLifecycleCallback;
 import com.mycompany.clientside.callbacks.InvitationCallback;
 import com.mycompany.clientside.callbacks.PlayersCallback;
+import com.mycompany.clientside.callbacks.SessionCallback;
 import com.mycompany.clientside.connection.ConnectionManager;
 import com.mycompany.clientside.connection.ConnectionStrategy;
 import com.mycompany.clientside.dto.Player;
+import com.mycompany.clientside.dto.Session;
+import com.mycompany.clientside.dto.UserSession;
 import com.mycompany.clientside.game.OnlineGame;
 import com.mycompany.clientside.service.ClientMessageCallback;
 import com.mycompany.clientside.service.ClientMessageListener;
@@ -37,7 +40,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Window;
 
-public class AvaliablePlayersController implements Initializable, InvitationCallback, GameLifecycleCallback, PlayersCallback {
+public class AvaliablePlayersController implements Initializable, InvitationCallback, GameLifecycleCallback, PlayersCallback, SessionCallback {
 
     @FXML
     private ImageView backIcon;
@@ -55,6 +58,7 @@ public class AvaliablePlayersController implements Initializable, InvitationCall
     private PlayerService playerService;
     private ObservableList<Player> avaliablesPlayers;
     private Thread th;
+    private Session currentSession;
 
     private InvitationDialogController currentInviteDialog;
     private ClientMessageListener listener;
@@ -165,15 +169,33 @@ public class AvaliablePlayersController implements Initializable, InvitationCall
 
     @Override
     public void startGame() {
-        boolean isRecord=isSender?currentInviteDialog.isRecording():receiveInvitationDialogController.isRecording();
-        System.out.println("=================================");
+        boolean isRecord = isSender ? currentInviteDialog.isRecording() 
+                                    : receiveInvitationDialogController.isRecording();
+        
         Parent root = settingsIcon.getScene().getRoot();
+        
+        // Get current user to determine which player name to show where
+        int currentUserId = UserSession.getInstance().getCurrentUser().getId();
+        
         Platform.runLater(() -> {
             SceneNavigator.navigateTo(root, "/fxml/Game.fxml", (GameController c) -> {
                 c.setGameStrategy(new OnlineGame());
                 c.setMyTurn(myTurn);
                 c.setMyChar(myChar);
                 c.setRecording(isRecord);
+                
+                // Set player names from session data
+                if (currentSession != null) {
+                    if (currentUserId == currentSession.getPlayer1Id()) {
+                        // I am player 1
+                        c.setPlayerNames(currentSession.getPlayer1Name(), 
+                                        currentSession.getPlayer2Name());
+                    } else {
+                        // I am player 2
+                        c.setPlayerNames(currentSession.getPlayer2Name(), 
+                                        currentSession.getPlayer1Name());
+                    }
+                }
             });
         });
     }
@@ -210,6 +232,12 @@ public class AvaliablePlayersController implements Initializable, InvitationCall
 
     @Override
     public void loadLeaderBoard(List<Player> players) {
+    }
+
+    @Override
+    public void onSessionDataReceived(Session session) {
+        // Just log it - GameController will handle displaying names
+        System.out.println("AvailablePlayersController received session: " + session);
     }
 
 }
